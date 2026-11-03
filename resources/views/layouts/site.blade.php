@@ -15,7 +15,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
-        @include('partials.head', ['title' => $title])
+        @include('partials.head', ['title' => $title, 'forceDark' => true])
         <meta name="description" content="Put your name on the Founders Plaque of {{ config('lunar.brand') }}. Only 1,000 names. An independent project of the {{ config('lunar.podcast') }} podcast.">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         @if (config('services.paypal.client_id'))

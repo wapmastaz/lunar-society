@@ -78,6 +78,18 @@ class SiteTest extends TestCase
         $this->assertStringStartsWith('60,', $lines[2]);
     }
 
+    public function test_public_site_stays_dark_whatever_the_system_setting(): void
+    {
+        $html = $this->get('/claim')->getContent();
+
+        $this->assertStringContainsString('class="dark"', $html);
+        $this->assertStringNotContainsString("getItem('flux.appearance')", $html);
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('admin.orders'))
+            ->assertSee("getItem('flux.appearance')", false);
+    }
+
     public function test_public_registration_is_disabled(): void
     {
         $this->get('/register')->assertNotFound();
