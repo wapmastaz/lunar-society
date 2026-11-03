@@ -7,7 +7,8 @@
 | Host key (ED25519) | `SHA256:0jSSHZf7X3GpDpont5uo1lSTPdqRkb5U33kw6h218BE` |
 | App folder | `~/domains/lunarsocietyregistry.com/app` |
 | Web folder | `~/domains/lunarsocietyregistry.com/public_html`, a symlink to `app/public` |
-| Repo | `git@github.com:wapmastaz/lunar-society.git` (`main`) |
+| Repo | `git@github-lunar:wapmastaz/lunar-society.git` (`main`), using the SSH alias below |
+| PHP | `/opt/alt/php84/usr/bin/php`. The server's default `php` is 8.3, and the app needs 8.4 |
 
 ## 0. DNS: keep Microsoft 365 email working
 
@@ -28,15 +29,11 @@ If a sending service (Postmark or Resend) is added later, merge it into this **s
    ssh -p 65002 u840504408@72.60.93.25
    ```
 
-2. **Deploy key for GitHub.** Run this on the server:
+2. **Deploy key for GitHub (done).** The key is `~/.ssh/lunar_deploy` on the server. `~/.ssh/config` defines a `github-lunar` host that uses it, so the existing `id_rsa` key and the other site on this account are not affected.
 
-   ```bash
-   ssh-keygen -t ed25519 -C "hostinger-lunar" -N "" -f ~/.ssh/id_ed25519 && cat ~/.ssh/id_ed25519.pub
-   ```
+   On GitHub, open the repo's Settings, then Deploy keys, and add the contents of `~/.ssh/lunar_deploy.pub` with read-only access.
 
-   On GitHub, open the repo's Settings, then Deploy keys, and add the printed key with read-only access.
-
-3. **PHP 8.4.** In hPanel, go to Advanced, then PHP Configuration.
+3. **PHP 8.4 for the website.** In hPanel, go to the site's PHP Configuration and choose 8.4. Symfony 8 requires 8.4. For command-line work, always use `/opt/alt/php84/usr/bin/php`.
 
 4. **Database.** In hPanel, go to Databases and create a MySQL database and user.
 
@@ -44,11 +41,11 @@ If a sending service (Postmark or Resend) is added later, merge it into this **s
 
    ```bash
    cd ~/domains/lunarsocietyregistry.com
-   git clone git@github.com:wapmastaz/lunar-society.git app
+   git clone git@github-lunar:wapmastaz/lunar-society.git app
    cd app
-   composer install --no-dev --optimize-autoloader
+   /opt/alt/php84/usr/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader
    cp .env.example .env
-   php artisan key:generate
+   /opt/alt/php84/usr/bin/php artisan key:generate
    ```
 
 6. **Edit `.env`** (`nano .env`):
@@ -82,7 +79,7 @@ If a sending service (Postmark or Resend) is added later, merge it into this **s
 7. **Migrate and seed.** This creates the tiers and the admin login:
 
    ```bash
-   php artisan migrate --seed --force && php artisan optimize
+   /opt/alt/php84/usr/bin/php artisan migrate --seed --force && /opt/alt/php84/usr/bin/php artisan optimize
    ```
 
 8. **Point the web folder at Laravel's `public/`:**
@@ -100,7 +97,7 @@ If a sending service (Postmark or Resend) is added later, merge it into this **s
 10. **Cron.** In hPanel, go to Advanced, then Cron Jobs. Add a job that runs every minute:
 
     ```
-    cd /home/u840504408/domains/lunarsocietyregistry.com/app && php artisan schedule:run >> /dev/null 2>&1
+    cd /home/u840504408/domains/lunarsocietyregistry.com/app && /opt/alt/php84/usr/bin/php artisan schedule:run >> /dev/null 2>&1
     ```
 
     This job releases expired slot holds. Because `QUEUE_VIA_SCHEDULER=true`, it also sends the queued confirmation emails, certificates and Beehiiv sign-ups.
@@ -112,7 +109,7 @@ If a sending service (Postmark or Resend) is added later, merge it into this **s
 Push to `main`. Then run this on your Mac (rebuild the assets only if CSS or JS changed):
 
 ```bash
-ssh -p 65002 u840504408@72.60.93.25 'cd ~/domains/lunarsocietyregistry.com/app && git pull && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan optimize'
+ssh -p 65002 u840504408@72.60.93.25 'cd ~/domains/lunarsocietyregistry.com/app && P=/opt/alt/php84/usr/bin/php && git pull && $P /usr/local/bin/composer install --no-dev --optimize-autoloader && $P artisan migrate --force && $P artisan optimize'
 ```
 
 ```bash
