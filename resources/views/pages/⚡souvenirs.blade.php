@@ -16,7 +16,7 @@ new #[Layout('layouts::site')] #[Title('Souvenirs')] class extends Component {
 
 <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
     <header class="text-center">
-        <h1 class="text-3xl font-extrabold text-white sm:text-4xl">Lunar Society Souvenirs</h1>
+        <h1 class="font-display text-5xl text-white sm:text-6xl">Lunar Society Souvenirs</h1>
         <p class="mx-auto mt-3 max-w-2xl text-zinc-300">Gifts for space fans and listeners. Souvenirs don't include a slot on the Founders Plaque.</p>
     </header>
 
@@ -25,7 +25,7 @@ new #[Layout('layouts::site')] #[Title('Souvenirs')] class extends Component {
     @else
         <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($this->products as $product)
-                <article class="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                <article class="flex flex-col overflow-hidden panel">
                     @if ($product->image_path)
                         <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="aspect-square w-full object-cover" loading="lazy">
                     @endif

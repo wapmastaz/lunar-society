@@ -37,8 +37,15 @@
 }
 
 @theme {
-    --color-gold: #e5b84b;
+    --font-display: var(--font-instrument-serif), Georgia, serif;
+    --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+
+    --color-gold: #e8b84a;
     --color-gold-light: #f3d68a;
+    --color-ink: #070a12;
+    --color-ink-deep: #05070d;
+    --color-panel: #0d1120;
+    --color-panel-raised: #12172a;
 }
 
 /* Public site: gold accent for Flux buttons and controls. */
@@ -46,6 +53,28 @@
     --color-accent: var(--color-gold);
     --color-accent-content: var(--color-gold);
     --color-accent-foreground: #070b1a;
+}
+
+/* Mono uppercase label used above headings and in cards. */
+.eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.25em] text-gold;
+}
+
+.panel {
+    @apply rounded-2xl border border-white/10 bg-panel;
+}
+
+/* Brushed aluminum, for the plaque and engraving previews. */
+.metal {
+    background:
+        repeating-linear-gradient(90deg, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 3px),
+        linear-gradient(115deg, #b9bec8 0%, #e9ecf1 28%, #c3c8d1 45%, #f4f5f8 60%, #bfc4cd 80%, #d9dce2 100%);
+    color: #2a2f3a;
+}
+
+/* Diagonal hatch for image placeholders. */
+.hatch {
+    background: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.035) 0 14px, transparent 14px 28px);
 }
 
 .starfield {
@@ -88,3 +117,7 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+[x-cloak] {
+    display: none !important;
+}

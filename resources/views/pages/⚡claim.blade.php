@@ -13,10 +13,14 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends Component {
+    public int $step = 1;
+
     public string $tierCode = 'standard';
-    public string $plaque_name = '';
+    public string $buyer_name = '';
     public string $email = '';
     public string $listener_handle = '';
+    public string $plaque_name = '';
+    public bool $couple_addon = false;
     public bool $show_full_name = false;
     public bool $consent_spelling = false;
     public bool $consent_terms = false;
@@ -47,7 +51,7 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
     }
 
     #[Computed]
-    public function coupleAddon(): bool
+    public function nameNeedsAddon(): bool
     {
         return Registry::requiresCoupleAddon($this->plaque_name);
     }
@@ -55,9 +59,19 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
     #[Computed]
     public function total(): string
     {
-        $cents = $this->selectedTier ? app(Registry::class)->priceFor($this->selectedTier, $this->coupleAddon) : 0;
+        $cents = $this->selectedTier
+            ? app(Registry::class)->priceFor($this->selectedTier, $this->couple_addon || $this->nameNeedsAddon)
+            : 0;
 
         return '$'.number_format($cents / 100);
+    }
+
+    #[Computed]
+    public function previewSlot(): ?string
+    {
+        $n = $this->selectedTier ? app(Registry::class)->nextFreeSlot($this->selectedTier) : null;
+
+        return $n ? sprintf('#%03d', $n) : null;
     }
 
     #[Computed]
@@ -66,17 +80,32 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
         return $this->orderUuid ? Order::with('tier')->firstWhere('uuid', $this->orderUuid) : null;
     }
 
-    protected function rules(): array
+    /**
+     * Validation rules for each step; the review step re-checks everything.
+     */
+    protected function stepRules(int $step): array
     {
-        return [
-            'tierCode' => ['required', 'exists:tiers,code'],
-            'plaque_name' => ['required', 'string', 'min:2', 'max:'.config('lunar.name_max_length'), "regex:/^[A-Za-z][A-Za-z .'&\-]*$/"],
-            'email' => ['required', 'email:rfc', 'max:255'],
-            'listener_handle' => ['nullable', 'string', 'max:100'],
-            'show_full_name' => ['boolean'],
-            'consent_spelling' => ['accepted'],
-            'consent_terms' => ['accepted'],
+        $rules = [
+            1 => [
+                'tierCode' => ['required', 'exists:tiers,code'],
+            ],
+            2 => [
+                'buyer_name' => ['required', 'string', 'max:100'],
+                'email' => ['required', 'email:rfc', 'max:255'],
+                'listener_handle' => ['nullable', 'string', 'max:100'],
+            ],
+            3 => [
+                'plaque_name' => ['required', 'string', 'min:2', 'max:'.config('lunar.name_max_length'), "regex:/^[A-Za-z][A-Za-z .'&\-]*$/"],
+                'couple_addon' => ['boolean'],
+                'show_full_name' => ['boolean'],
+            ],
+            4 => [
+                'consent_spelling' => ['accepted'],
+                'consent_terms' => ['accepted'],
+            ],
         ];
+
+        return $step === 4 ? array_merge(...array_values($rules)) : $rules[$step];
     }
 
     protected function messages(): array
@@ -90,23 +119,67 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
 
     protected function validationAttributes(): array
     {
-        return ['plaque_name' => 'name for the plaque', 'tierCode' => 'tier'];
+        return ['plaque_name' => 'name for the plaque', 'tierCode' => 'tier', 'buyer_name' => 'full name'];
     }
 
     public function updatedPlaqueName(): void
     {
         $this->plaque_name = preg_replace('/\s+/', ' ', ltrim($this->plaque_name));
+
+        // A couple or family name always needs the add-on.
+        if ($this->nameNeedsAddon) {
+            $this->couple_addon = true;
+        }
+    }
+
+    public function updatedCoupleAddon(bool $value): void
+    {
+        if (! $value && $this->nameNeedsAddon) {
+            $this->couple_addon = true;
+            $this->addError('couple_addon', 'This looks like a couple or family name, so the add-on is required.');
+        }
+    }
+
+    public function next(): void
+    {
+        if ($this->step === 1 && $this->selectedTier?->isSoldOut()) {
+            $this->addError('tierCode', "{$this->selectedTier->name} slots are sold out. Please choose another tier.");
+
+            return;
+        }
+
+        if ($this->step === 3) {
+            $this->plaque_name = trim($this->plaque_name);
+        }
+
+        $this->validate($this->stepRules($this->step));
+        $this->step++;
+    }
+
+    public function back(): void
+    {
+        if ($this->step === 5) {
+            $this->releaseHold();
+        }
+
+        $this->step = max(1, $this->step - 1);
+    }
+
+    public function goTo(int $step): void
+    {
+        if ($step >= 1 && $step < $this->step && $this->step <= 4) {
+            $this->step = $step;
+        }
     }
 
     public function reserve(Registry $registry): void
     {
-        $this->plaque_name = trim($this->plaque_name);
-        $this->validate();
+        $this->validate($this->stepRules(4));
 
         $key = 'reserve:'.request()->ip();
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
-            $this->addError('plaque_name', 'Too many reservations from this connection. Please wait a few minutes.');
+            $this->addError('consent_terms', 'Too many reservations from this connection. Please wait a few minutes.');
 
             return;
         }
@@ -116,24 +189,28 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
         try {
             $order = $registry->reserve($this->selectedTier, [
                 'email' => $this->email,
-                'plaque_name' => $this->plaque_name,
+                'buyer_name' => trim($this->buyer_name),
+                'plaque_name' => trim($this->plaque_name),
+                'couple_addon' => $this->couple_addon,
                 'listener_handle' => $this->listener_handle ?: null,
                 'show_full_name' => $this->show_full_name,
                 'ip_address' => request()->ip(),
             ]);
         } catch (SoldOutException) {
             unset($this->tiers, $this->selectedTier);
+            $this->step = 1;
             $this->addError('tierCode', "{$this->selectedTier->name} slots just sold out. Please choose another tier.");
 
             return;
         }
 
         $this->orderUuid = $order->uuid;
+        $this->step = 5;
     }
 
-    public function editDetails(): void
+    protected function releaseHold(): void
     {
-        // Release the hold so the slot goes back to the pool right away.
+        // Give the slot back to the pool right away.
         if ($this->order?->status === OrderStatus::Pending) {
             $this->order->update(['status' => OrderStatus::Expired]);
         }
@@ -143,126 +220,161 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
     }
 }; ?>
 
-<div class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-    <header class="text-center">
-        <h1 class="text-3xl font-extrabold text-white sm:text-4xl">Secure Your Place on the Founders Plaque</h1>
-        <p class="mx-auto mt-3 max-w-2xl text-zinc-300">
-            Become one of 1,000 Founders whose names are laser engraved onto our aerospace-grade commemorative plaque.
-            Space is strictly limited to 1,000 names.
-        </p>
-    </header>
+<x-claim-shell :step="$step" jump>
+    @if ($step === 1)
+        <h2 class="text-2xl font-semibold text-white">Choose your tier</h2>
+        <p class="mt-1 text-zinc-400">Founder numbers are assigned in order within each tier.</p>
 
-    <div class="mt-8">
-        <livewire:slot-counter variant="stat" />
-    </div>
-
-    @if (! $this->order)
-        {{-- Step 1: details --}}
-        <form wire:submit="reserve" class="mt-8 space-y-8 rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8" novalidate>
-            <flux:radio.group wire:model.live="tierCode" label="Choose your tier" variant="cards" class="grid gap-3 sm:grid-cols-2">
+        <fieldset class="mt-7">
+            <legend class="sr-only">Tier</legend>
+            <div class="grid gap-3 sm:grid-cols-2">
                 @foreach ($this->tiers as $tier)
-                    <flux:radio
-                        :value="$tier->code"
-                        :disabled="$tier->isSoldOut()"
-                        :label="$tier->name.' · '.$tier->priceLabel()"
-                        :description="$tier->isSoldOut() ? 'Sold out' : 'Slots '.$tier->rangeLabel().' · '.number_format($tier->remaining()).' left'"
-                    />
+                    @php($active = $tierCode === $tier->code)
+                    <label @class([
+                        'relative flex cursor-pointer flex-col rounded-xl border p-6 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold',
+                        'border-gold bg-white/[0.06]' => $active,
+                        'border-white/10 hover:border-white/25' => ! $active,
+                        'pointer-events-none opacity-50' => $tier->isSoldOut(),
+                    ])>
+                        <input type="radio" wire:model.live="tierCode" value="{{ $tier->code }}" class="sr-only" @disabled($tier->isSoldOut())>
+                        <span class="flex items-center justify-between">
+                            <span @class(['font-mono text-xs uppercase tracking-[0.2em]', 'text-gold' => $tier->code === 'alpha', 'text-zinc-300' => $tier->code !== 'alpha'])>
+                                Slots {{ sprintf('#%03d–#%03d', $tier->slot_start, $tier->slot_end) }}
+                            </span>
+                            <span aria-hidden="true" @class(['grid size-5 place-items-center rounded-full border', 'border-gold' => $active, 'border-zinc-600' => ! $active])>
+                                @if ($active)<span class="size-2.5 rounded-full bg-gold"></span>@endif
+                            </span>
+                        </span>
+                        <span class="mt-5 text-xl font-semibold text-white">{{ $tier->name }}</span>
+                        <span class="mt-4 flex items-baseline justify-between">
+                            <span class="text-3xl font-bold text-white">{{ $tier->priceLabel() }}</span>
+                            <span class="text-sm text-zinc-400">{{ $tier->isSoldOut() ? 'Sold out' : number_format($tier->remaining()).' left' }}</span>
+                        </span>
+                    </label>
                 @endforeach
-            </flux:radio.group>
+            </div>
+            <flux:error name="tierCode" class="mt-3" />
+        </fieldset>
+    @elseif ($step === 2)
+        <h2 class="text-2xl font-semibold text-white">Your details</h2>
+        <p class="mt-1 text-zinc-400">Your digital certificate and project updates are sent here.</p>
 
+        <div class="mt-7 space-y-6">
+            <flux:input wire:model="buyer_name" label="Full name" autocomplete="name" required badge="Required" />
+            <flux:input wire:model="email" type="email" label="Email address" autocomplete="email" required badge="Required" />
+            <flux:input wire:model="listener_handle" label="Podcast listener handle or comment" badge="Optional" maxlength="100" />
+        </div>
+    @elseif ($step === 3)
+        <h2 class="text-2xl font-semibold text-white">Name for the plaque</h2>
+        <p class="mt-1 text-zinc-400">Enter the name exactly as it should be engraved, max {{ config('lunar.name_max_length') }} characters. One person per slot.</p>
+
+        <div class="mt-7 space-y-6">
             <flux:field>
-                <flux:label>Name for the plaque</flux:label>
-                <flux:description>
-                    Enter the name exactly as it should be engraved, max {{ config('lunar.name_max_length') }} characters.
-                    One person per slot. Couple or family names (for example "Mr &amp; Mrs John Doe" or "Doe Family") are a +${{ number_format(config('lunar.couple_addon_cents') / 100) }} add-on.
-                </flux:description>
-                <flux:input wire:model.live.debounce.300ms="plaque_name" maxlength="{{ config('lunar.name_max_length') }}" autocomplete="name" required />
-                <div class="flex justify-between text-xs text-zinc-400">
-                    <span>
-                        @if ($this->coupleAddon)
-                            <span class="font-medium text-gold">Couple/family name detected: +${{ number_format(config('lunar.couple_addon_cents') / 100) }} add-on applied.</span>
-                        @endif
-                    </span>
-                    <span class="tabular-nums">{{ mb_strlen($plaque_name) }}/{{ config('lunar.name_max_length') }}</span>
+                <div class="flex items-center justify-between">
+                    <flux:label badge="Required">Engraving</flux:label>
+                    <span class="font-mono text-xs tabular-nums text-zinc-400">{{ mb_strlen($plaque_name) }}/{{ config('lunar.name_max_length') }}</span>
                 </div>
+                <flux:input wire:model.live.debounce.250ms="plaque_name" maxlength="{{ config('lunar.name_max_length') }}" autocomplete="off" required />
                 <flux:error name="plaque_name" />
             </flux:field>
 
-            <flux:input
-                wire:model="email"
-                type="email"
-                label="Email address"
-                description="Your digital certificate and project updates are sent here."
-                autocomplete="email"
-                required
-            />
-
-            <flux:input wire:model="listener_handle" label="Podcast listener handle or comment (optional)" maxlength="100" />
-
-            <flux:switch wire:model="show_full_name" label="Show my full name on the public Founders list" description="If this is off, the list shows first name and last initial." align="left" />
-
-            <div class="space-y-4 rounded-xl border border-white/10 bg-black/20 p-4">
-                <flux:field variant="inline">
-                    <flux:checkbox wire:model="consent_spelling" />
-                    <flux:label class="!leading-snug">{{ config('lunar.consent_spelling') }}</flux:label>
-                    <flux:error name="consent_spelling" />
-                </flux:field>
-
-                <flux:field variant="inline">
-                    <flux:checkbox wire:model="consent_terms" />
-                    <flux:label class="!leading-snug">
-                        I have read and agree to the <a href="{{ route('terms') }}" target="_blank" class="underline">Terms of Service</a>.
-                        I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="underline">Disclaimer</a>.
-                    </flux:label>
-                    <flux:error name="consent_terms" />
-                </flux:field>
+            <div class="rounded-xl border border-white/10 p-4">
+                <flux:switch
+                    wire:model.live="couple_addon"
+                    align="left"
+                    label="Couple or family name · +${{ number_format(config('lunar.couple_addon_cents') / 100) }}"
+                    description='For example "Mr & Mrs John Doe" or "Doe Family".'
+                />
+                <flux:error name="couple_addon" />
             </div>
 
-            <flux:error name="tierCode" />
-
-            <div class="flex flex-col items-center gap-3 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
-                <p class="text-lg text-white">Total: <span class="font-bold">{{ $this->total }}</span></p>
-                <flux:button type="submit" variant="primary" class="w-full sm:w-auto">RESERVE MY SLOT</flux:button>
+            <div class="rounded-xl border border-white/10 p-4">
+                <flux:switch
+                    wire:model="show_full_name"
+                    align="left"
+                    label="Show my full name on the public Founders list"
+                    description="If this is off, the list shows first name and last initial."
+                />
             </div>
-            <p class="text-center text-xs text-zinc-400 sm:text-right">Your slot is held for {{ config('lunar.hold_minutes') }} minutes while you pay with PayPal.</p>
-        </form>
-    @else
-        {{-- Step 2: payment --}}
-        <section class="mt-8 space-y-6 rounded-2xl border border-gold/40 bg-white/5 p-6 sm:p-8" aria-labelledby="pay-heading">
+
             <div>
-                <h2 id="pay-heading" class="text-xl font-bold text-white">Your slot is reserved</h2>
-                <p
-                    class="mt-1 text-sm text-zinc-300"
-                    x-data="{ ends: {{ $this->order->hold_expires_at?->getTimestampMs() ?? 0 }}, left: '' }"
-                    x-init="const tick = () => { const s = Math.max(0, Math.floor((ends - Date.now()) / 1000)); left = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }; tick(); setInterval(tick, 1000)"
-                >
-                    Complete payment within <span class="font-semibold tabular-nums text-gold" x-text="left"></span> to keep it.
-                </p>
+                <p class="font-mono text-xs uppercase tracking-[0.25em] text-zinc-400">Engraving preview</p>
+                <x-engraving-preview class="mt-3" :name="$plaque_name" :number="$this->previewSlot" />
+                <p class="mt-2 text-xs text-zinc-500">Preview number is the next free slot. Your Founder number is confirmed after payment.</p>
             </div>
+        </div>
+    @elseif ($step === 4)
+        <h2 class="text-2xl font-semibold text-white">Review your order</h2>
+        <p class="mt-1 text-zinc-400">Check the spelling carefully. This is what gets engraved.</p>
 
-            <dl class="grid gap-3 rounded-xl bg-black/20 p-4 text-sm sm:grid-cols-2">
-                <div><dt class="text-zinc-400">Tier</dt><dd class="font-medium text-white">{{ $this->order->tier->name }}</dd></div>
-                <div><dt class="text-zinc-400">Name for the plaque</dt><dd class="font-medium text-white">{{ $this->order->plaque_name }}</dd></div>
-                <div><dt class="text-zinc-400">Email</dt><dd class="font-medium text-white">{{ $this->order->email }}</dd></div>
-                <div>
-                    <dt class="text-zinc-400">Total</dt>
-                    <dd class="font-medium text-white">{{ $this->order->amountLabel() }} @if ($this->order->couple_addon)<span class="text-zinc-400">(includes couple/family add-on)</span>@endif</dd>
-                </div>
-            </dl>
+        <dl class="mt-7 grid grid-cols-[7rem_1fr] gap-x-4 gap-y-3 text-sm sm:text-base">
+            <dt class="text-zinc-400">Tier</dt>
+            <dd class="font-medium text-white">{{ $this->selectedTier->name }} · {{ sprintf('#%03d–#%03d', $this->selectedTier->slot_start, $this->selectedTier->slot_end) }}</dd>
+            <dt class="text-zinc-400">Full name</dt>
+            <dd class="font-medium text-white">{{ $buyer_name }}</dd>
+            <dt class="text-zinc-400">Email</dt>
+            <dd class="break-all font-medium text-white">{{ $email }}</dd>
+            <dt class="text-zinc-400">Engraving</dt>
+            <dd class="font-mono font-bold uppercase tracking-wider text-white">{{ $plaque_name }}</dd>
+            <dt class="text-zinc-400">Founders list</dt>
+            <dd class="text-white">{{ $show_full_name ? $plaque_name : \App\Models\Order::maskName($plaque_name) }}</dd>
+        </dl>
 
-            <div
-                wire:ignore
-                x-data="paypalButtons(@js(route('checkout.create', $this->order)), @js(route('checkout.capture', $this->order)))"
-                class="mx-auto max-w-md"
-            >
-                <div x-ref="buttons" x-show="!processing"></div>
-                <p x-show="processing" class="py-6 text-center text-zinc-200">Confirming your payment…</p>
-                <p x-show="error" x-text="error" role="alert" class="mt-3 rounded-lg bg-red-500/15 p-3 text-sm text-red-200"></p>
-            </div>
+        <div class="mt-7 space-y-4">
+            <flux:field variant="inline">
+                <flux:checkbox wire:model="consent_spelling" />
+                <flux:label class="!leading-snug">{{ config('lunar.consent_spelling') }}</flux:label>
+                <flux:error name="consent_spelling" />
+            </flux:field>
 
-            <div class="text-center">
-                <flux:button wire:click="editDetails" variant="ghost" size="sm">Edit my details</flux:button>
-            </div>
-        </section>
+            <flux:field variant="inline">
+                <flux:checkbox wire:model="consent_terms" />
+                <flux:label class="!leading-snug">
+                    I have read and agree to the <a href="{{ route('terms') }}" target="_blank" class="text-gold underline underline-offset-2">Terms of Service</a>.
+                    I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.
+                </flux:label>
+                <flux:error name="consent_terms" />
+            </flux:field>
+        </div>
+    @elseif ($step === 5 && $this->order)
+        <h2 class="text-2xl font-semibold text-white">Secure payment</h2>
+        <p class="mt-1 text-zinc-400">Your slot is held for {{ config('lunar.hold_minutes') }} minutes while you pay with PayPal.</p>
+
+        <div
+            class="mt-7 flex items-center gap-3 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3"
+            x-data="{ ends: {{ $this->order->hold_expires_at?->getTimestampMs() ?? 0 }}, left: '' }"
+            x-init="const tick = () => { const s = Math.max(0, Math.floor((ends - Date.now()) / 1000)); left = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }; tick(); setInterval(tick, 1000)"
+        >
+            <span class="font-mono text-lg tabular-nums text-gold" x-text="left"></span>
+            <span class="text-sm text-zinc-200">remaining on your hold</span>
+        </div>
+
+        <div
+            wire:ignore
+            x-data="paypalButtons(@js(route('checkout.create', $this->order)), @js(route('checkout.capture', $this->order)))"
+            class="mt-6"
+        >
+            <div x-ref="buttons" x-show="!processing" class="min-h-24"></div>
+            <p x-show="processing" class="py-8 text-center text-zinc-200">Confirming your payment…</p>
+            <p x-show="error" x-text="error" role="alert" class="mt-3 rounded-lg bg-red-500/15 p-3 text-sm text-red-200"></p>
+        </div>
+
+        <p class="mt-5 text-xs text-zinc-400">Your Founder number is assigned only after our server confirms the PayPal payment.</p>
     @endif
-</div>
+
+    @if ($step <= 5)
+        <div class="mt-8 flex items-center justify-between border-t border-white/10 pt-6">
+            <flux:button wire:click="back" variant="ghost" icon="arrow-left" :disabled="$step === 1">Back</flux:button>
+
+            @if ($step < 4)
+                <flux:button wire:click="next" variant="primary" icon:trailing="arrow-right" class="h-11 px-6">Continue</flux:button>
+            @elseif ($step === 4)
+                <flux:button wire:click="reserve" variant="primary" class="h-11 px-6">Reserve &amp; pay {{ $this->total }}</flux:button>
+            @endif
+        </div>
+    @endif
+
+    <x-slot:summary>
+        <x-order-summary :tier="$this->selectedTier" :couple="$couple_addon || $this->nameNeedsAddon" :total="$this->total" />
+    </x-slot:summary>
+</x-claim-shell>

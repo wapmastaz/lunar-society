@@ -25,18 +25,20 @@
     }
 @endphp
 
-<x-site-page title="Frequently Asked Questions">
-    <div class="mt-8 divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/5">
+<x-site-page title="Frequently Asked Questions" eyebrow="FAQ">
+    <div class="mt-10 border-t border-white/10">
         @foreach ($faqs as [$question, $answer])
-            <details class="group p-5 [&_p]:mt-2" @if ($loop->first) open @endif>
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-white">
+            <details class="group border-b border-white/10 [&_p]:mt-0" name="faq" @if ($loop->first) open @endif>
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-medium text-white [&::-webkit-details-marker]:hidden">
                     {{ $question }}
-                    <flux:icon.chevron-down class="size-5 shrink-0 transition group-open:rotate-180" />
+                    <span aria-hidden="true" class="grid size-8 shrink-0 place-items-center rounded-full border border-white/20 text-gold transition group-open:rotate-45">
+                        <flux:icon.plus variant="micro" class="size-4" />
+                    </span>
                 </summary>
-                <p>{{ $answer }}</p>
+                <p class="pb-7 pe-12">{{ $answer }}</p>
             </details>
         @endforeach
     </div>
 
-    <p>Still have a question? Email <a href="mailto:{{ config('lunar.email') }}">{{ config('lunar.email') }}</a>.</p>
+    <p class="!mt-10">Still have a question? Email <a href="mailto:{{ config('lunar.email') }}">{{ config('lunar.email') }}</a>.</p>
 </x-site-page>

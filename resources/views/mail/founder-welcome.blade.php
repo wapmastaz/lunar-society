@@ -1,7 +1,7 @@
 <x-mail::message>
 # Welcome to the Society, Founder!
 
-Dear {{ $order->payer_first_name ?: 'Founder' }},
+Dear {{ $order->greetingName() ?? 'Founder' }},
 
 Welcome to {{ config('lunar.brand') }}! Your name is now reserved on the Founders Plaque, a custom aerospace-grade aluminum plaque engraved with the names of 1,000 founding listeners. Our goal is to send it to the Moon.
 

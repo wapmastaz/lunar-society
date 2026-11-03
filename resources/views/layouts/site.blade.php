@@ -1,5 +1,17 @@
 @props(['title' => null])
 
+@php
+    $nav = [
+        ['founders', 'Founders'],
+        ['faq', 'FAQ'],
+        ['about', 'About'],
+    ];
+
+    if (\App\Models\Product::where('active', true)->exists()) {
+        $nav[] = ['souvenirs', 'Souvenirs'];
+    }
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
@@ -10,36 +22,35 @@
             <meta name="paypal-client-id" content="{{ config('services.paypal.client_id') }}">
         @endif
     </head>
-    <body class="site starfield min-h-screen bg-[#070b1a] text-zinc-100 antialiased">
+    <body class="site starfield min-h-screen bg-ink text-zinc-100 antialiased">
         <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-black">Skip to content</a>
 
         <livewire:slot-counter variant="banner" />
 
-        <header class="border-b border-white/10 bg-[#070b1a]/80 backdrop-blur">
-            <div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 font-semibold tracking-wide">
-                    <span aria-hidden="true" class="grid size-8 place-items-center rounded-full bg-gold text-[#070b1a]">
-                        <flux:icon.moon variant="solid" class="size-5" />
-                    </span>
-                    <span class="leading-tight">Mr SuperTrump's<br class="sm:hidden"> Lunar Society</span>
+        <header class="border-b border-white/[0.06] bg-ink/80 backdrop-blur">
+            <div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4 sm:px-6">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 font-semibold">
+                    <x-moon-mark class="size-9" />
+                    <span class="leading-tight sm:text-lg">Mr SuperTrump's<br class="sm:hidden"> Lunar Society</span>
                 </a>
 
-                <nav aria-label="Main" class="ms-auto hidden items-center gap-6 text-sm text-zinc-300 md:flex">
-                    <a href="{{ route('founders') }}" class="hover:text-white">Founders</a>
-                    <a href="{{ route('faq') }}" class="hover:text-white">FAQ</a>
-                    <a href="{{ route('about') }}" class="hover:text-white">About</a>
-                    @if (\App\Models\Product::where('active', true)->exists())
-                        <a href="{{ route('souvenirs') }}" class="hover:text-white">Souvenirs</a>
-                    @endif
+                <nav aria-label="Main" class="ms-auto hidden items-center gap-8 md:flex">
+                    @foreach ($nav as [$route, $label])
+                        <a
+                            href="{{ route($route) }}"
+                            @class(['text-[15px] transition', 'text-gold' => request()->routeIs($route), 'text-zinc-300 hover:text-white' => ! request()->routeIs($route)])
+                            @if (request()->routeIs($route)) aria-current="page" @endif
+                        >{{ $label }}</a>
+                    @endforeach
                 </nav>
 
-                <flux:button href="{{ route('claim') }}" variant="primary" size="sm" class="ms-auto md:ms-0">Claim a slot</flux:button>
+                <flux:button href="{{ route('claim') }}" variant="primary" class="ms-auto md:ms-0">Claim a slot</flux:button>
             </div>
 
-            <nav aria-label="Main mobile" class="flex justify-center gap-6 border-t border-white/5 py-2 text-sm text-zinc-300 md:hidden">
-                <a href="{{ route('founders') }}">Founders</a>
-                <a href="{{ route('faq') }}">FAQ</a>
-                <a href="{{ route('about') }}">About</a>
+            <nav aria-label="Main mobile" class="flex justify-center gap-6 border-t border-white/5 py-2 text-sm md:hidden">
+                @foreach ($nav as [$route, $label])
+                    <a href="{{ route($route) }}" @class(['text-gold' => request()->routeIs($route), 'text-zinc-300' => ! request()->routeIs($route)])>{{ $label }}</a>
+                @endforeach
             </nav>
         </header>
 
@@ -47,29 +58,29 @@
             {{ $slot }}
         </main>
 
-        <footer class="mt-24 border-t border-white/10 bg-[#050814]">
-            <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <footer class="mt-24 border-t border-white/[0.06] bg-ink-deep">
+            <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
                 {{-- Required disclaimer: plain text, high contrast, on every page. --}}
-                <section aria-labelledby="disclaimer-heading" class="rounded-lg border border-white/15 bg-white/5 p-5">
-                    <h2 id="disclaimer-heading" class="text-xs font-semibold uppercase tracking-widest text-white">Disclaimer</h2>
-                    <p class="mt-2 text-sm leading-relaxed text-white">{{ config('lunar.disclaimer') }}</p>
-                    <p class="mt-2 text-sm leading-relaxed text-zinc-200">{{ config('lunar.satire_notice') }}</p>
+                <section aria-labelledby="disclaimer-heading" class="rounded-2xl border border-white/10 p-6">
+                    <h2 id="disclaimer-heading" class="font-mono text-xs uppercase tracking-[0.25em] text-white">Disclaimer</h2>
+                    <p class="mt-3 text-sm leading-relaxed text-zinc-200">{{ config('lunar.disclaimer') }}</p>
+                    <p class="mt-3 text-sm leading-relaxed text-zinc-300">{{ config('lunar.satire_notice') }}</p>
                 </section>
 
-                <div class="mt-8 flex flex-col gap-6 text-sm text-zinc-300 sm:flex-row sm:justify-between">
-                    <div>
+                <div class="mt-8 flex flex-col gap-6 text-sm sm:flex-row sm:justify-between">
+                    <div class="text-zinc-300">
                         <p class="font-semibold text-white">{{ config('lunar.entity') }}</p>
                         <p>{{ config('lunar.city') }}</p>
-                        <p><a href="mailto:{{ config('lunar.email') }}" class="underline hover:text-white">{{ config('lunar.email') }}</a></p>
+                        <p><a href="mailto:{{ config('lunar.email') }}" class="text-gold underline underline-offset-2 hover:text-gold-light">{{ config('lunar.email') }}</a></p>
                         @if (config('lunar.phone'))
                             <p>{{ config('lunar.phone') }}</p>
                         @endif
                     </div>
-                    <nav aria-label="Footer" class="flex flex-wrap gap-x-6 gap-y-2">
-                        <a href="{{ route('faq') }}" class="hover:text-white">FAQ</a>
+                    <nav aria-label="Footer" class="flex flex-wrap gap-x-6 gap-y-2 text-zinc-300 sm:justify-end">
                         <a href="{{ route('terms') }}" class="hover:text-white">Terms of Service</a>
                         <a href="{{ route('privacy') }}" class="hover:text-white">Privacy</a>
                         <a href="{{ route('disclaimer') }}" class="hover:text-white">Disclaimer</a>
+                        <a href="{{ route('faq') }}" class="hover:text-white">FAQ</a>
                     </nav>
                 </div>
 
@@ -83,7 +94,6 @@
             </flux:toast.group>
         @endpersist
 
-        @stack('scripts')
         @fluxScripts
     </body>
 </html>

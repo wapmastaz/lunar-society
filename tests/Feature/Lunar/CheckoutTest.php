@@ -28,39 +28,88 @@ class CheckoutTest extends TestCase
         Queue::fake([SubscribeToBeehiiv::class]);
     }
 
-    public function test_claim_form_requires_both_consents_and_a_valid_name(): void
+    public function test_each_wizard_step_validates_before_moving_on(): void
     {
         Livewire::test('pages::claim')
-            ->set('plaque_name', 'John 🚀 Doe')
+            ->assertSet('step', 1)
+            ->call('next')
+            ->assertSet('step', 2)
+            ->call('next')
+            ->assertHasErrors(['buyer_name' => 'required', 'email' => 'required'])
+            ->assertSet('step', 2)
+            ->set('buyer_name', 'Jane Patriot')
             ->set('email', 'jane@example.test')
-            ->call('reserve')
-            ->assertHasErrors(['plaque_name' => 'regex', 'consent_spelling' => 'accepted', 'consent_terms' => 'accepted']);
-
-        Livewire::test('pages::claim')
+            ->call('next')
+            ->assertSet('step', 3)
+            ->set('plaque_name', 'John 🚀 Doe')
+            ->call('next')
+            ->assertHasErrors(['plaque_name' => 'regex'])
             ->set('plaque_name', str_repeat('a', 31))
+            ->call('next')
+            ->assertHasErrors(['plaque_name' => 'max'])
+            ->set('plaque_name', 'Jane Patriot')
+            ->call('next')
+            ->assertSet('step', 4)
             ->call('reserve')
-            ->assertHasErrors(['plaque_name' => 'max']);
+            ->assertHasErrors(['consent_spelling' => 'accepted', 'consent_terms' => 'accepted'])
+            ->assertSet('step', 4);
 
         $this->assertSame(0, Order::count());
     }
 
-    public function test_claim_form_reserves_a_slot_with_server_side_price(): void
+    public function test_couple_names_force_the_add_on(): void
+    {
+        Livewire::test('pages::claim')
+            ->set('step', 3)
+            ->set('plaque_name', 'Doe Family')
+            ->assertSet('couple_addon', true)
+            ->set('couple_addon', false)
+            ->assertSet('couple_addon', true)
+            ->assertHasErrors('couple_addon');
+    }
+
+    public function test_wizard_reserves_a_slot_with_server_side_price(): void
     {
         Livewire::test('pages::claim', ['tier' => 'alpha'])
             ->assertSet('tierCode', 'alpha')
-            ->set('plaque_name', 'Mr & Mrs John Doe')
+            ->call('next')
+            ->set('buyer_name', 'Jane Patriot')
             ->set('email', 'jane@example.test')
+            ->call('next')
+            ->set('plaque_name', 'Mr & Mrs John Doe')
+            ->assertSee('#001')
+            ->call('next')
+            ->assertSee('Mr & Mrs John Doe')
             ->set('consent_spelling', true)
             ->set('consent_terms', true)
             ->call('reserve')
             ->assertHasNoErrors()
-            ->assertSee('Your slot is reserved');
+            ->assertSet('step', 5)
+            ->assertSee('Secure payment');
 
         $order = Order::sole();
         $this->assertSame(OrderStatus::Pending, $order->status);
         $this->assertSame(22900, $order->amount_cents);
+        $this->assertSame('Jane Patriot', $order->buyer_name);
         $this->assertNotNull($order->consented_at);
         $this->assertStringContainsString('unaffiliated with Donald J. Trump', $order->consent_text);
+    }
+
+    public function test_going_back_from_payment_releases_the_hold(): void
+    {
+        $component = Livewire::test('pages::claim', ['tier' => 'alpha'])
+            ->set('buyer_name', 'Jane Patriot')
+            ->set('email', 'jane@example.test')
+            ->set('plaque_name', 'Jane Patriot')
+            ->set('consent_spelling', true)
+            ->set('consent_terms', true)
+            ->set('step', 4)
+            ->call('reserve')
+            ->assertSet('step', 5);
+
+        $component->call('back')->assertSet('step', 4)->assertSet('orderUuid', null);
+
+        $this->assertSame(OrderStatus::Expired, Order::sole()->status);
     }
 
     public function test_sold_out_tier_cannot_be_preselected(): void
@@ -91,7 +140,7 @@ class CheckoutTest extends TestCase
         Mail::assertQueued(OrderConfirmation::class, fn ($mail) => $mail->hasTo('jane@example.test') && $mail->order->slot_number === 51);
         Queue::assertPushed(SubscribeToBeehiiv::class);
 
-        $this->get(route('orders.show', $order))->assertSee('#051')->assertSee('Welcome to the Society, Founder!');
+        $this->get(route('orders.show', $order))->assertSee('#051')->assertSee('Welcome, Founder');
 
         Http::assertSent(fn ($request) => str_ends_with($request->url(), '/v2/checkout/orders')
             && $request['purchase_units'][0]['amount']['value'] === '149.00'

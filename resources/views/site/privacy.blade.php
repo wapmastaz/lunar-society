@@ -1,5 +1,5 @@
 {{-- DRAFT: have the client's lawyer review before launch. --}}
-<x-site-page title="Privacy Policy" intro="Last updated {{ now()->format('F j, Y') }}">
+<x-site-page eyebrow="Legal" title="Privacy Policy" intro="Last updated {{ now()->format('F j, Y') }}">
     <h2>What we collect</h2>
     <ul>
         <li>Your email address and the name you submit for the plaque.</li>

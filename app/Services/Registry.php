@@ -32,7 +32,10 @@ class Registry
     /**
      * Create a pending order that holds one slot in the tier.
      *
-     * @param  array{email: string, plaque_name: string, listener_handle?: string|null, show_full_name?: bool, ip_address?: string|null}  $data
+     * The couple/family add-on applies when the buyer asks for it or the
+     * name clearly needs it, whichever the form sent.
+     *
+     * @param  array{email: string, plaque_name: string, buyer_name?: string|null, couple_addon?: bool, listener_handle?: string|null, show_full_name?: bool, ip_address?: string|null}  $data
      *
      * @throws SoldOutException
      */
@@ -45,13 +48,14 @@ class Registry
                 throw new SoldOutException("{$tier->name} slots are sold out.");
             }
 
-            $couple = self::requiresCoupleAddon($data['plaque_name']);
+            $couple = ($data['couple_addon'] ?? false) || self::requiresCoupleAddon($data['plaque_name']);
 
             return Order::create([
                 'tier_id' => $tier->id,
                 'status' => OrderStatus::Pending,
                 'amount_cents' => $this->priceFor($tier, $couple),
                 'email' => $data['email'],
+                'buyer_name' => $data['buyer_name'] ?? null,
                 'plaque_name' => $data['plaque_name'],
                 'couple_addon' => $couple,
                 'listener_handle' => $data['listener_handle'] ?? null,
@@ -124,22 +128,32 @@ class Registry
         return DB::transaction(function () use ($order) {
             $tier = Tier::query()->lockForUpdate()->findOrFail($order->tier_id);
 
-            $taken = Order::query()
-                ->where('tier_id', $tier->id)
-                ->whereNotNull('slot_number')
-                ->pluck('slot_number')
-                ->flip();
+            $n = $this->nextFreeSlot($tier) ?? throw new SoldOutException("No free number left in {$tier->name}.");
+            $order->update(['slot_number' => $n]);
 
-            for ($n = $tier->slot_start; $n <= $tier->slot_end; $n++) {
-                if (! isset($taken[$n])) {
-                    $order->update(['slot_number' => $n]);
-
-                    return $n;
-                }
-            }
-
-            throw new SoldOutException("No free number left in {$tier->name}.");
+            return $n;
         });
+    }
+
+    /**
+     * Lowest unassigned number in the tier, for the engraving preview.
+     * The real number is assigned when payment is captured.
+     */
+    public function nextFreeSlot(Tier $tier): ?int
+    {
+        $taken = Order::query()
+            ->where('tier_id', $tier->id)
+            ->whereNotNull('slot_number')
+            ->pluck('slot_number')
+            ->flip();
+
+        for ($n = $tier->slot_start; $n <= $tier->slot_end; $n++) {
+            if (! isset($taken[$n])) {
+                return $n;
+            }
+        }
+
+        return null;
     }
 
     /**

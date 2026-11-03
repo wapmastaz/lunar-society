@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
  * @property OrderStatus $status
  * @property int $amount_cents
  * @property string $email
+ * @property string|null $buyer_name
  * @property string|null $plaque_name
  * @property bool $couple_addon
  * @property string|null $listener_handle
@@ -115,6 +116,14 @@ class Order extends Model
         return $this->status === OrderStatus::Pending
             && $this->hold_expires_at !== null
             && $this->hold_expires_at->isFuture();
+    }
+
+    /**
+     * First name for greetings: PayPal's payer name, else the form's full name.
+     */
+    public function greetingName(): ?string
+    {
+        return $this->payer_first_name ?: (Str::of((string) $this->buyer_name)->before(' ')->trim()->value() ?: null);
     }
 
     public function itemLabel(): string

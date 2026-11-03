@@ -1,4 +1,4 @@
-<x-site-page title="Disclaimer">
+<x-site-page eyebrow="Legal" title="Disclaimer">
     <p class="!text-white">{{ config('lunar.disclaimer') }}</p>
     <p>{{ config('lunar.satire_notice') }}</p>
 

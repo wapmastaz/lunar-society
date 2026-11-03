@@ -1,5 +1,5 @@
 {{-- DRAFT: have the client's lawyer review before launch. --}}
-<x-site-page title="Terms of Service" intro="Last updated {{ now()->format('F j, Y') }}">
+<x-site-page eyebrow="Legal" title="Terms of Service" intro="Last updated {{ now()->format('F j, Y') }}">
     <h2>1. Who we are</h2>
     <p>This website is operated by {{ config('lunar.entity') }}, {{ config('lunar.city') }} ("we", "us"). Contact: <a href="mailto:{{ config('lunar.email') }}">{{ config('lunar.email') }}</a>.</p>
 

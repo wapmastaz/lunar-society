@@ -49,6 +49,17 @@ class SiteTest extends TestCase
             ->assertSee('#051');
     }
 
+    public function test_founders_search_matches_names_and_numbers(): void
+    {
+        $this->paidOrder('standard', ['plaque_name' => 'John Doe']);
+        $this->paidOrder('standard', ['plaque_name' => 'Jane Roe']);
+
+        $this->get('/founders?search=%23051')->assertSee('1 engraved match');
+        $this->get('/founders?search=jane')->assertSee('1 engraved match');
+        $this->get('/founders?search=nobody')->assertSee('0 engraved matches');
+        $this->get('/founders?list=1')->assertSee('John D.')->assertSee('#052');
+    }
+
     public function test_exports_require_login_and_list_names_in_slot_order(): void
     {
         $this->get(route('admin.exports.engraving'))->assertRedirect(route('login'));

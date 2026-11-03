@@ -57,13 +57,13 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 }; ?>
 
 <div class="mx-auto max-w-xl px-4 py-12 sm:px-6">
-    <h1 class="text-3xl font-extrabold text-white">{{ $product->name }}</h1>
+    <h1 class="font-display text-5xl text-white">{{ $product->name }}</h1>
     <p class="mt-1 text-2xl font-bold text-white">{{ $product->priceLabel() }}</p>
     @if ($product->description)
         <p class="mt-3 text-zinc-300">{{ $product->description }}</p>
     @endif
 
-    <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div class="mt-8 panel p-6">
         @if (! $this->order)
             <form wire:submit="start" class="space-y-6" novalidate>
                 <flux:input wire:model="email" type="email" label="Email address" description="Your receipt and shipping updates are sent here." autocomplete="email" required />
