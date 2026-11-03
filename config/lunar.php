@@ -28,6 +28,7 @@ return [
     */
 
     'capacity' => 1000,
+    'queue_via_scheduler' => (bool) env('QUEUE_VIA_SCHEDULER', false),
     'hold_minutes' => 15,
     'name_lock_hours' => 48,
     'name_max_length' => 30,
