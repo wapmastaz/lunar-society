@@ -1,8 +1,11 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use App\Services\Registry;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Artisan::command('lunar:expire-holds', function (Registry $registry) {
+    $this->info($registry->expireHolds().' holds expired.');
+})->purpose('Release founder slots held by unpaid orders');
+
+Schedule::command('lunar:expire-holds')->everyMinute();

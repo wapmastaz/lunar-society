@@ -15,11 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(TierSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Admin login comes from .env so no credentials live in the repo.
+        if ($email = env('ADMIN_EMAIL')) {
+            User::updateOrCreate(['email' => $email], [
+                'name' => 'Lunar Society Admin',
+                'password' => env('ADMIN_PASSWORD'),
+            ])->forceFill(['email_verified_at' => now()])->save();
+        }
     }
 }

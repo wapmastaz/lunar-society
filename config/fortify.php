@@ -161,7 +161,7 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Registration is off: the only account is the seeded admin.
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([

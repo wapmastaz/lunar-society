@@ -36,6 +36,30 @@
     }
 }
 
+@theme {
+    --color-gold: #e5b84b;
+    --color-gold-light: #f3d68a;
+}
+
+/* Public site: gold accent for Flux buttons and controls. */
+.site {
+    --color-accent: var(--color-gold);
+    --color-accent-content: var(--color-gold);
+    --color-accent-foreground: #070b1a;
+}
+
+.starfield {
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, rgb(255 255 255 / 0.5), transparent),
+        radial-gradient(1px 1px at 70% 10%, rgb(255 255 255 / 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 40% 80%, rgb(255 255 255 / 0.35), transparent),
+        radial-gradient(1px 1px at 85% 60%, rgb(255 255 255 / 0.45), transparent),
+        radial-gradient(1px 1px at 10% 70%, rgb(255 255 255 / 0.3), transparent),
+        radial-gradient(1.5px 1.5px at 55% 45%, rgb(255 255 255 / 0.25), transparent);
+    background-size: 420px 420px;
+    background-attachment: fixed;
+}
+
 @layer base {
 
     *,
