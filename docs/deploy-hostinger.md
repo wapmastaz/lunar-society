@@ -94,11 +94,14 @@ If a sending service (Postmark or Resend) is added later, merge it into this **s
    cd ~/Herd/lunar-society && npm run build && scp -P 65002 -r public/build u840504408@72.60.93.25:domains/lunarsocietyregistry.com/app/public/
    ```
 
-10. **Cron.** In hPanel, go to Advanced, then Cron Jobs. Add a job that runs every minute:
+10. **Cron (working setup).** In hPanel, go to Advanced, then Cron Jobs. Choose **Custom** and **Once Per Minute** (`* * * * *`), with exactly this command:
 
     ```
-    cd /home/u840504408/domains/lunarsocietyregistry.com/app && /opt/alt/php84/usr/bin/php artisan schedule:run >> /dev/null 2>&1
+    /opt/alt/php84/usr/bin/php /home/u840504408/domains/lunarsocietyregistry.com/app/artisan schedule:run
     ```
+
+    - Hostinger runs Custom commands **without a shell**, so `cd ... &&` and `>> file` silently do nothing. Use the single command above. "View Output" shows each run.
+    - Don't use the **PHP** type. It runs `/usr/bin/php`, which is the account default PHP 8.3, and the app stops with a Composer platform error.
 
     This job releases expired slot holds. Because `QUEUE_VIA_SCHEDULER=true`, it also sends the queued confirmation emails, certificates and Beehiiv sign-ups.
 
