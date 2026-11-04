@@ -255,6 +255,25 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
             </div>
             <flux:error name="tierCode" class="mt-3" />
         </fieldset>
+
+        <div class="mt-7 rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">Every founder receives</p>
+            <ul class="mt-4 grid gap-3 text-sm text-zinc-200 sm:grid-cols-2">
+                @foreach (array_filter([
+                    'Your name laser engraved on the Founders Plaque',
+                    'A numbered digital Founder certificate',
+                    'Your name on the public Founders list',
+                    'The Lunar Society newsletter on Beehiiv',
+                    config('lunar.pebble_included') ? 'A commemorative space pebble in a gift box' : null,
+                    $tierCode === 'alpha' ? 'Alpha: a top-row position, #001 to #050, and a gold-foil certificate' : null,
+                ]) as $perk)
+                    <li class="flex gap-3">
+                        <span aria-hidden="true" class="mt-1.5 size-1.5 shrink-0 rotate-45 bg-gold"></span>
+                        <span>{{ $perk }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
     @elseif ($step === 2)
         <h2 class="text-2xl font-semibold text-white">Your details</h2>
         <p class="mt-1 text-zinc-400">Your digital certificate and project updates are sent here.</p>

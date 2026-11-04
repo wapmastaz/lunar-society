@@ -16,11 +16,11 @@
     }
 @endphp
 
-<article @class([
+<article {{ $attributes->class([
     'flex flex-col rounded-2xl border p-6 sm:p-7',
     'border-gold/70 bg-gradient-to-br from-[#2a2110] via-[#17140d] to-panel shadow-[0_0_40px_-12px] shadow-gold/30' => $alpha,
     'border-white/10 bg-panel' => ! $alpha,
-])>
+]) }}>
     <div class="flex items-start justify-between gap-4">
         <div>
             <p @class(['font-mono text-xs uppercase tracking-[0.2em]', 'text-gold' => $alpha, 'text-zinc-400' => ! $alpha])>
@@ -46,7 +46,7 @@
             <span class="text-zinc-400">{{ $alpha ? "First {$share}% of the plaque" : "{$share}% of the plaque" }}</span>
         </div>
         <div class="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
-            <div @class(['h-full rounded-full', 'bg-gold' => $alpha, 'bg-zinc-200' => ! $alpha]) style="width: {{ $remaining / $tier->capacity() * 100 }}%"></div>
+            <div @class(['animate-grow-x h-full rounded-full', 'bg-gold' => $alpha, 'bg-zinc-200' => ! $alpha]) style="width: {{ $remaining / $tier->capacity() * 100 }}%"></div>
         </div>
     </div>
 

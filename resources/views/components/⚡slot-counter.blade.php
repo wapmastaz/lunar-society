@@ -45,7 +45,7 @@ new class extends Component {
                 </p>
             </div>
             <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-valuemin="0" aria-valuemax="{{ $capacity }}" aria-valuenow="{{ $this->claimed }}" aria-label="Founder slots claimed">
-                <div class="h-full rounded-full bg-gold" style="width: {{ max($pct, 0.5) }}%"></div>
+                <div class="animate-grow-x h-full rounded-full bg-gold" style="width: {{ max($pct, 0.5) }}%"></div>
             </div>
             <dl class="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3">
                 @foreach ($this->tiers as $tier)

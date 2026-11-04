@@ -60,8 +60,8 @@ new #[Layout('layouts::site')] #[Title('The Founders')] class extends Component 
 
 <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
     <header class="text-center">
-        <p class="eyebrow">The plaque · Live</p>
-        <h1 class="mt-4 font-display text-6xl text-white sm:text-7xl">The Founders</h1>
+        <p class="eyebrow animate-rise">The plaque · Live</p>
+        <h1 class="animate-rise mt-4 font-display text-6xl text-white sm:text-7xl" style="--reveal-delay: 100ms">The Founders</h1>
         <p class="mx-auto mt-4 max-w-xl text-lg text-zinc-300">Every name below will be laser engraved on the Founders Plaque, in Founder number order.</p>
     </header>
 
@@ -98,7 +98,7 @@ new #[Layout('layouts::site')] #[Title('The Founders')] class extends Component 
             @endif
         </div>
     @else
-        <div x-data="{ picked: null }" class="metal mt-3 rounded-2xl p-4 shadow-2xl shadow-black/60 ring-1 ring-white/20 sm:p-7">
+        <div x-data="{ picked: null }" class="metal metal-shine animate-rise mt-3 rounded-2xl p-4 shadow-2xl shadow-black/60 ring-1 ring-white/20 sm:p-7" style="--reveal-delay: 250ms">
             <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.3em] text-zinc-600 sm:text-xs">
                 <span>Mr SuperTrump's Lunar Society</span>
                 <span x-show="!picked">{{ number_format(count($this->founders)) }} / 1,000 engraved</span>

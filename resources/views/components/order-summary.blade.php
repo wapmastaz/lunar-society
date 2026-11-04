@@ -32,3 +32,16 @@
     <flux:icon.lock-closed variant="micro" class="mt-0.5 size-4 shrink-0 text-zinc-300" />
     <span>Secure checkout with PayPal. We never see or store your card details.</span>
 </p>
+
+{{-- Short disclaimer kept beside checkout; the full text is in the footer. --}}
+<div class="mt-5 rounded-lg border border-white/10 bg-white/[0.03] p-4 text-xs leading-relaxed text-zinc-300">
+    <p class="font-mono text-[11px] uppercase tracking-[0.2em] text-white">Please note</p>
+    <p class="mt-2">
+        This is an independent project of the {{ config('lunar.podcast') }} podcast, not affiliated with, sponsored by, or endorsed by
+        Donald J. Trump, the Trump Organization, NASA, or any government agency.
+    </p>
+    <p class="mt-2">
+        Delivery of the plaque to the Moon is a goal, not a guarantee. If it can't fly, it stays on display in the podcast studio.
+        <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Full disclaimer</a>
+    </p>
+</div>

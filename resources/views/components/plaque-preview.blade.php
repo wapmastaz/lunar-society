@@ -1,6 +1,6 @@
 {{-- Decorative plaque: 1,000 engraving lines in a 25-column grid, Alpha rows in gold. --}}
 <figure {{ $attributes->merge(['class' => 'w-full']) }}>
-    <div aria-hidden="true" class="metal relative rounded-xl p-5 shadow-2xl shadow-black/60 ring-1 ring-white/20 sm:p-6">
+    <div aria-hidden="true" class="metal metal-shine animate-float relative rounded-xl p-5 shadow-2xl shadow-black/60 ring-1 ring-white/20 sm:p-6">
         @foreach (['left-2 top-2', 'right-2 top-2', 'left-2 bottom-2', 'right-2 bottom-2'] as $pos)
             <span class="absolute {{ $pos }} size-2 rounded-full bg-gradient-to-br from-white to-zinc-400 ring-1 ring-zinc-500/40"></span>
         @endforeach
@@ -10,7 +10,10 @@
 
         <div class="mt-4 grid grid-cols-25 gap-x-[3px] gap-y-[3px]">
             @for ($i = 1; $i <= 1000; $i++)
-                <span @class(['h-[3px] rounded-[1px]', 'bg-[#c9a24a]' => $i <= 50, 'bg-zinc-500/45' => $i > 50])></span>
+                <span
+                    @class(['h-[3px] rounded-[1px]', 'bg-[#c9a24a]' => $i <= 50, 'bg-zinc-500/45' => $i > 50, 'animate-twinkle' => $i <= 50])
+                    @if ($i <= 50) style="--twinkle-delay: {{ ($i * 0.37) % 3 }}s" @endif
+                ></span>
             @endfor
         </div>
 

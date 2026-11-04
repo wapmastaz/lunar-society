@@ -78,3 +78,43 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 });
+
+// Scroll reveal: adds .is-visible to [data-reveal] elements as they enter the
+// viewport. The layout's head script hides them first (html.reveal-ready) and
+// unhides everything if this file never runs.
+function initReveal() {
+    window.__revealInit = true;
+
+    const targets = () => document.querySelectorAll('[data-reveal]:not(.is-visible)');
+
+    if (!('IntersectionObserver' in window)) {
+        targets().forEach((el) => el.classList.add('is-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+    );
+
+    const observeAll = () => targets().forEach((el) => observer.observe(el));
+    observeAll();
+
+    // Livewire can add new [data-reveal] elements after an update.
+    document.addEventListener('livewire:init', () => {
+        window.Livewire.hook('morphed', () => requestAnimationFrame(observeAll));
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReveal);
+} else {
+    initReveal();
+}

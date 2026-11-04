@@ -9,9 +9,9 @@
         [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:ps-6 [&_ol]:text-zinc-300
         [&_a]:text-gold [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-gold-light">
         @if ($eyebrow)
-            <p class="eyebrow">{{ $eyebrow }}</p>
+            <p class="eyebrow animate-rise">{{ $eyebrow }}</p>
         @endif
-        <h1 class="mt-4 font-display text-5xl text-white sm:text-6xl">{{ $title }}</h1>
+        <h1 class="animate-rise mt-4 font-display text-5xl text-white sm:text-6xl" style="--reveal-delay: 100ms">{{ $title }}</h1>
         @if ($intro)
             <p class="!text-zinc-400">{{ $intro }}</p>
         @endif

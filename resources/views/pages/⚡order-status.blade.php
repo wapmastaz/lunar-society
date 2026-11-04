@@ -25,8 +25,11 @@ new #[Layout('layouts::site')] #[Title('Your order')] class extends Component {
         <x-claim-shell :step="$order->isPaid() ? 6 : 5">
             @if ($order->isPaid())
                 <div class="py-4 text-center">
-                    <span aria-hidden="true" class="mx-auto grid size-16 place-items-center rounded-full bg-gold text-ink">
-                        <flux:icon.check variant="solid" class="size-8" />
+                    <span aria-hidden="true" class="relative mx-auto grid size-16 place-items-center">
+                        <span class="animate-ring absolute inset-0 rounded-full bg-gold"></span>
+                        <span class="animate-pop relative grid size-16 place-items-center rounded-full bg-gold text-ink">
+                            <flux:icon.check variant="solid" class="size-8" />
+                        </span>
                     </span>
                     <h2 class="mt-6 font-display text-4xl text-white">Welcome, Founder <span class="text-gold">{{ $order->slotLabel() }}</span></h2>
                     <p class="mx-auto mt-4 max-w-md text-zinc-300">

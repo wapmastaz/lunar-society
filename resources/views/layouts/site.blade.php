@@ -18,6 +18,11 @@
         @include('partials.head', ['title' => $title, 'forceDark' => true])
         <meta name="description" content="Put your name on the Founders Plaque of {{ config('lunar.brand') }}. Only 1,000 names. An independent project of the {{ config('lunar.podcast') }} podcast.">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        {{-- Opt in to scroll reveals; unhide everything if app.js never runs. --}}
+        <script>
+            document.documentElement.classList.add('reveal-ready');
+            setTimeout(() => { if (!window.__revealInit) document.documentElement.classList.remove('reveal-ready') }, 2500);
+        </script>
         @if (config('services.paypal.client_id'))
             <meta name="paypal-client-id" content="{{ config('services.paypal.client_id') }}">
         @endif
@@ -103,7 +108,11 @@
                         <ul class="mt-4 divide-y divide-white/[0.07]">
                             @foreach (array_merge([['home', 'Home']], $nav) as [$route, $label])
                                 @php $current = request()->routeIs($route); @endphp
-                                <li>
+                                <li
+                                    class="motion-safe:transition motion-safe:duration-500 motion-safe:ease-out"
+                                    :class="menu ? 'translate-x-0 opacity-100' : 'motion-safe:translate-x-6 motion-safe:opacity-0'"
+                                    style="transition-delay: {{ 120 + $loop->index * 60 }}ms"
+                                >
                                     <a
                                         href="{{ route($route) }}"
                                         @class(['group flex items-center justify-between py-4 font-display text-3xl transition', 'text-gold' => $current, 'text-white hover:text-gold' => ! $current])

@@ -19,35 +19,35 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     <section class="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pt-20">
         <div class="grid items-center gap-12 lg:grid-cols-2">
             <div>
-                <p class="eyebrow">From the {{ config('lunar.podcast') }} podcast</p>
-                <h1 class="mt-5 font-display text-6xl leading-[0.95] text-white sm:text-7xl">
-                    Make Space<br><em class="text-gold">Great</em> Again.
+                <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
+                <h1 class="animate-rise mt-5 font-display text-6xl leading-[0.95] text-white sm:text-7xl" style="--reveal-delay: 120ms">
+                    Make Space<br><em class="text-gold text-gold-sheen pe-1">Great</em> Again.
                 </h1>
-                <p class="mt-6 text-xl text-zinc-100">Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.</p>
-                <p class="mt-4 text-zinc-300">
+                <p class="animate-rise mt-6 text-xl text-zinc-100" style="--reveal-delay: 260ms">Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.</p>
+                <p class="animate-rise mt-4 text-zinc-300" style="--reveal-delay: 380ms">
                     Only 1,000 names will be laser engraved onto our aerospace-grade aluminum plaque. Our mission: get it to the Moon.
                     Join the founders and follow the whole journey on the show.
                 </p>
-                <div class="mt-8">
-                    <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="h-12 px-6 text-base shadow-[0_8px_30px_-8px] shadow-gold/60">
+                <div class="animate-rise mt-8" style="--reveal-delay: 500ms">
+                    <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-6 text-base">
                         Claim your Founder slot
                     </flux:button>
                     <p class="mt-4 max-w-48 text-sm text-zinc-400">Takes about a minute. Secure checkout with PayPal.</p>
                 </div>
             </div>
 
-            <x-plaque-preview />
+            <x-plaque-preview class="animate-rise" style="--reveal-delay: 300ms" />
         </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-4 sm:px-6">
+    <section class="mx-auto max-w-6xl px-4 sm:px-6" data-reveal>
         <livewire:slot-counter variant="stat" />
     </section>
 
     {{-- The society --}}
     <section aria-labelledby="society-heading" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
         <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-            <div>
+            <div data-reveal>
                 <p class="eyebrow">The Lunar Society</p>
                 <h2 id="society-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white">A society for the Moon base of the future</h2>
                 <p class="mt-5 text-zinc-400">
@@ -55,7 +55,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
                     thinkers who met by the light of the full moon.
                 </p>
             </div>
-            <div class="space-y-5 text-lg leading-relaxed text-zinc-200">
+            <div class="space-y-5 text-lg leading-relaxed text-zinc-200" data-reveal style="--reveal-delay: 150ms">
                 <p>
                     The Lunar Society Registry is the home of the Society for the Future Establishment of the Trumpian Lunar International
                     Moon Base, a base we hope to see built in the years ahead. All visitors are welcome.
@@ -69,13 +69,28 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
                     Secure your place in the registry today and you're not just watching history unfold, you're etching your name into it.
                     It also makes one of the most novel gifts of the holiday season.
                 </p>
+
+                <a href="{{ route('about') }}" class="hover-lift group !mt-8 flex items-center gap-4 rounded-2xl border border-white/10 bg-panel p-4 text-base">
+                    @if (config('lunar.host_portrait'))
+                        <img src="{{ asset(config('lunar.host_portrait')) }}" alt="" class="size-16 shrink-0 rounded-full object-cover">
+                    @else
+                        <span class="hatch grid size-16 shrink-0 place-items-center rounded-full border border-white/10"><x-moon-mark class="size-8" /></span>
+                    @endif
+                    <span class="min-w-0 flex-1">
+                        <span class="block font-mono text-[11px] uppercase tracking-[0.2em] text-gold">Executive Director</span>
+                        <span class="mt-1 block font-display text-2xl text-white">MJ Schultz</span>
+                        <span class="block text-sm text-zinc-400">Host of {{ config('lunar.podcast') }}. Author, actor, writer and philanthropist.</span>
+                    </span>
+                    <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-zinc-500 transition group-hover:translate-x-1 group-hover:text-gold" />
+                    <span class="sr-only">Read his profile</span>
+                </a>
             </div>
         </div>
     </section>
 
     {{-- The plaque pledge --}}
     <section aria-labelledby="pledge-heading" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
-        <div class="text-center">
+        <div class="text-center" data-reveal>
             <p class="eyebrow">The Founder's Legacy</p>
             <h2 id="pledge-heading" class="mt-4 font-display text-5xl text-white">The Astronaut Plaque Pledge</h2>
             <p class="mx-auto mt-4 max-w-xl text-zinc-300">
@@ -88,32 +103,37 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
                 ['Your name on the plaque', 'For '.$this->tiers->firstWhere('code', 'standard')?->priceLabel().', or '.$this->tiers->firstWhere('code', 'alpha')?->priceLabel().' for an Alpha slot, your name is permanently engraved on the official registry plaque, in Founder number order.'],
                 ['The destination we aim for', "Our goal is the resource-rich lunar South Pole, within the boundaries of a future international Moon base. No such base exists yet, and no flight can be guaranteed."],
                 ['The countdown to '.config('lunar.target_date_short'), 'MJ Schultz has set '.config('lunar.target_date').' as the society\'s target for installing the plaque. Permanent lunar bases are planned for the 2030s, so until one is ready, MJ Schultz keeps the plaque safe in the podcast studio.'],
-            ] as [$heading, $body])
-                <article class="panel p-6 sm:p-7">
-                    <h3 class="font-display text-2xl text-white">{{ $heading }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-zinc-300">{{ $body }}</p>
-                </article>
+            ] as $i => [$heading, $body])
+                <div class="flex" data-reveal style="--reveal-delay: {{ $i * 140 }}ms">
+                    <article class="panel hover-lift w-full p-6 sm:p-7">
+                        <h3 class="font-display text-2xl text-white">{{ $heading }}</h3>
+                        <p class="mt-3 text-sm leading-relaxed text-zinc-300">{{ $body }}</p>
+                    </article>
+                </div>
             @endforeach
         </div>
     </section>
 
     {{-- Tiers --}}
     <section id="tiers" aria-labelledby="tiers-heading" class="mx-auto mt-24 max-w-6xl scroll-mt-6 px-4 sm:px-6">
-        <div class="text-center">
+        <div class="text-center" data-reveal>
             <p class="eyebrow">Two tiers · One plaque</p>
             <h2 id="tiers-heading" class="mt-4 font-display text-5xl text-white">Choose your place on the plaque</h2>
             <p class="mx-auto mt-4 max-w-md text-zinc-300">Founder numbers are assigned in order. Every name is laser engraved, one person per slot.</p>
         </div>
         <div class="mt-12 grid gap-6 md:grid-cols-2">
             @foreach ($this->tiers as $tier)
-                <x-tier-card :tier="$tier" />
+                {{-- Reveal on the wrapper, lift on the card, so the two transforms don't fight. --}}
+                <div class="flex" data-reveal style="--reveal-delay: {{ $loop->index * 160 }}ms">
+                    <x-tier-card :tier="$tier" class="hover-lift w-full" />
+                </div>
             @endforeach
         </div>
     </section>
 
     {{-- How it works --}}
     <section aria-label="How it works" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
-        <ol class="panel grid divide-y divide-white/10 md:grid-cols-3 md:divide-x md:divide-y-0">
+        <ol class="panel grid divide-y divide-white/10 md:grid-cols-3 md:divide-x md:divide-y-0" data-reveal>
             @foreach ([
                 ['Claim', 'Pick a tier and enter your name', 'Exactly as it should be engraved, max '.config('lunar.name_max_length').' characters.'],
                 ['Engrave', '1,000 names, one plaque', 'Laser engraved in Founder number order on aerospace-grade aluminum.'],
@@ -140,7 +160,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
 
     {{-- Newsletter --}}
     <section aria-labelledby="newsletter-heading" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
-        <div class="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12 lg:grid-cols-2">
+        <div class="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12 lg:grid-cols-2" data-reveal>
             <div>
                 <p class="eyebrow">Stay connected</p>
                 <h2 id="newsletter-heading" class="mt-4 font-display text-4xl text-white sm:text-5xl">The Lunar Society newsletter</h2>
@@ -165,7 +185,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     </section>
 
     {{-- Closer --}}
-    <section class="mx-auto mt-24 max-w-3xl px-4 text-center sm:px-6">
+    <section class="mx-auto mt-24 max-w-3xl px-4 text-center sm:px-6" data-reveal>
         <p class="eyebrow">Secure your founding spot</p>
         <h2 class="mt-4 font-display text-5xl text-white">Claim 1 of the 1,000 founding spots before they're gone</h2>
         <p class="mx-auto mt-5 max-w-xl text-zinc-300">
@@ -173,7 +193,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
             newsletter, and tune in to the semi-monthly {{ config('lunar.podcast') }} podcast for roadmap updates.
         </p>
         <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="h-12 px-6 text-base">Join the registry</flux:button>
+            <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-6 text-base">Join the registry</flux:button>
             <flux:button href="#tiers" variant="outline" class="h-12 px-6 text-base">See what founders receive</flux:button>
         </div>
     </section>

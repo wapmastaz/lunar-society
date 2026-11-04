@@ -106,6 +106,16 @@ class SiteTest extends TestCase
             ->assertSee('That is a goal, not a guarantee');
     }
 
+    public function test_checkout_shows_perks_and_a_disclaimer_beside_the_summary(): void
+    {
+        $this->get('/claim')
+            ->assertSee('Every founder receives')
+            ->assertSee('Please note')
+            ->assertSee('Delivery of the plaque to the Moon is a goal, not a guarantee.');
+
+        $this->get('/')->assertSee('Executive Director')->assertSee('data-reveal', false);
+    }
+
     public function test_mobile_menu_is_an_accessible_drawer(): void
     {
         $this->get('/faq')

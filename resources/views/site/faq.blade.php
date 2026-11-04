@@ -34,10 +34,10 @@
 <x-site-page title="Frequently Asked Questions" eyebrow="FAQ">
     <div class="mt-10 border-t border-white/10">
         @foreach ($faqs as [$question, $answer])
-            <details class="group border-b border-white/10 [&_p]:mt-0" name="faq" @if ($loop->first) open @endif>
+            <details class="group border-b border-white/10 [&_p]:mt-0" name="faq" @if ($loop->first) open @endif data-reveal style="--reveal-delay: {{ min($loop->index, 6) * 70 }}ms">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-medium text-white [&::-webkit-details-marker]:hidden">
                     {{ $question }}
-                    <span aria-hidden="true" class="grid size-8 shrink-0 place-items-center rounded-full border border-white/20 text-gold transition group-open:rotate-45">
+                    <span aria-hidden="true" class="grid size-8 shrink-0 place-items-center rounded-full border border-white/20 text-gold transition duration-300 group-open:rotate-45 group-open:border-gold/60 group-hover:border-gold/60">
                         <flux:icon.plus variant="micro" class="size-4" />
                     </span>
                 </summary>

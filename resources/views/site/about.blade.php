@@ -1,6 +1,6 @@
 <x-layouts::site title="About M. J. Schultz">
     <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
-        <div class="grid gap-10 md:grid-cols-[22rem_1fr] md:gap-14">
+        <div class="grid gap-10 md:grid-cols-[22rem_1fr] md:gap-14" data-reveal>
             @if (config('lunar.host_portrait'))
                 <img src="{{ asset(config('lunar.host_portrait')) }}" alt="M. J. Schultz, host of {{ config('lunar.podcast') }}" class="aspect-[4/5] w-full rounded-2xl border border-white/10 object-cover">
             @else
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <section aria-labelledby="society-heading" class="mt-16 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12">
+        <section data-reveal aria-labelledby="society-heading" class="mt-16 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12">
             <h2 id="society-heading" class="font-display text-4xl text-white sm:text-5xl">About the Lunar Society</h2>
             <p class="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">
                 {{ config('lunar.brand') }} grew out of the show's episodes on America's return to the Moon. It's a crowd-powered,
