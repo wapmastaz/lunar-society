@@ -90,6 +90,22 @@ class SiteTest extends TestCase
             ->assertSee("getItem('flux.appearance')", false);
     }
 
+    public function test_society_intro_frames_the_moon_as_a_goal(): void
+    {
+        $this->get('/')
+            ->assertSee('1,000 foundational MAGA community Trump supporters')
+            ->assertSee('The Astronaut Plaque Pledge')
+            ->assertSee('January 18, 2029')
+            ->assertSee('no flight can be guaranteed')
+            ->assertSee('$149')
+            ->assertDontSee('definitive timeline');
+
+        $this->get('/faq')
+            ->assertSee('Who leads the society?')
+            ->assertSee('Why January 18, 2029?')
+            ->assertSee('That is a goal, not a guarantee');
+    }
+
     public function test_mobile_menu_is_an_accessible_drawer(): void
     {
         $this->get('/faq')

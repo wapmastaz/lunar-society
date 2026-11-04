@@ -29,10 +29,10 @@
 
         <div x-data="{ menu: false }" @keydown.escape.window="menu = false">
             <header class="border-b border-white/[0.06] bg-ink/80 backdrop-blur">
-                <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
-                    <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 font-semibold">
-                        <x-moon-mark class="size-8 sm:size-9" />
-                        <span class="truncate leading-tight sm:text-lg"><span class="max-sm:hidden">Mr SuperTrump's </span>Lunar Society</span>
+                <div class="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2 sm:gap-4 sm:px-6 sm:py-4">
+                    <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5 font-semibold sm:gap-3">
+                        <x-moon-mark class="size-7 sm:size-9" />
+                        <span class="truncate text-[15px] leading-tight sm:text-lg"><span class="max-sm:hidden">Mr SuperTrump's </span>Lunar Society</span>
                     </a>
 
                     <nav aria-label="Main" class="ms-auto hidden items-center gap-8 md:flex">
@@ -49,7 +49,7 @@
 
                     <button
                         type="button"
-                        class="-me-1 grid size-10 place-items-center rounded-lg text-zinc-200 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-gold md:hidden"
+                        class="-me-2 grid size-9 place-items-center rounded-lg text-zinc-200 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-gold md:hidden"
                         @click="menu = true"
                         :aria-expanded="menu"
                         aria-controls="site-menu"

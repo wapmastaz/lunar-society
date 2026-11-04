@@ -24,10 +24,14 @@ new class extends Component {
 <div wire:poll.30s.visible>
     @php($capacity = (int) config('lunar.capacity'))
     @if ($variant === 'banner')
-        <div class="bg-gold px-4 py-2 text-center text-sm text-ink">
-            <strong>ATTENTION PATRIOTS:</strong>
-            Only {{ number_format($capacity) }} Founder slots.
-            <span class="whitespace-nowrap">{{ number_format($this->claimed) }} claimed, {{ number_format($capacity - $this->claimed) }} left.</span>
+        <div class="bg-gold px-4 py-1.5 text-center text-xs text-ink sm:py-2 sm:text-sm">
+            {{-- One short line on phones, the full notice from tablet up. --}}
+            <span class="sm:hidden"><strong>Only 1,000 slots</strong> · {{ number_format($capacity - $this->claimed) }} left</span>
+            <span class="max-sm:hidden">
+                <strong>ATTENTION PATRIOTS:</strong>
+                Only {{ number_format($capacity) }} Founder slots.
+                <span class="whitespace-nowrap">{{ number_format($this->claimed) }} claimed, {{ number_format($capacity - $this->claimed) }} left.</span>
+            </span>
         </div>
     @else
         @php($pct = $capacity ? $this->claimed / $capacity * 100 : 0)

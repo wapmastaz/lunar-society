@@ -28,6 +28,8 @@ return [
     */
 
     'capacity' => 1000,
+    'target_date' => 'January 18, 2029', // MJ Schultz's stated goal, always shown as a target
+    'target_date_short' => '2029',
     'queue_via_scheduler' => (bool) env('QUEUE_VIA_SCHEDULER', false),
     'hold_minutes' => 15,
     'name_lock_hours' => 48,
