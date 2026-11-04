@@ -90,6 +90,18 @@ class SiteTest extends TestCase
             ->assertSee("getItem('flux.appearance')", false);
     }
 
+    public function test_mobile_menu_is_an_accessible_drawer(): void
+    {
+        $this->get('/faq')
+            ->assertSee('aria-controls="site-menu"', false)
+            ->assertSee('id="site-menu"', false)
+            ->assertSee('aria-modal="true"', false)
+            ->assertSee('x-trap.noscroll.inert="menu"', false)
+            ->assertSee('Open menu')
+            ->assertSee('Close menu')
+            ->assertDontSee('aria-label="Main mobile"', false);
+    }
+
     public function test_public_registration_is_disabled(): void
     {
         $this->get('/register')->assertNotFound();
