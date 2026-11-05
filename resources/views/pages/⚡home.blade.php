@@ -22,44 +22,38 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
 }; ?>
 
 <div>
-    {{-- Hero. The backdrop is a pre-blurred copy of the artwork, so the plaque's
-         lettering reads as soft light instead of competing with the headline. --}}
+    {{-- Hero: centered copy over a lightly blurred copy of the artwork. The blur and the
+         dark vignette behind the text keep the plaque's lettering from competing with the headline. --}}
     <section class="relative isolate overflow-hidden">
         <div aria-hidden="true" class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/hero-backdrop.webp') }}" alt="" class="hero-drift size-full scale-110 object-cover opacity-70">
-            <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/40"></div>
+            <img src="{{ asset('images/hero-backdrop.webp') }}" alt="" fetchpriority="high" class="hero-drift size-full object-cover">
+            <div class="absolute inset-0 bg-ink/55"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(7,10,18,0.75)_0%,rgba(7,10,18,0.35)_55%,transparent_80%)]"></div>
             <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"></div>
             <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/70 to-transparent"></div>
         </div>
 
-        <div class="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 sm:pt-24">
-            <div class="grid items-center gap-12 lg:grid-cols-2">
-                <div>
-                    <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
-                    <h1 class="animate-rise mt-5 font-display text-6xl leading-[0.95] text-white drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-7xl" style="--reveal-delay: 120ms">
-                        Make Space<br><em class="text-gold text-gold-sheen pe-1">Great</em> Again.
-                    </h1>
-                    <p class="animate-rise mt-6 text-xl text-zinc-100" style="--reveal-delay: 260ms">Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.</p>
-                    <p class="animate-rise mt-4 text-zinc-200" style="--reveal-delay: 380ms">
-                        Only 1,000 names will be laser engraved onto our aerospace-grade aluminum plaque. Our mission: get it to the Moon.
-                        Join the founders and follow the whole journey on the show.
-                    </p>
-                    <div class="animate-rise mt-8" style="--reveal-delay: 500ms">
-                        <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-6 text-base">
-                            Claim your Founder slot
-                        </flux:button>
-                        <p class="mt-4 max-w-48 text-sm text-zinc-300">Takes about a minute. Secure checkout with PayPal.</p>
-                    </div>
-                </div>
-
-                <figure class="animate-rise lg:order-first" style="--reveal-delay: 300ms">
-                    <img src="{{ asset('images/hero.webp') }}" alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
-                        width="1600" height="900" fetchpriority="high"
-                        class="w-full rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/20">
-                    <figcaption class="mt-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-400">Artist's concept · not the final plaque design</figcaption>
-                </figure>
+        <div class="mx-auto flex min-h-[78svh] max-w-3xl flex-col items-center justify-center px-4 pb-24 pt-20 text-center sm:px-6 sm:pt-28">
+            <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
+            <h1 class="animate-rise mt-5 font-display text-6xl leading-[0.95] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)] sm:text-8xl" style="--reveal-delay: 120ms">
+                Make Space <em class="text-gold text-gold-sheen pe-1">Great</em> Again.
+            </h1>
+            <p class="animate-rise mt-6 text-xl text-zinc-100 drop-shadow-[0_1px_12px_rgba(0,0,0,0.8)] sm:text-2xl" style="--reveal-delay: 260ms">
+                Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.
+            </p>
+            <p class="animate-rise mt-4 max-w-2xl text-zinc-200 drop-shadow-[0_1px_12px_rgba(0,0,0,0.8)]" style="--reveal-delay: 380ms">
+                Only 1,000 names will be laser engraved onto our aerospace-grade aluminum plaque. Our mission: get it to the Moon.
+                Join the founders and follow the whole journey on the show.
+            </p>
+            <div class="animate-rise mt-9 flex flex-col items-center" style="--reveal-delay: 500ms">
+                <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-7 text-base">
+                    Claim your Founder slot
+                </flux:button>
+                <p class="mt-4 text-sm text-zinc-300">Takes about a minute. Secure checkout with PayPal.</p>
             </div>
         </div>
+
+        <p class="absolute bottom-4 right-4 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400/80 sm:right-6">Background: artist's concept</p>
     </section>
 
     <section class="mx-auto max-w-7xl px-4 sm:px-6" data-reveal>
