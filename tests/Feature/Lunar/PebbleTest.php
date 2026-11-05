@@ -74,7 +74,9 @@ class PebbleTest extends TestCase
             ->assertSee('Register Today')
             ->assertSee('Prestigious Membership')
             ->assertSee('images/hero.webp', false)
-            ->assertSee('images/hero-mobile.webp', false)
+            ->assertDontSee('images/hero-mobile.webp', false)
+            ->assertSee('object-[20%_50%]', false)
+            ->assertSee('id="hero-copy"', false)
             ->assertSee("Artist's concept", false);
     }
 }

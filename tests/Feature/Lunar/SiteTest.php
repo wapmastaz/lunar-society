@@ -132,6 +132,14 @@ class SiteTest extends TestCase
         $this->get('/claim')->assertSee('48 left');
     }
 
+    public function test_header_floats_over_the_hero_only_on_the_home_page(): void
+    {
+        $this->get('/')->assertSee('absolute inset-x-0 top-0 bg-gradient-to-b from-ink/85', false);
+        $this->get('/faq')
+            ->assertDontSee('absolute inset-x-0 top-0 bg-gradient-to-b from-ink/85', false)
+            ->assertSee('border-b border-white/[0.06] bg-ink/80 backdrop-blur', false);
+    }
+
     public function test_mobile_menu_is_an_accessible_drawer(): void
     {
         $this->get('/faq')

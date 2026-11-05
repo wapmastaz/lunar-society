@@ -1,4 +1,4 @@
-@props(['title' => null])
+@props(['title' => null, 'overlayHeader' => false])
 
 @php
     $nav = [
@@ -32,8 +32,12 @@
 
         <livewire:slot-counter variant="banner" />
 
-        <div x-data="{ menu: false }" @keydown.escape.window="menu = false">
-            <header class="border-b border-white/[0.06] bg-ink/80 backdrop-blur">
+        {{-- overlayHeader: the header floats transparently over a full-bleed hero (home page). --}}
+        <div x-data="{ menu: false }" @keydown.escape.window="menu = false" @class(['relative z-30' => $overlayHeader])>
+            <header @class([
+                'absolute inset-x-0 top-0 bg-gradient-to-b from-ink/85 via-ink/40 to-transparent' => $overlayHeader,
+                'border-b border-white/[0.06] bg-ink/80 backdrop-blur' => ! $overlayHeader,
+            ])>
                 <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2 sm:gap-4 sm:px-6 sm:py-4">
                     <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5 font-semibold sm:gap-3">
                         <x-moon-mark class="size-7 sm:size-9" />

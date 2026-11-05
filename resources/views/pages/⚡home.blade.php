@@ -7,7 +7,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends Component {
+new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of History')] class extends Component {
     #[Computed]
     public function tiers()
     {
@@ -33,18 +33,30 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
         </div>
         <div aria-hidden="true" class="absolute -left-40 top-10 -z-10 size-[36rem] rounded-full bg-gold/10 blur-3xl"></div>
 
-        <div class="mx-auto flex max-w-7xl flex-col px-4 pb-20 pt-6 sm:px-6 sm:pt-10 lg:min-h-[80svh] lg:justify-center lg:pb-28 lg:pt-16">
-            {{-- Phones and tablets: the whole artwork, sharp. Desktop swaps in a 1px placeholder so it isn't downloaded twice. --}}
-            <figure class="animate-rise mb-8 w-full lg:hidden">
-                <picture>
-                    <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-                    <img src="{{ asset('images/hero-mobile.webp') }}" alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
-                        width="1200" height="675" fetchpriority="high"
-                        class="w-full rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/15">
-                </picture>
-                <figcaption class="mt-2 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400">Artist's concept</figcaption>
-            </figure>
+        {{-- Phones and tablets: the artwork fills the first screen as a background, like Daniel's
+             mobile mock. Drop his tall artwork in as public/images/hero-portrait.webp and it is used
+             automatically; until then the wide image is framed on the plaque. --}}
+        @php $portrait = file_exists(public_path('images/hero-portrait.webp')); @endphp
+        <div class="relative isolate flex h-[calc(100svh-1.75rem)] min-h-[34rem] flex-col items-center justify-end overflow-hidden px-4 pb-10 lg:hidden">
+            <picture class="absolute inset-0 -z-10">
+                <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+                <img src="{{ asset($portrait ? 'images/hero-portrait.webp' : 'images/hero.webp') }}"
+                    alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
+                    fetchpriority="high"
+                    @class(['size-full object-cover', 'object-bottom' => $portrait, 'object-[20%_50%]' => ! $portrait])>
+            </picture>
+            <div aria-hidden="true" class="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-gradient-to-b from-transparent via-ink/60 to-ink"></div>
 
+            <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="animate-glow animate-rise h-14 rounded-full px-8 text-lg font-semibold" style="--reveal-delay: 300ms">
+                Register Today
+            </flux:button>
+            <p class="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-300/80">Artist's concept</p>
+            <a href="#hero-copy" class="mt-4 text-gold/80 motion-safe:animate-bounce" aria-label="Scroll to learn more">
+                <flux:icon.chevron-down class="size-6" />
+            </a>
+        </div>
+
+        <div id="hero-copy" class="mx-auto flex max-w-7xl scroll-mt-4 flex-col px-4 pb-20 pt-12 sm:px-6 lg:min-h-[80svh] lg:justify-center lg:pb-28 lg:pt-28">
             <div class="flex max-w-xl flex-col items-center text-center max-lg:mx-auto lg:items-start lg:text-left">
                 <div aria-hidden="true" class="animate-rise flex w-full max-w-md items-center gap-3 text-gold">
                     <span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold lg:from-gold/80"></span>
