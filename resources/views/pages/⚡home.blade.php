@@ -22,48 +22,80 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
 }; ?>
 
 <div>
-    {{-- Hero: centered copy over a lightly blurred copy of the artwork. The blur and the
-         dark vignette behind the text keep the plaque's lettering from competing with the headline. --}}
+    {{-- Hero, after Daniel's mock: copy on the left, the sharp plaque artwork on the right.
+         Phones show the whole artwork above the copy instead. --}}
     <section class="relative isolate overflow-hidden">
-        <div aria-hidden="true" class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/hero-backdrop.webp') }}" alt="" fetchpriority="high" class="hero-drift size-full object-cover">
-            {{-- Darker on phones and tablets, where the sharp artwork is shown on its own. --}}
-            <div class="absolute inset-0 bg-ink/80 lg:bg-ink/55"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(7,10,18,0.75)_0%,rgba(7,10,18,0.35)_55%,transparent_80%)]"></div>
+        {{-- Desktop artwork. A background on a hidden element isn't downloaded on phones. --}}
+        <div aria-hidden="true" class="absolute inset-y-0 right-0 -z-10 hidden w-[70%] lg:block">
+            <div class="hero-drift size-full bg-cover bg-center [mask-image:linear-gradient(to_right,transparent,black_28%)]" style="background-image: url('{{ asset('images/hero.webp') }}')"></div>
             <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"></div>
-            <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/70 to-transparent"></div>
+            <div class="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ink/60 to-transparent"></div>
         </div>
+        <div aria-hidden="true" class="absolute -left-40 top-10 -z-10 size-[36rem] rounded-full bg-gold/10 blur-3xl"></div>
 
-        <div class="mx-auto flex max-w-3xl flex-col items-center justify-center px-4 pb-16 pt-6 text-center sm:px-6 sm:pt-10 lg:min-h-[78svh] lg:pb-24 lg:pt-28">
-            {{-- A narrow screen crops the wide artwork to an unreadable slice, so below lg
-                 the whole image is shown sharp instead of as the backdrop. --}}
+        <div class="mx-auto flex max-w-7xl flex-col px-4 pb-20 pt-6 sm:px-6 sm:pt-10 lg:min-h-[80svh] lg:justify-center lg:pb-28 lg:pt-16">
+            {{-- Phones and tablets: the whole artwork, sharp. Desktop swaps in a 1px placeholder so it isn't downloaded twice. --}}
             <figure class="animate-rise mb-8 w-full lg:hidden">
-                <img src="{{ asset('images/hero-mobile.webp') }}" alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
-                    width="1200" height="675" fetchpriority="high"
-                    class="w-full rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/15">
-                <figcaption class="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400">Artist's concept</figcaption>
+                <picture>
+                    <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+                    <img src="{{ asset('images/hero-mobile.webp') }}" alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
+                        width="1200" height="675" fetchpriority="high"
+                        class="w-full rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/15">
+                </picture>
+                <figcaption class="mt-2 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400">Artist's concept</figcaption>
             </figure>
 
-            <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
-            <h1 class="animate-rise mt-5 font-display text-5xl leading-[0.95] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)] sm:text-7xl lg:text-8xl" style="--reveal-delay: 120ms">
-                Make Space <em class="text-gold text-gold-sheen pe-1">Great</em> Again.
-            </h1>
-            <p class="animate-rise mt-6 text-xl text-zinc-100 drop-shadow-[0_1px_12px_rgba(0,0,0,0.8)] sm:text-2xl" style="--reveal-delay: 260ms">
-                Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.
-            </p>
-            <p class="animate-rise mt-4 max-w-2xl text-zinc-200 drop-shadow-[0_1px_12px_rgba(0,0,0,0.8)]" style="--reveal-delay: 380ms">
-                Only 1,000 names will be laser engraved onto our aerospace-grade aluminum plaque. Our mission: get it to the Moon.
-                Join the founders and follow the whole journey on the show.
-            </p>
-            <div class="animate-rise mt-9 flex flex-col items-center" style="--reveal-delay: 500ms">
-                <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-7 text-base">
-                    Claim your Founder slot
-                </flux:button>
-                <p class="mt-4 text-sm text-zinc-300">Takes about a minute. Secure checkout with PayPal.</p>
+            <div class="flex max-w-xl flex-col items-center text-center max-lg:mx-auto lg:items-start lg:text-left">
+                <div aria-hidden="true" class="animate-rise flex w-full max-w-md items-center gap-3 text-gold">
+                    <span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold lg:from-gold/80"></span>
+                    <flux:icon.star variant="solid" class="size-5" />
+                    <span class="h-px flex-1 bg-gradient-to-l from-transparent to-gold"></span>
+                </div>
+
+                <h1 class="animate-rise mt-6 font-display leading-[0.98] drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]" style="--reveal-delay: 120ms">
+                    <span class="block text-5xl text-white sm:text-6xl lg:text-7xl">Be Part of History</span>
+                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Lunar Society</span>
+                </h1>
+
+                <p class="animate-rise mt-5 font-display text-2xl italic leading-snug text-zinc-100 sm:text-3xl" style="--reveal-delay: 260ms">
+                    Support the journey to place a Founders Plaque on the Moon.
+                </p>
+
+                <div class="animate-rise mt-9" style="--reveal-delay: 380ms">
+                    <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="animate-glow h-14 rounded-full px-8 text-lg font-semibold">
+                        Register Today
+                    </flux:button>
+                </div>
+
+                <ul class="animate-rise mt-10 grid w-full max-w-md grid-cols-3 divide-x divide-gold/30 text-sm text-zinc-100" style="--reveal-delay: 500ms">
+                    @foreach ([
+                        ['rocket-launch', 'A Lunar Vision'],
+                        ['sparkles', 'Exclusive Collectibles'],
+                        ['user-group', 'Prestigious Membership'],
+                    ] as [$icon, $label])
+                        <li class="flex flex-col items-center gap-2 px-2 text-center">
+                            <flux:icon :icon="$icon" variant="solid" class="size-7 text-gold" />
+                            <span class="leading-tight">{{ $label }}</span>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         </div>
 
-        <p class="absolute bottom-4 right-4 font-mono max-lg:hidden text-[10px] uppercase tracking-[0.2em] text-zinc-400/80 sm:right-6">Background: artist's concept</p>
+        <p class="absolute bottom-14 right-6 hidden font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-300/80 lg:block">Artist's concept</p>
+
+        {{-- Gold sweep along the bottom edge. --}}
+        <svg aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" class="absolute inset-x-0 bottom-0 h-10 w-full sm:h-16">
+            <defs>
+                <linearGradient id="hero-sweep" x1="0" x2="1">
+                    <stop offset="0" stop-color="#e8b84a" stop-opacity="0.15" />
+                    <stop offset="0.45" stop-color="#f3d68a" />
+                    <stop offset="1" stop-color="#e8b84a" stop-opacity="0.4" />
+                </linearGradient>
+            </defs>
+            <path d="M0 64 C 360 20, 900 10, 1440 46 L1440 80 L0 80 Z" fill="var(--color-ink)" />
+            <path d="M0 64 C 360 20, 900 10, 1440 46" fill="none" stroke="url(#hero-sweep)" stroke-width="3" />
+        </svg>
     </section>
 
     <section class="mx-auto max-w-7xl px-4 sm:px-6" data-reveal>

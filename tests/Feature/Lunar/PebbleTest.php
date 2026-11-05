@@ -66,12 +66,15 @@ class PebbleTest extends TestCase
         $this->assertSame(4900, $order->amount_cents);
     }
 
-    public function test_hero_is_centered_over_the_backdrop_and_labels_the_artwork(): void
+    public function test_hero_matches_the_mock_and_labels_the_artwork(): void
     {
         $this->get('/')
-            ->assertSee('images/hero-backdrop.webp', false)
-            ->assertDontSee('images/hero.webp', false)
+            ->assertSee('Be Part of History')
+            ->assertSee('Join the Lunar Society')
+            ->assertSee('Register Today')
+            ->assertSee('Prestigious Membership')
+            ->assertSee('images/hero.webp', false)
             ->assertSee('images/hero-mobile.webp', false)
-            ->assertSee("Background: artist's concept", false);
+            ->assertSee("Artist's concept", false);
     }
 }
