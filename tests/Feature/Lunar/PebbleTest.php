@@ -71,6 +71,7 @@ class PebbleTest extends TestCase
         $this->get('/')
             ->assertSee('images/hero-backdrop.webp', false)
             ->assertDontSee('images/hero.webp', false)
+            ->assertSee('images/hero-mobile.webp', false)
             ->assertSee("Background: artist's concept", false);
     }
 }

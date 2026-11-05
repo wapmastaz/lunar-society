@@ -27,15 +27,25 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     <section class="relative isolate overflow-hidden">
         <div aria-hidden="true" class="absolute inset-0 -z-10">
             <img src="{{ asset('images/hero-backdrop.webp') }}" alt="" fetchpriority="high" class="hero-drift size-full object-cover">
-            <div class="absolute inset-0 bg-ink/55"></div>
+            {{-- Darker on phones and tablets, where the sharp artwork is shown on its own. --}}
+            <div class="absolute inset-0 bg-ink/80 lg:bg-ink/55"></div>
             <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(7,10,18,0.75)_0%,rgba(7,10,18,0.35)_55%,transparent_80%)]"></div>
             <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"></div>
             <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/70 to-transparent"></div>
         </div>
 
-        <div class="mx-auto flex min-h-[78svh] max-w-3xl flex-col items-center justify-center px-4 pb-24 pt-20 text-center sm:px-6 sm:pt-28">
+        <div class="mx-auto flex max-w-3xl flex-col items-center justify-center px-4 pb-16 pt-6 text-center sm:px-6 sm:pt-10 lg:min-h-[78svh] lg:pb-24 lg:pt-28">
+            {{-- A narrow screen crops the wide artwork to an unreadable slice, so below lg
+                 the whole image is shown sharp instead of as the backdrop. --}}
+            <figure class="animate-rise mb-8 w-full lg:hidden">
+                <img src="{{ asset('images/hero-mobile.webp') }}" alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
+                    width="1200" height="675" fetchpriority="high"
+                    class="w-full rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/15">
+                <figcaption class="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400">Artist's concept</figcaption>
+            </figure>
+
             <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
-            <h1 class="animate-rise mt-5 font-display text-6xl leading-[0.95] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)] sm:text-8xl" style="--reveal-delay: 120ms">
+            <h1 class="animate-rise mt-5 font-display text-5xl leading-[0.95] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)] sm:text-7xl lg:text-8xl" style="--reveal-delay: 120ms">
                 Make Space <em class="text-gold text-gold-sheen pe-1">Great</em> Again.
             </h1>
             <p class="animate-rise mt-6 text-xl text-zinc-100 drop-shadow-[0_1px_12px_rgba(0,0,0,0.8)] sm:text-2xl" style="--reveal-delay: 260ms">
@@ -53,7 +63,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
             </div>
         </div>
 
-        <p class="absolute bottom-4 right-4 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400/80 sm:right-6">Background: artist's concept</p>
+        <p class="absolute bottom-4 right-4 font-mono max-lg:hidden text-[10px] uppercase tracking-[0.2em] text-zinc-400/80 sm:right-6">Background: artist's concept</p>
     </section>
 
     <section class="mx-auto max-w-7xl px-4 sm:px-6" data-reveal>
