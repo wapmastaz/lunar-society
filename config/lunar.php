@@ -48,6 +48,13 @@ return [
 
     'pebble_included' => (bool) env('LUNAR_PEBBLE_INCLUDED', false),
 
+    // The Space Pebble Collectible sold on its own. Hidden until a price is set;
+    // run `php artisan db:seed --class=ProductSeeder` after changing these.
+    'pebble' => [
+        'price' => env('LUNAR_PEBBLE_PRICE'), // dollars, e.g. 49
+        'image' => env('LUNAR_PEBBLE_IMAGE'), // path under public/, e.g. images/space-pebble.jpg
+    ],
+
     'shipping_cutoffs' => [
         'standard' => 'December 12',
         'expedited' => 'December 18',

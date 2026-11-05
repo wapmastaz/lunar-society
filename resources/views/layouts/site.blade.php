@@ -34,7 +34,7 @@
 
         <div x-data="{ menu: false }" @keydown.escape.window="menu = false">
             <header class="border-b border-white/[0.06] bg-ink/80 backdrop-blur">
-                <div class="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2 sm:gap-4 sm:px-6 sm:py-4">
+                <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2 sm:gap-4 sm:px-6 sm:py-4">
                     <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5 font-semibold sm:gap-3">
                         <x-moon-mark class="size-7 sm:size-9" />
                         <span class="truncate text-[15px] leading-tight sm:text-lg"><span class="max-sm:hidden">Mr SuperTrump's </span>Lunar Society</span>
@@ -142,7 +142,7 @@
         </main>
 
         <footer class="mt-24 border-t border-white/[0.06] bg-ink-deep">
-            <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+            <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
                 {{-- Required disclaimer: plain text, high contrast, on every page. --}}
                 <section aria-labelledby="disclaimer-heading" class="rounded-2xl border border-white/10 p-6">
                     <h2 id="disclaimer-heading" class="font-mono text-xs uppercase tracking-[0.25em] text-white">Disclaimer</h2>

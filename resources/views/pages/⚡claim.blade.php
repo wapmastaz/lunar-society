@@ -229,7 +229,7 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
             <legend class="sr-only">Tier</legend>
             <div class="grid gap-3 sm:grid-cols-2">
                 @foreach ($this->tiers as $tier)
-                    @php($active = $tierCode === $tier->code)
+                    @php $active = $tierCode === $tier->code; @endphp
                     <label @class([
                         'relative flex cursor-pointer flex-col rounded-xl border p-6 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold',
                         'border-gold bg-white/[0.06]' => $active,
@@ -274,6 +274,18 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
                 @endforeach
             </ul>
         </div>
+
+        @php $pebble = \App\Models\Product::where('slug', 'space-pebble')->where('active', true)->first(); @endphp
+        @if ($pebble)
+            <a href="{{ route('souvenirs.show', $pebble) }}" class="group mt-4 flex items-center gap-4 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm transition hover:border-gold/60">
+                <x-pebble-art class="size-14 shrink-0" />
+                <span class="min-w-0 flex-1 text-zinc-200">
+                    <span class="block font-medium text-white">Also available: the {{ $pebble->name }}</span>
+                    A keepsake sold separately for {{ $pebble->priceLabel() }}.
+                </span>
+                <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-gold transition group-hover:translate-x-1" />
+            </a>
+        @endif
     @elseif ($step === 2)
         <h2 class="text-2xl font-semibold text-white">Your details</h2>
         <p class="mt-1 text-zinc-400">Your digital certificate and project updates are sent here.</p>

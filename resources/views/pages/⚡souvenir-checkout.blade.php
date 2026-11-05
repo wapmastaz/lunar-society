@@ -56,39 +56,83 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
     }
 }; ?>
 
-<div class="mx-auto max-w-xl px-4 py-12 sm:px-6">
-    <h1 class="font-display text-5xl text-white">{{ $product->name }}</h1>
-    <p class="mt-1 text-2xl font-bold text-white">{{ $product->priceLabel() }}</p>
-    @if ($product->description)
-        <p class="mt-3 text-zinc-300">{{ $product->description }}</p>
-    @endif
+<div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
+    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white">
+        <flux:icon.arrow-left variant="micro" class="size-4" /> Back to the Lunar Society
+    </a>
 
-    <div class="mt-8 panel p-6">
-        @if (! $this->order)
-            <form wire:submit="start" class="space-y-6" novalidate>
-                <flux:input wire:model="email" type="email" label="Email address" description="Your receipt and shipping updates are sent here." autocomplete="email" required />
+    <div class="mt-8 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+        <div class="animate-rise">
+            @if ($product->image_path)
+                <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="aspect-square w-full rounded-3xl object-cover shadow-2xl shadow-black/60 ring-1 ring-white/15">
+            @else
+                <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-panel via-[#121729] to-[#1a1710] p-8">
+                    <x-pebble-art class="mx-auto w-full max-w-md" />
+                </div>
+            @endif
+        </div>
 
-                <flux:field variant="inline">
-                    <flux:checkbox wire:model="consent_terms" />
-                    <flux:label class="!leading-snug">
-                        I have read and agree to the <a href="{{ route('terms') }}" target="_blank" class="underline">Terms of Service</a>.
-                        I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="underline">Disclaimer</a>.
-                    </flux:label>
-                    <flux:error name="consent_terms" />
-                </flux:field>
+        <div class="animate-rise" style="--reveal-delay: 120ms">
+            <p class="eyebrow">{{ $product->tagline ?? 'Lunar Society collectible' }}</p>
+            <h1 class="mt-4 font-display text-5xl leading-[1.02] text-white sm:text-6xl">{{ $product->name }}</h1>
+            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }}</p>
 
-                <flux:button type="submit" variant="primary" class="w-full">Continue to PayPal</flux:button>
-                <p class="text-center text-xs text-zinc-400">You'll enter the shipping address in PayPal.</p>
-            </form>
-        @else
-            <div
-                wire:ignore
-                x-data="paypalButtons(@js(route('checkout.create', $this->order)), @js(route('checkout.capture', $this->order)))"
-            >
-                <div x-ref="buttons" x-show="!processing"></div>
-                <p x-show="processing" class="py-6 text-center text-zinc-200">Confirming your payment…</p>
-                <p x-show="error" x-text="error" role="alert" class="mt-3 rounded-lg bg-red-500/15 p-3 text-sm text-red-200"></p>
+            @if ($product->description)
+                <p class="mt-5 leading-relaxed text-zinc-300">{{ $product->description }}</p>
+            @endif
+
+            @if ($product->highlights)
+                <p class="mt-7 font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">What you get</p>
+                <ul class="mt-3 space-y-3 text-zinc-100">
+                    @foreach ($product->highlights as $item)
+                        <li class="flex gap-3">
+                            <span aria-hidden="true" class="mt-2 size-1.5 shrink-0 rotate-45 bg-gold"></span>
+                            <span>{{ $item }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+
+            <p class="mt-6 text-sm text-zinc-400">
+                A commemorative keepsake, not lunar material. Sold separately: it does not include a slot on the Founders Plaque.
+                <a href="{{ route('claim') }}" class="text-gold underline underline-offset-2">Claim a founder slot</a>.
+            </p>
+            <p class="mt-2 text-sm text-zinc-400">
+                Ships to the address you give PayPal. For Christmas delivery, order by {{ config('lunar.shipping_cutoffs.standard') }} (standard)
+                or {{ config('lunar.shipping_cutoffs.expedited') }} (expedited).
+            </p>
+
+            <div class="panel mt-8 p-6">
+                @if (! $this->order)
+                    <form wire:submit="start" class="space-y-6" novalidate>
+                        <flux:input wire:model="email" type="email" label="Email address" description="Your receipt and shipping updates are sent here." autocomplete="email" required />
+
+                        <flux:field variant="inline">
+                            <flux:checkbox wire:model="consent_terms" />
+                            <flux:label class="!leading-snug">
+                                I have read and agree to the <a href="{{ route('terms') }}" target="_blank" class="text-gold underline underline-offset-2">Terms of Service</a>.
+                                I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.
+                            </flux:label>
+                            <flux:error name="consent_terms" />
+                        </flux:field>
+
+                        <flux:button type="submit" variant="primary" icon:trailing="arrow-right" class="h-12 w-full text-base">Continue to PayPal</flux:button>
+                        <p class="flex items-center justify-center gap-2 text-xs text-zinc-400">
+                            <flux:icon.lock-closed variant="micro" class="size-4" /> Secure checkout with PayPal. You'll enter the shipping address there.
+                        </p>
+                    </form>
+                @else
+                    <div
+                        wire:ignore
+                        x-data="paypalButtons(@js(route('checkout.create', $this->order)), @js(route('checkout.capture', $this->order)))"
+                        class="animate-rise"
+                    >
+                        <div x-ref="buttons" x-show="!processing" class="min-h-24"></div>
+                        <p x-show="processing" class="py-6 text-center text-zinc-200">Confirming your payment…</p>
+                        <p x-show="error" x-text="error" role="alert" class="mt-3 rounded-lg bg-red-500/15 p-3 text-sm text-red-200"></p>
+                    </div>
+                @endif
             </div>
-        @endif
+        </div>
     </div>
 </div>

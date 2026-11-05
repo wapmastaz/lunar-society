@@ -14,7 +14,7 @@ new #[Layout('layouts::site')] #[Title('Souvenirs')] class extends Component {
     }
 }; ?>
 
-<div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
     <header class="text-center">
         <h1 class="font-display text-5xl text-white sm:text-6xl">Lunar Society Souvenirs</h1>
         <p class="mx-auto mt-3 max-w-2xl text-zinc-300">Gifts for space fans and listeners. Souvenirs don't include a slot on the Founders Plaque.</p>

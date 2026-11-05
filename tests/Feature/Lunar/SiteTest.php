@@ -116,6 +116,22 @@ class SiteTest extends TestCase
         $this->get('/')->assertSee('Executive Director')->assertSee('data-reveal', false);
     }
 
+    public function test_slot_counts_go_down_as_founders_register(): void
+    {
+        $this->get('/')->assertSee('1,000 left')->assertSee('50 of 50 left');
+
+        $this->paidOrder('alpha');
+        $this->paidOrder('alpha');
+        $this->paidOrder('standard');
+
+        $this->get('/')
+            ->assertSee('997 left')
+            ->assertSee('48 of 50 left')
+            ->assertSee('949 of 950 left');
+
+        $this->get('/claim')->assertSee('48 left');
+    }
+
     public function test_mobile_menu_is_an_accessible_drawer(): void
     {
         $this->get('/faq')

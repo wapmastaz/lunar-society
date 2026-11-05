@@ -5,7 +5,7 @@
     $steps = ['Tier', 'Details', 'Engraving', 'Review', 'Payment', 'Done'];
 @endphp
 
-<div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+<div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
     <p class="eyebrow animate-rise">Claim a Founder slot</p>
     <h1 class="animate-rise mt-4 font-display text-4xl text-white sm:text-6xl" style="--reveal-delay: 100ms">Secure your place on the Founders Plaque</h1>
 

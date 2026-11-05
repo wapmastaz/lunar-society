@@ -1,5 +1,5 @@
 <x-layouts::site title="About M. J. Schultz">
-    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
         <div class="grid gap-10 md:grid-cols-[22rem_1fr] md:gap-14" data-reveal>
             @if (config('lunar.host_portrait'))
                 <img src="{{ asset(config('lunar.host_portrait')) }}" alt="M. J. Schultz, host of {{ config('lunar.podcast') }}" class="aspect-[4/5] w-full rounded-2xl border border-white/10 object-cover">

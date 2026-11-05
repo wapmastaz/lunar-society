@@ -58,7 +58,7 @@ new #[Layout('layouts::site')] #[Title('The Founders')] class extends Component 
     }
 }; ?>
 
-<div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+<div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
     <header class="text-center">
         <p class="eyebrow animate-rise">The plaque · Live</p>
         <h1 class="animate-rise mt-4 font-display text-6xl text-white sm:text-7xl" style="--reveal-delay: 100ms">The Founders</h1>

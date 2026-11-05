@@ -285,3 +285,15 @@ select:focus[data-flux-control] {
         height: auto;
     }
 }
+
+@keyframes drift {
+    0%, 100% { transform: scale(1.1) translate(0, 0); }
+    50% { transform: scale(1.16) translate(-1.5%, -1%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* Slow Ken Burns drift on the hero backdrop. */
+    .hero-drift {
+        animation: drift 28s ease-in-out infinite;
+    }
+}

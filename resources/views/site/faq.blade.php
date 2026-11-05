@@ -26,6 +26,13 @@
         ]);
     }
 
+    $pebble = \App\Models\Product::where('slug', 'space-pebble')->where('active', true)->first();
+    if ($pebble) {
+        array_splice($faqs, 3, 0, [
+            ['What is the Space Pebble Collectible?', 'A commemorative keepsake from the Lunar Society project, sold separately for '.$pebble->priceLabel().'. It is not lunar material, and it does not include a slot on the Founders Plaque. It ships to the address you give PayPal at checkout.'],
+        ]);
+    }
+
     if (config('lunar.set_aside_recipient')) {
         $faqs[] = ['Does part of the money go to space exploration?', '5% of proceeds will be set aside for '.config('lunar.set_aside_recipient').'.'];
     }

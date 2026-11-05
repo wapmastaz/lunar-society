@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(TierSeeder::class);
+        $this->call([TierSeeder::class, ProductSeeder::class]);
 
         // Admin login comes from .env so no credentials live in the repo.
         if ($email = env('ADMIN_EMAIL')) {

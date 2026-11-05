@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use App\Models\Tier;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -12,40 +13,61 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     {
         return Tier::orderBy('slot_start')->get();
     }
+
+    #[Computed]
+    public function pebble(): ?Product
+    {
+        return Product::firstWhere('slug', 'space-pebble');
+    }
 }; ?>
 
 <div>
-    {{-- Hero --}}
-    <section class="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pt-20">
-        <div class="grid items-center gap-12 lg:grid-cols-2">
-            <div>
-                <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
-                <h1 class="animate-rise mt-5 font-display text-6xl leading-[0.95] text-white sm:text-7xl" style="--reveal-delay: 120ms">
-                    Make Space<br><em class="text-gold text-gold-sheen pe-1">Great</em> Again.
-                </h1>
-                <p class="animate-rise mt-6 text-xl text-zinc-100" style="--reveal-delay: 260ms">Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.</p>
-                <p class="animate-rise mt-4 text-zinc-300" style="--reveal-delay: 380ms">
-                    Only 1,000 names will be laser engraved onto our aerospace-grade aluminum plaque. Our mission: get it to the Moon.
-                    Join the founders and follow the whole journey on the show.
-                </p>
-                <div class="animate-rise mt-8" style="--reveal-delay: 500ms">
-                    <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-6 text-base">
-                        Claim your Founder slot
-                    </flux:button>
-                    <p class="mt-4 max-w-48 text-sm text-zinc-400">Takes about a minute. Secure checkout with PayPal.</p>
-                </div>
-            </div>
+    {{-- Hero. The backdrop is a pre-blurred copy of the artwork, so the plaque's
+         lettering reads as soft light instead of competing with the headline. --}}
+    <section class="relative isolate overflow-hidden">
+        <div aria-hidden="true" class="absolute inset-0 -z-10">
+            <img src="{{ asset('images/hero-backdrop.webp') }}" alt="" class="hero-drift size-full scale-110 object-cover opacity-70">
+            <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-ink/40"></div>
+            <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"></div>
+            <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/70 to-transparent"></div>
+        </div>
 
-            <x-plaque-preview class="animate-rise" style="--reveal-delay: 300ms" />
+        <div class="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 sm:pt-24">
+            <div class="grid items-center gap-12 lg:grid-cols-2">
+                <div>
+                    <p class="eyebrow animate-rise">From the {{ config('lunar.podcast') }} podcast</p>
+                    <h1 class="animate-rise mt-5 font-display text-6xl leading-[0.95] text-white drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-7xl" style="--reveal-delay: 120ms">
+                        Make Space<br><em class="text-gold text-gold-sheen pe-1">Great</em> Again.
+                    </h1>
+                    <p class="animate-rise mt-6 text-xl text-zinc-100" style="--reveal-delay: 260ms">Put your name on the Founders Plaque of Mr SuperTrump's Lunar Society.</p>
+                    <p class="animate-rise mt-4 text-zinc-200" style="--reveal-delay: 380ms">
+                        Only 1,000 names will be laser engraved onto our aerospace-grade aluminum plaque. Our mission: get it to the Moon.
+                        Join the founders and follow the whole journey on the show.
+                    </p>
+                    <div class="animate-rise mt-8" style="--reveal-delay: 500ms">
+                        <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="animate-glow h-12 px-6 text-base">
+                            Claim your Founder slot
+                        </flux:button>
+                        <p class="mt-4 max-w-48 text-sm text-zinc-300">Takes about a minute. Secure checkout with PayPal.</p>
+                    </div>
+                </div>
+
+                <figure class="animate-rise lg:order-first" style="--reveal-delay: 300ms">
+                    <img src="{{ asset('images/hero.webp') }}" alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
+                        width="1600" height="900" fetchpriority="high"
+                        class="w-full rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/20">
+                    <figcaption class="mt-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-400">Artist's concept · not the final plaque design</figcaption>
+                </figure>
+            </div>
         </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-4 sm:px-6" data-reveal>
+    <section class="mx-auto max-w-7xl px-4 sm:px-6" data-reveal>
         <livewire:slot-counter variant="stat" />
     </section>
 
     {{-- The society --}}
-    <section aria-labelledby="society-heading" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+    <section aria-labelledby="society-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
             <div data-reveal>
                 <p class="eyebrow">The Lunar Society</p>
@@ -89,7 +111,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     </section>
 
     {{-- The plaque pledge --}}
-    <section aria-labelledby="pledge-heading" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+    <section aria-labelledby="pledge-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div class="text-center" data-reveal>
             <p class="eyebrow">The Founder's Legacy</p>
             <h2 id="pledge-heading" class="mt-4 font-display text-5xl text-white">The Astronaut Plaque Pledge</h2>
@@ -115,7 +137,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     </section>
 
     {{-- Tiers --}}
-    <section id="tiers" aria-labelledby="tiers-heading" class="mx-auto mt-24 max-w-6xl scroll-mt-6 px-4 sm:px-6">
+    <section id="tiers" aria-labelledby="tiers-heading" class="mx-auto mt-24 max-w-7xl scroll-mt-6 px-4 sm:px-6">
         <div class="text-center" data-reveal>
             <p class="eyebrow">Two tiers · One plaque</p>
             <h2 id="tiers-heading" class="mt-4 font-display text-5xl text-white">Choose your place on the plaque</h2>
@@ -131,8 +153,13 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
         </div>
     </section>
 
+    {{-- Space Pebble Collectible (sold separately) --}}
+    @if ($this->pebble)
+        <x-pebble-feature :product="$this->pebble" class="mt-24" />
+    @endif
+
     {{-- How it works --}}
-    <section aria-label="How it works" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+    <section aria-label="How it works" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <ol class="panel grid divide-y divide-white/10 md:grid-cols-3 md:divide-x md:divide-y-0" data-reveal>
             @foreach ([
                 ['Claim', 'Pick a tier and enter your name', 'Exactly as it should be engraved, max '.config('lunar.name_max_length').' characters.'],
@@ -159,7 +186,7 @@ new #[Layout('layouts::site')] #[Title('Make Space Great Again')] class extends 
     @endif
 
     {{-- Newsletter --}}
-    <section aria-labelledby="newsletter-heading" class="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
+    <section aria-labelledby="newsletter-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div class="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12 lg:grid-cols-2" data-reveal>
             <div>
                 <p class="eyebrow">Stay connected</p>
