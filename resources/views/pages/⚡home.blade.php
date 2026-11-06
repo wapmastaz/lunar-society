@@ -37,7 +37,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
              mobile mock. Drop his tall artwork in as public/images/hero-portrait.webp and it is used
              automatically; until then the wide image is framed on the plaque. --}}
         @php $portrait = file_exists(public_path('images/hero-portrait.webp')); @endphp
-        <div class="relative isolate flex h-[calc(100svh-1.75rem)] min-h-[34rem] flex-col items-center justify-end overflow-hidden px-4 pb-10 lg:hidden">
+        <div class="relative isolate flex h-[65svh] min-h-[26rem] flex-col items-center justify-end overflow-hidden px-4 pb-10 lg:hidden">
             <picture class="absolute inset-0 -z-10">
                 <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
                 <img src="{{ asset($portrait ? 'images/hero-portrait.webp' : 'images/hero.webp') }}"
@@ -56,7 +56,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
             </a>
         </div>
 
-        <div id="hero-copy" class="mx-auto flex max-w-7xl scroll-mt-4 flex-col px-4 pb-20 pt-12 sm:px-6 lg:min-h-[80svh] lg:justify-center lg:pb-28 lg:pt-28">
+        <div id="hero-copy" class="mx-auto flex max-w-7xl scroll-mt-4 flex-col px-4 pb-20 pt-12 sm:px-6 lg:min-h-[65svh] lg:justify-center lg:pb-16 lg:pt-24">
             <div class="flex max-w-xl flex-col items-center text-center max-lg:mx-auto lg:items-start lg:text-left">
                 <div aria-hidden="true" class="animate-rise flex w-full max-w-md items-center gap-3 text-gold">
                     <span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold lg:from-gold/80"></span>
