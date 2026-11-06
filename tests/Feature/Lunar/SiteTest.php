@@ -140,6 +140,20 @@ class SiteTest extends TestCase
             ->assertSee('border-b border-white/[0.06] bg-ink/80 backdrop-blur', false);
     }
 
+    public function test_about_page_tells_mjs_story_with_photos(): void
+    {
+        $this->get('/about')
+            ->assertSee('Why MJ Schultz created the Lunar Society')
+            ->assertSee('Junior Rocket Ranger')
+            ->assertSee('None of them is involved')
+            ->assertSee('not because they are easy, but because they are hard')
+            ->assertSee('images/mj-schultz.webp', false)
+            ->assertSee('images/story/mj-lunar-module.webp', false)
+            ->assertSee('Galactic Peace for Mankind');
+
+        $this->get('/')->assertSee('images/mj-schultz.webp', false)->assertSee('#story', false);
+    }
+
     public function test_mobile_menu_is_an_accessible_drawer(): void
     {
         $this->get('/faq')

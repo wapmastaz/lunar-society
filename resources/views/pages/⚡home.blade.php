@@ -140,7 +140,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     It also makes one of the most novel gifts of the holiday season.
                 </p>
 
-                <a href="{{ route('about') }}" class="hover-lift group !mt-8 flex items-center gap-4 rounded-2xl border border-white/10 bg-panel p-4 text-base">
+                <a href="{{ route('about') }}#story" class="hover-lift group !mt-8 flex items-center gap-4 rounded-2xl border border-white/10 bg-panel p-4 text-base">
                     @if (config('lunar.host_portrait'))
                         <img src="{{ asset(config('lunar.host_portrait')) }}" alt="" class="size-16 shrink-0 rounded-full object-cover">
                     @else
@@ -149,10 +149,10 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     <span class="min-w-0 flex-1">
                         <span class="block font-mono text-[11px] uppercase tracking-[0.2em] text-gold">Executive Director</span>
                         <span class="mt-1 block font-display text-2xl text-white">MJ Schultz</span>
-                        <span class="block text-sm text-zinc-400">Host of {{ config('lunar.podcast') }}. Author, actor, writer and philanthropist.</span>
+                        <span class="block text-sm text-zinc-400">A space enthusiast since his teens. Read why he created the Lunar Society.</span>
                     </span>
                     <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-zinc-500 transition group-hover:translate-x-1 group-hover:text-gold" />
-                    <span class="sr-only">Read his profile</span>
+                    <span class="sr-only">Read his story</span>
                 </a>
             </div>
         </div>

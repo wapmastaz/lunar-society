@@ -18,7 +18,7 @@ return [
     'city' => env('LUNAR_CITY', 'Boca Raton, FL 33445'), // CONFIRM (welcome email said Delray Beach)
     'email' => env('LUNAR_EMAIL', 'MrSuperTrump77@gmail.com'),
     'phone' => env('LUNAR_PHONE'),
-    'host_portrait' => env('LUNAR_HOST_PORTRAIT'), // path under public/, e.g. images/mj-schultz.jpg
+    'host_portrait' => env('LUNAR_HOST_PORTRAIT') ?: 'images/mj-schultz.webp', // path under public/
     'set_aside_recipient' => env('LUNAR_SET_ASIDE_RECIPIENT'), // CONFIRM; FAQ entry hidden until set
 
     /*
