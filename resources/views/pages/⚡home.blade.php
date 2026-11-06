@@ -33,30 +33,27 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         </div>
         <div aria-hidden="true" class="absolute -left-40 top-10 -z-10 size-[36rem] rounded-full bg-gold/10 blur-3xl"></div>
 
-        {{-- Phones and tablets: the artwork fills the first screen as a background, like Daniel's
-             mobile mock. Drop his tall artwork in as public/images/hero-portrait.webp and it is used
-             automatically; until then the wide image is framed on the plaque. --}}
-        @php $portrait = file_exists(public_path('images/hero-portrait.webp')); @endphp
-        <div class="relative isolate flex h-[65svh] min-h-[26rem] flex-col items-center justify-end overflow-hidden px-4 pb-10 lg:hidden">
+        {{-- Phones and tablets: the whole artwork, uncropped, at its own aspect ratio (the box is
+             sized to the image, so object-fill never stretches it). Drop a tall version in as
+             public/images/hero-portrait.webp and it is used automatically. --}}
+        @php
+            $heroMobile = file_exists(public_path('images/hero-portrait.webp')) ? 'images/hero-portrait.webp' : 'images/hero.webp';
+            [$heroW, $heroH] = getimagesize(public_path($heroMobile));
+        @endphp
+        <div class="relative isolate w-full overflow-hidden lg:hidden" style="aspect-ratio: {{ $heroW }} / {{ $heroH }}">
             <picture class="absolute inset-0 -z-10">
                 <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-                <img src="{{ asset($portrait ? 'images/hero-portrait.webp' : 'images/hero.webp') }}"
+                <img src="{{ asset($heroMobile) }}"
+                    width="{{ $heroW }}" height="{{ $heroH }}"
                     alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
                     fetchpriority="high"
-                    @class(['size-full object-cover', 'object-bottom' => $portrait, 'object-[20%_50%]' => ! $portrait])>
+                    class="size-full object-fill">
             </picture>
-            <div aria-hidden="true" class="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-gradient-to-b from-transparent via-ink/60 to-ink"></div>
-
-            <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="animate-glow animate-rise h-14 rounded-full px-8 text-lg font-semibold" style="--reveal-delay: 300ms">
-                Register Today
-            </flux:button>
-            <p class="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-300/80">Artist's concept</p>
-            <a href="#hero-copy" class="mt-4 text-gold/80 motion-safe:animate-bounce" aria-label="Scroll to learn more">
-                <flux:icon.chevron-down class="size-6" />
-            </a>
+            <div aria-hidden="true" class="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-ink"></div>
+            <p class="absolute bottom-2 right-3 font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-300/80">Artist's concept</p>
         </div>
 
-        <div id="hero-copy" class="mx-auto flex max-w-7xl scroll-mt-4 flex-col px-4 pb-20 pt-12 sm:px-6 lg:min-h-[65svh] lg:justify-center lg:pb-16 lg:pt-24">
+        <div id="hero-copy" class="mx-auto flex max-w-7xl scroll-mt-4 flex-col px-4 pb-20 pt-6 sm:px-6 lg:min-h-[65svh] lg:justify-center lg:pb-16 lg:pt-24">
             <div class="flex max-w-xl flex-col items-center text-center max-lg:mx-auto lg:items-start lg:text-left">
                 <div aria-hidden="true" class="animate-rise flex w-full max-w-md items-center gap-3 text-gold">
                     <span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold lg:from-gold/80"></span>
