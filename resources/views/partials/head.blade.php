@@ -5,9 +5,9 @@
     {{ filled($title ?? null) ? $title.' - '.config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
 </title>
 
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico?v={{ substr(md5_file(public_path('favicon.ico')), 0, 8) }}" sizes="any">
+<link rel="icon" href="/favicon.svg?v={{ substr(md5_file(public_path('favicon.svg')), 0, 8) }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v={{ substr(md5_file(public_path('apple-touch-icon.png')), 0, 8) }}">
 
 @fonts
 
