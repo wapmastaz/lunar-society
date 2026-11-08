@@ -70,7 +70,7 @@ class PebbleTest extends TestCase
     {
         $this->get('/')
             ->assertSee('Be Part of History')
-            ->assertSee('Join the Lunar Society')
+            ->assertSee('Join the Luna Society')
             ->assertSee('Register Today')
             ->assertSee('Prestigious Membership')
             ->assertSee('images/hero.webp', false)

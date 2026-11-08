@@ -63,7 +63,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
 
                 <h1 class="animate-rise mt-6 font-display leading-[0.98] drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]" style="--reveal-delay: 120ms">
                     <span class="block text-5xl text-white sm:text-6xl lg:text-7xl">Be Part of History</span>
-                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Lunar Society</span>
+                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Luna Society</span>
                 </h1>
 
                 <p class="animate-rise mt-5 font-display text-2xl italic leading-snug text-zinc-100 sm:text-3xl" style="--reveal-delay: 260ms">
