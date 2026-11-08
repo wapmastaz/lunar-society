@@ -118,8 +118,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 <p class="eyebrow">The Lunar Society</p>
                 <h2 id="society-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white">A society for the Moon base of the future</h2>
                 <p class="mt-5 text-zinc-400">
-                    Named in the spirit of the Lunar Society of Birmingham, the celebrated 18th-century circle of British inventors and
-                    thinkers who met by the light of the full moon.
+                    Named in the spirit of the Luna Society.
                 </p>
                 <x-logo-mark large class="mt-8 size-40 shadow-2xl shadow-gold/10 sm:size-48" />
             </div>
