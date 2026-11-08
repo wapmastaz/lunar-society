@@ -121,6 +121,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     Named in the spirit of the Lunar Society of Birmingham, the celebrated 18th-century circle of British inventors and
                     thinkers who met by the light of the full moon.
                 </p>
+                <x-logo-mark large class="mt-8 size-40 shadow-2xl shadow-gold/10 sm:size-48" />
             </div>
             <div class="space-y-5 text-lg leading-relaxed text-zinc-200" data-reveal style="--reveal-delay: 150ms">
                 <p>

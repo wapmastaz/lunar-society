@@ -40,7 +40,7 @@
             ])>
                 <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2 sm:gap-4 sm:px-6 sm:py-4">
                     <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5 font-semibold sm:gap-3">
-                        <x-moon-mark class="size-7 sm:size-9" />
+                        <x-logo-mark class="size-9 sm:size-11" />
                         <span class="truncate text-[15px] leading-tight sm:text-lg"><span class="max-sm:hidden">Mr SuperTrump's </span>Lunar Society</span>
                     </a>
 
@@ -98,7 +98,7 @@
                 >
                     <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
                         <span class="flex items-center gap-3 font-semibold">
-                            <x-moon-mark class="size-8" />
+                            <x-logo-mark class="size-10" />
                             Lunar Society
                         </span>
                         <button type="button" class="-me-2 grid size-10 place-items-center rounded-lg text-zinc-300 hover:bg-white/10 hover:text-white" @click="menu = false">
