@@ -87,6 +87,22 @@
                 </figure>
             </div>
 
+            <figure class="mx-auto mt-6 max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-panel" data-reveal>
+                <video
+                    controls
+                    muted
+                    playsinline
+                    preload="none"
+                    poster="{{ asset('images/story/mission-control-poster.webp') }}"
+                    width="640"
+                    height="356"
+                    class="aspect-video w-full bg-black object-cover"
+                >
+                    <source src="{{ asset('videos/mission-control.mp4') }}" type="video/mp4">
+                </video>
+                <figcaption class="px-5 py-4 text-sm text-zinc-400">Behind the glass of a mission control room.</figcaption>
+            </figure>
+
             <div class="mt-20 rounded-3xl border border-gold/40 bg-gradient-to-br from-[#2a2110] via-[#17140d] to-panel p-8 text-center sm:p-14" data-reveal>
                 <p class="eyebrow">Galactic Peace for Mankind</p>
                 <h3 class="mx-auto mt-4 max-w-3xl font-display text-4xl leading-tight text-white sm:text-5xl">

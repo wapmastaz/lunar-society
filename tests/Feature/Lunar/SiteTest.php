@@ -152,6 +152,7 @@ class SiteTest extends TestCase
             ->assertSee('not because they are easy, but because they are hard')
             ->assertSee('images/mj-schultz.webp', false)
             ->assertSee('images/story/mj-lunar-module.webp', false)
+            ->assertSee('videos/mission-control.mp4', false)
             ->assertSee('Galactic Peace for Mankind');
 
         $this->get('/')->assertSee('images/mj-schultz.webp', false)->assertSee('#story', false);
