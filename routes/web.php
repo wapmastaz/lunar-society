@@ -13,6 +13,7 @@ Route::livewire('souvenirs', 'pages::souvenirs')->name('souvenirs');
 Route::livewire('souvenirs/{product}', 'pages::souvenir-checkout')->name('souvenirs.show');
 Route::livewire('orders/{order}', 'pages::order-status')->name('orders.show');
 
+Route::view('charter', 'site.charter')->name('charter');
 Route::view('faq', 'site.faq')->name('faq');
 Route::view('about', 'site.about')->name('about');
 Route::view('terms', 'site.terms')->name('terms');

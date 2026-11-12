@@ -19,7 +19,7 @@ class SiteTest extends TestCase
 
     public function test_every_public_page_shows_the_disclaimer_as_text(): void
     {
-        foreach (['/', '/claim', '/founders', '/souvenirs', '/faq', '/about', '/terms', '/privacy', '/disclaimer'] as $uri) {
+        foreach (['/', '/claim', '/founders', '/souvenirs', '/charter', '/faq', '/about', '/terms', '/privacy', '/disclaimer'] as $uri) {
             $this->get($uri)
                 ->assertOk()
                 ->assertSee(config('lunar.disclaimer'));
@@ -28,7 +28,7 @@ class SiteTest extends TestCase
 
     public function test_no_page_promises_a_lunar_base_or_uses_em_dashes(): void
     {
-        foreach (['/', '/claim', '/faq', '/about', '/terms', '/disclaimer'] as $uri) {
+        foreach (['/', '/claim', '/charter', '/faq', '/about', '/terms', '/disclaimer'] as $uri) {
             $html = $this->get($uri)->getContent();
 
             $this->assertStringNotContainsString("\u{2014}", $html, "Em dash on {$uri}");
@@ -158,6 +158,22 @@ class SiteTest extends TestCase
             ->assertSee('Galactic Peace for Mankind');
 
         $this->get('/')->assertSee('images/mj-schultz.webp', false)->assertSee('#story', false);
+    }
+
+    public function test_charter_opens_the_home_page_and_has_its_own_page(): void
+    {
+        $home = $this->get('/')->assertOk()->assertSee(route('charter'), false)->getContent();
+        $this->assertLessThan(strpos($home, 'Be Part of History</span>'), strpos($home, 'Charter of the Lunar Society</h1>'));
+
+        $this->get('/charter')
+            ->assertOk()
+            ->assertSee('Charter of the Lunar Society')
+            ->assertSee('Article VI')
+            ->assertSee('Intergalactic Peace &amp; Astronaut Children', false)
+            ->assertSee('Mitchell J. Schultz')
+            ->assertSee('contributions are not tax-deductible')
+            ->assertSee('The Space Pebble Collectible is available separately')
+            ->assertDontSee('authentic lunar specimen');
     }
 
     public function test_footer_carries_the_terms_and_legal_disclosure(): void

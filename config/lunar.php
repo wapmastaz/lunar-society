@@ -62,6 +62,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Charter (shared by the homepage opening and the /charter page)
+    |--------------------------------------------------------------------------
+    */
+
+    'charter' => [
+        'adopted' => 'Adopted on this 13th day of November 2026, under the light of the full moon.',
+        'place' => 'Delray Beach, Florida',
+        'signatory' => 'Mitchell J. Schultz',
+        'preamble' => 'We, the founding members of The Lunar Society, unite in the spirit of free inquiry, mutual curiosity, and cosmic stewardship. Inspired by the fellowship of philosophers, makers, and thinkers who once gathered under the light of the full moon, we establish this Society to bridge the gap between theoretical knowledge and real-world application, extending our vigilance from the Earth beneath our feet to the stars above our heads.',
+        'mission' => 'The purpose of the Society is to foster interdisciplinary dialogue, collaborative experimentation, and the advancement of science, technology, commerce, and the humanities for the betterment of humankind and the cosmos.',
+        'peace' => 'The Society is dedicated to the active fostering of Intergalactic Peace in Space. We stand firmly for the prevention and avoidance of space wars.',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Required legal text (verbatim from the client)
     |--------------------------------------------------------------------------
     */

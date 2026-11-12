@@ -22,6 +22,31 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
 }; ?>
 
 <div>
+    {{-- The Charter opens the site, as the client asked. Full text lives on /charter. --}}
+    @php $charter = config('lunar.charter'); @endphp
+    <section id="charter" aria-labelledby="charter-heading" class="relative isolate overflow-hidden px-4 pb-16 pt-10 sm:px-6 lg:pb-20 lg:pt-32">
+        <div aria-hidden="true" class="absolute left-1/2 top-24 -z-10 size-[34rem] -translate-x-1/2 rounded-full bg-gold/10 blur-3xl"></div>
+        <div class="mx-auto max-w-3xl text-center">
+            <x-logo-mark large class="animate-rise mx-auto size-36 drop-shadow-[0_10px_40px_rgba(232,184,74,0.2)] sm:size-44" />
+            <p class="animate-rise eyebrow mt-6" style="--reveal-delay: 100ms">The founding document</p>
+            <h1 id="charter-heading" class="animate-rise mt-3 font-display text-4xl leading-[1.05] text-white sm:text-6xl" style="--reveal-delay: 160ms">Charter of the Lunar Society</h1>
+
+            <p class="animate-rise mt-8 font-mono text-xs uppercase tracking-[0.25em] text-gold" style="--reveal-delay: 240ms">Preamble</p>
+            <p class="animate-rise mt-3 font-display text-xl italic leading-relaxed text-zinc-100 sm:text-2xl" style="--reveal-delay: 280ms">{{ $charter['preamble'] }}</p>
+
+            <div class="animate-rise mt-10 rounded-2xl border border-gold/30 bg-panel/70 p-6 text-left sm:p-8" style="--reveal-delay: 360ms">
+                <p class="font-mono text-xs uppercase tracking-[0.25em] text-gold">Our mission</p>
+                <p class="mt-3 text-lg leading-relaxed text-zinc-200">{{ $charter['mission'] }}</p>
+                <p class="mt-3 leading-relaxed text-zinc-300">{{ $charter['peace'] }}</p>
+            </div>
+
+            <div class="animate-rise mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row" style="--reveal-delay: 440ms">
+                <flux:button href="{{ route('charter') }}" variant="ghost" icon:trailing="arrow-right" class="h-12 rounded-full border border-gold/50 px-6 text-base text-gold hover:text-gold-light">Read the full Charter</flux:button>
+                <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="h-12 rounded-full px-6 text-base">Register Today</flux:button>
+            </div>
+        </div>
+    </section>
+
     {{-- Hero, after Daniel's mock: copy on the left, the sharp plaque artwork on the right.
          Phones show the whole artwork above the copy instead. --}}
     <section class="relative isolate overflow-hidden">
@@ -61,10 +86,10 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     <span class="h-px flex-1 bg-gradient-to-l from-transparent to-gold"></span>
                 </div>
 
-                <h1 class="animate-rise mt-6 font-display leading-[0.98] drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]" style="--reveal-delay: 120ms">
+                <h2 class="animate-rise mt-6 font-display leading-[0.98] drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]" style="--reveal-delay: 120ms">
                     <span class="block text-5xl text-white sm:text-6xl lg:text-7xl">Be Part of History</span>
                     <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Lunar Society</span>
-                </h1>
+                </h2>
 
                 <p class="animate-rise mt-5 font-display text-2xl italic leading-snug text-zinc-100 sm:text-3xl" style="--reveal-delay: 260ms">
                     Support the journey to place a Founders Plaque on the Moon.
@@ -120,7 +145,6 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 <p class="mt-5 text-zinc-400">
                     Named in the spirit of the Lunar Society.
                 </p>
-                <x-logo-mark large class="mt-8 size-44 drop-shadow-[0_10px_40px_rgba(232,184,74,0.18)] sm:size-52" />
             </div>
             <div class="space-y-5 text-lg leading-relaxed text-zinc-200" data-reveal style="--reveal-delay: 150ms">
                 <p>

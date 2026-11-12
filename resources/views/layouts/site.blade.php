@@ -2,6 +2,7 @@
 
 @php
     $nav = [
+        ['charter', 'Charter'],
         ['founders', 'Founders'],
         ['faq', 'FAQ'],
         ['about', 'About'],
@@ -167,6 +168,7 @@
                         @endif
                     </div>
                     <nav aria-label="Footer" class="flex flex-wrap gap-x-6 gap-y-2 text-zinc-300 sm:justify-end">
+                        <a href="{{ route('charter') }}" class="hover:text-white">Charter</a>
                         <a href="{{ route('terms') }}" class="hover:text-white">Terms of Service</a>
                         <a href="{{ route('privacy') }}" class="hover:text-white">Privacy</a>
                         <a href="{{ route('disclaimer') }}" class="hover:text-white">Disclaimer</a>
