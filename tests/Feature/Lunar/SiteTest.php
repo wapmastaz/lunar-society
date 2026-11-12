@@ -96,6 +96,8 @@ class SiteTest extends TestCase
             ->assertSee('1,000 foundational MAGA community Trump supporters')
             ->assertSee('The Astronaut Plaque Pledge')
             ->assertSee('January 18, 2029')
+            ->assertSee('Named in the spirit of the Lunar Society.')
+            ->assertDontSee('Luna Society')
             ->assertSee('no flight can be guaranteed')
             ->assertSee('$149')
             ->assertDontSee('definitive timeline');

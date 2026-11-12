@@ -27,7 +27,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
     <section class="relative isolate overflow-hidden">
         {{-- Desktop artwork. A background on a hidden element isn't downloaded on phones. --}}
         <div aria-hidden="true" class="absolute inset-y-0 right-0 -z-10 hidden w-[70%] lg:block">
-            <div class="hero-drift size-full bg-cover bg-center [mask-image:linear-gradient(to_right,transparent,black_28%)]" style="background-image: url('{{ asset('images/hero.webp') }}')"></div>
+            <div class="hero-drift size-full bg-cover bg-center [mask-image:linear-gradient(to_right,transparent,black_28%)]" style="background-image: url('{{ asset('images/hero.webp') }}?v={{ substr(md5_file(public_path('images/hero.webp')), 0, 8) }}')"></div>
             <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink"></div>
             <div class="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ink/60 to-transparent"></div>
         </div>
@@ -43,7 +43,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         <div class="relative isolate w-full overflow-hidden lg:hidden" style="aspect-ratio: {{ $heroW }} / {{ $heroH }}">
             <picture class="absolute inset-0 -z-10">
                 <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-                <img src="{{ asset($heroMobile) }}"
+                <img src="{{ asset($heroMobile) }}?v={{ substr(md5_file(public_path($heroMobile)), 0, 8) }}"
                     width="{{ $heroW }}" height="{{ $heroH }}"
                     alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
                     fetchpriority="high"
@@ -63,7 +63,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
 
                 <h1 class="animate-rise mt-6 font-display leading-[0.98] drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]" style="--reveal-delay: 120ms">
                     <span class="block text-5xl text-white sm:text-6xl lg:text-7xl">Be Part of History</span>
-                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Luna Society</span>
+                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Lunar Society</span>
                 </h1>
 
                 <p class="animate-rise mt-5 font-display text-2xl italic leading-snug text-zinc-100 sm:text-3xl" style="--reveal-delay: 260ms">
@@ -118,7 +118,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 <p class="eyebrow">The Lunar Society</p>
                 <h2 id="society-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white">A society for the Moon base of the future</h2>
                 <p class="mt-5 text-zinc-400">
-                    Named in the spirit of the Luna Society.
+                    Named in the spirit of the Lunar Society.
                 </p>
                 <x-logo-mark large class="mt-8 size-44 drop-shadow-[0_10px_40px_rgba(232,184,74,0.18)] sm:size-52" />
             </div>
