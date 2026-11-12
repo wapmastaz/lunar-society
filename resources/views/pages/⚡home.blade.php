@@ -120,7 +120,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 <p class="mt-5 text-zinc-400">
                     Named in the spirit of the Luna Society.
                 </p>
-                <x-logo-mark large class="mt-8 size-40 shadow-2xl shadow-gold/10 sm:size-48" />
+                <x-logo-mark large class="mt-8 size-44 drop-shadow-[0_10px_40px_rgba(232,184,74,0.18)] sm:size-52" />
             </div>
             <div class="space-y-5 text-lg leading-relaxed text-zinc-200" data-reveal style="--reveal-delay: 150ms">
                 <p>

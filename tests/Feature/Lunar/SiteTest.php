@@ -158,6 +158,18 @@ class SiteTest extends TestCase
         $this->get('/')->assertSee('images/mj-schultz.webp', false)->assertSee('#story', false);
     }
 
+    public function test_footer_carries_the_terms_and_legal_disclosure(): void
+    {
+        foreach (['/', '/claim', '/faq'] as $uri) {
+            $this->get($uri)
+                ->assertSee('Lunar Society Registry: Terms &amp; Legal Disclosure', false)
+                ->assertSee('Outer Space Treaty of 1967')
+                ->assertSee('two hundred and fifty (250)')
+                ->assertSee('Space Pebble Collectible is sold separately')
+                ->assertDontSee('certified space artifact specimen');
+        }
+    }
+
     public function test_mobile_menu_is_an_accessible_drawer(): void
     {
         $this->get('/faq')
