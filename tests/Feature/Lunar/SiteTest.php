@@ -113,7 +113,11 @@ class SiteTest extends TestCase
         $this->get('/claim')
             ->assertSee('Every founder receives')
             ->assertSee('Please note')
-            ->assertSee('Delivery of the plaque to the Moon is a goal, not a guarantee.');
+            ->assertSee('Delivery of the plaque to the Moon is a goal, not a guarantee.')
+            ->assertSee('+ $15 processing');
+
+        $this->get('/')->assertSee('plus a $15 processing fee');
+        $this->get('/faq')->assertSee('Are there any extra fees?');
 
         $this->get('/')->assertSee('Executive Director')->assertSee('data-reveal', false);
     }
@@ -172,7 +176,7 @@ class SiteTest extends TestCase
             ->assertSee('Intergalactic Peace &amp; Astronaut Children', false)
             ->assertSee('Mitchell J. Schultz')
             ->assertSee('contributions are not tax-deductible')
-            ->assertSee('The Space Pebble Collectible is available separately')
+            ->assertSee('The Space Pebble Collectible is available separately with the Affiliate Membership Package')
             ->assertDontSee('authentic lunar specimen');
     }
 

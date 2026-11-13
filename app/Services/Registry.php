@@ -24,9 +24,30 @@ class Registry
         return (bool) preg_match('/(&|\band\b|\bfamily\b)/i', $name);
     }
 
+    /**
+     * Slot price plus any couple/family add-on, before the processing fee.
+     */
     public function priceFor(Tier $tier, bool $coupleAddon): int
     {
         return $tier->price_cents + ($coupleAddon ? (int) config('lunar.couple_addon_cents') : 0);
+    }
+
+    /**
+     * What the buyer pays for a slot: price, add-on and the flat processing fee.
+     */
+    public function totalFor(Tier $tier, bool $coupleAddon): int
+    {
+        return $this->priceFor($tier, $coupleAddon) + self::processingFeeCents();
+    }
+
+    public static function processingFeeCents(): int
+    {
+        return max(0, (int) config('lunar.processing_fee_cents'));
+    }
+
+    public static function processingFeeLabel(): string
+    {
+        return '$'.number_format(self::processingFeeCents() / 100);
     }
 
     /**
@@ -53,7 +74,8 @@ class Registry
             return Order::create([
                 'tier_id' => $tier->id,
                 'status' => OrderStatus::Pending,
-                'amount_cents' => $this->priceFor($tier, $couple),
+                'amount_cents' => $this->totalFor($tier, $couple),
+                'processing_fee_cents' => self::processingFeeCents(),
                 'email' => $data['email'],
                 'buyer_name' => $data['buyer_name'] ?? null,
                 'plaque_name' => $data['plaque_name'],
@@ -78,7 +100,8 @@ class Registry
         return Order::create([
             'product_id' => $product->id,
             'status' => OrderStatus::Pending,
-            'amount_cents' => $product->price_cents,
+            'amount_cents' => $product->price_cents + self::processingFeeCents(),
+            'processing_fee_cents' => self::processingFeeCents(),
             'email' => $data['email'],
             'consent_text' => config('lunar.consent_terms'),
             'consented_at' => now(),

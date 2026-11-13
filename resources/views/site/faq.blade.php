@@ -16,6 +16,7 @@
         ['Will my name be public?', 'Yes, every Founder is listed on our Founders page. By default we show first name and last initial. You can choose to show your full name at checkout.'],
         ['Is this affiliated with President Trump or NASA?', 'No. '.config('lunar.disclaimer')],
         ['What if timelines change?', "Space projects depend on things outside our control, so dates may shift. We'll share every update on the podcast and by email."],
+        ['Are there any extra fees?', 'Every order includes a flat '.\App\Services\Registry::processingFeeLabel().' processing fee, shown in your order summary before you pay. There are no other charges.'],
         ['How do I pay?', 'All payments are processed securely by PayPal. You can pay with a PayPal account or a card through PayPal.'],
     ];
 
@@ -26,10 +27,10 @@
         ]);
     }
 
-    $pebble = \App\Models\Product::where('slug', 'space-pebble')->where('active', true)->first();
+    $pebble = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->first();
     if ($pebble) {
         array_splice($faqs, 3, 0, [
-            ['What is the Space Pebble Collectible?', 'A commemorative keepsake from the Lunar Society project, sold separately for '.$pebble->priceLabel().'. It is not lunar material, and it does not include a slot on the Founders Plaque. It ships to the address you give PayPal at checkout.'],
+            ['What is the Affiliate Membership Package?', 'For '.$pebble->priceLabel().' (plus the '.\App\Services\Registry::processingFeeLabel().' processing fee) you become an affiliate member of the Lunar Society and receive the Space Pebble Collectible, a commemorative keepsake. The pebble is not lunar material, and the package does not include a Founder slot or a name on the Founders Plaque. It ships to the address you give PayPal at checkout.'],
         ]);
     }
 

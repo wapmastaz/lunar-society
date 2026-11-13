@@ -17,7 +17,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
     #[Computed]
     public function pebble(): ?Product
     {
-        return Product::firstWhere('slug', 'space-pebble');
+        return Product::firstWhere('slug', config('lunar.affiliate.slug'));
     }
 }; ?>
 
@@ -27,17 +27,18 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
     <section id="charter" aria-labelledby="charter-heading" class="relative isolate overflow-hidden px-4 pb-16 pt-10 sm:px-6 lg:pb-20 lg:pt-32">
         <div aria-hidden="true" class="absolute left-1/2 top-24 -z-10 size-[34rem] -translate-x-1/2 rounded-full bg-gold/10 blur-3xl"></div>
         <div class="mx-auto max-w-3xl text-center">
-            <x-logo-mark large class="animate-rise mx-auto size-36 drop-shadow-[0_10px_40px_rgba(232,184,74,0.2)] sm:size-44" />
-            <p class="animate-rise eyebrow mt-6" style="--reveal-delay: 100ms">The founding document</p>
-            <h1 id="charter-heading" class="animate-rise mt-3 font-display text-4xl leading-[1.05] text-white sm:text-6xl" style="--reveal-delay: 160ms">Charter of the Lunar Society</h1>
+            <x-logo-mark large class="animate-rise mx-auto size-52 drop-shadow-[0_10px_40px_rgba(232,184,74,0.25)] sm:size-64" />
+            <p class="animate-rise eyebrow mt-8" style="--reveal-delay: 100ms">The founding document</p>
+            <h1 id="charter-heading" class="animate-rise mt-4 font-charter-title text-3xl font-bold uppercase leading-tight tracking-[0.08em] text-gold sm:text-5xl" style="--reveal-delay: 160ms">Charter of the Lunar Society</h1>
+            <div aria-hidden="true" class="animate-rise mx-auto mt-5 flex max-w-xs items-center gap-3 text-gold" style="--reveal-delay: 200ms"><span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold"></span><flux:icon.star variant="solid" class="size-4" /><span class="h-px flex-1 bg-gradient-to-l from-transparent to-gold"></span></div>
 
-            <p class="animate-rise mt-8 font-mono text-xs uppercase tracking-[0.25em] text-gold" style="--reveal-delay: 240ms">Preamble</p>
-            <p class="animate-rise mt-3 font-display text-xl italic leading-relaxed text-zinc-100 sm:text-2xl" style="--reveal-delay: 280ms">{{ $charter['preamble'] }}</p>
+            <p class="animate-rise mt-8 font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-zinc-300" style="--reveal-delay: 240ms">Preamble</p>
+            <p class="animate-rise mt-4 font-charter text-2xl italic leading-relaxed text-zinc-100 sm:text-[1.7rem]" style="--reveal-delay: 280ms">{{ $charter['preamble'] }}</p>
 
             <div class="animate-rise mt-10 rounded-2xl border border-gold/30 bg-panel/70 p-6 text-left sm:p-8" style="--reveal-delay: 360ms">
-                <p class="font-mono text-xs uppercase tracking-[0.25em] text-gold">Our mission</p>
-                <p class="mt-3 text-lg leading-relaxed text-zinc-200">{{ $charter['mission'] }}</p>
-                <p class="mt-3 leading-relaxed text-zinc-300">{{ $charter['peace'] }}</p>
+                <p class="font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-gold">Our mission</p>
+                <p class="mt-3 font-charter text-xl leading-relaxed text-zinc-100 sm:text-2xl">{{ $charter['mission'] }}</p>
+                <p class="mt-3 font-charter text-lg leading-relaxed text-zinc-300 sm:text-xl">{{ $charter['peace'] }}</p>
             </div>
 
             <div class="animate-rise mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row" style="--reveal-delay: 440ms">

@@ -60,7 +60,7 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
     public function total(): string
     {
         $cents = $this->selectedTier
-            ? app(Registry::class)->priceFor($this->selectedTier, $this->couple_addon || $this->nameNeedsAddon)
+            ? app(Registry::class)->totalFor($this->selectedTier, $this->couple_addon || $this->nameNeedsAddon)
             : 0;
 
         return '$'.number_format($cents / 100);
@@ -247,7 +247,7 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
                         </span>
                         <span class="mt-5 text-xl font-semibold text-white">{{ $tier->name }}</span>
                         <span class="mt-4 flex items-baseline justify-between">
-                            <span class="text-3xl font-bold text-white">{{ $tier->priceLabel() }}</span>
+                            <span class="text-3xl font-bold text-white">{{ $tier->priceLabel() }} <span class="text-sm font-normal text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span></span>
                             <span class="text-sm text-zinc-400">{{ $tier->isSoldOut() ? 'Sold out' : number_format($tier->remaining()).' left' }}</span>
                         </span>
                     </label>
@@ -275,13 +275,13 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
             </ul>
         </div>
 
-        @php $pebble = \App\Models\Product::where('slug', 'space-pebble')->where('active', true)->first(); @endphp
+        @php $pebble = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->first(); @endphp
         @if ($pebble)
             <a href="{{ route('souvenirs.show', $pebble) }}" class="group mt-4 flex items-center gap-4 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm transition hover:border-gold/60">
                 <x-pebble-art class="size-14 shrink-0" />
                 <span class="min-w-0 flex-1 text-zinc-200">
                     <span class="block font-medium text-white">Also available: the {{ $pebble->name }}</span>
-                    A keepsake sold separately for {{ $pebble->priceLabel() }}.
+                    Affiliate membership and the Space Pebble Collectible, {{ $pebble->priceLabel() }} + {{ \App\Services\Registry::processingFeeLabel() }} processing. No Founder slot.
                 </span>
                 <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-gold transition group-hover:translate-x-1" />
             </a>
@@ -406,6 +406,6 @@ new #[Layout('layouts::site')] #[Title('Claim your Founder slot')] class extends
     @endif
 
     <x-slot:summary>
-        <x-order-summary :tier="$this->selectedTier" :couple="$couple_addon || $this->nameNeedsAddon" :total="$this->total" />
+        <x-order-summary :tier="$this->selectedTier" :couple="$couple_addon || $this->nameNeedsAddon" :total="$this->total" :fee="\App\Services\Registry::processingFeeCents()" />
     </x-slot:summary>
 </x-claim-shell>

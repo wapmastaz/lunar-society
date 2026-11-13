@@ -75,7 +75,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
         <div class="animate-rise" style="--reveal-delay: 120ms">
             <p class="eyebrow">{{ $product->tagline ?? 'Lunar Society collectible' }}</p>
             <h1 class="mt-4 font-display text-5xl leading-[1.02] text-white sm:text-6xl">{{ $product->name }}</h1>
-            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }}</p>
+            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }} <span class="font-sans text-base text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span></p>
 
             @if ($product->description)
                 <p class="mt-5 leading-relaxed text-zinc-300">{{ $product->description }}</p>
@@ -94,7 +94,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
             @endif
 
             <p class="mt-6 text-sm text-zinc-400">
-                A commemorative keepsake, not lunar material. Sold separately: it does not include a slot on the Founders Plaque.
+                The Space Pebble is a commemorative keepsake, not lunar material. This package does not include a Founder slot or a name on the Founders Plaque.
                 <a href="{{ route('claim') }}" class="text-gold underline underline-offset-2">Claim a founder slot</a>.
             </p>
             <p class="mt-2 text-sm text-zinc-400">

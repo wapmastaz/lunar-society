@@ -20,50 +20,53 @@ class PebbleTest extends TestCase
         $this->setUpRegistry();
     }
 
-    public function test_pebble_shows_as_coming_soon_until_it_has_a_price(): void
+    public function test_affiliate_package_is_hidden_when_its_price_is_zero(): void
     {
-        config(['lunar.pebble.price' => null]);
+        config(['lunar.affiliate.price' => 0]);
         $this->seed(ProductSeeder::class);
 
-        $this->assertFalse(Product::firstWhere('slug', 'space-pebble')->active);
+        $this->assertFalse(Product::firstWhere('slug', 'affiliate-membership')->active);
 
         $this->get('/')
-            ->assertSee('Introducing the exclusive Space Pebble Collectible')
+            ->assertSee('Introducing the Affiliate Membership Package')
             ->assertSee('Coming soon')
-            ->assertDontSee('View collectible &amp; order now', false);
+            ->assertDontSee('View package &amp; join', false);
 
-        $this->get('/souvenirs/space-pebble')->assertNotFound();
-        $this->get('/claim')->assertDontSee('Also available: the Space Pebble Collectible');
+        $this->get('/souvenirs/affiliate-membership')->assertNotFound();
+        $this->get('/claim')->assertDontSee('Also available: the Affiliate Membership Package');
     }
 
-    public function test_pebble_with_a_price_can_be_ordered_separately(): void
+    public function test_affiliate_package_costs_79_plus_processing_and_ships(): void
     {
-        config(['lunar.pebble.price' => 49]);
+        Product::create(['slug' => 'space-pebble', 'name' => 'Old pebble', 'price_cents' => 0, 'active' => false]);
         $this->seed(ProductSeeder::class);
 
-        $pebble = Product::firstWhere('slug', 'space-pebble');
-        $this->assertTrue($pebble->active);
-        $this->assertSame(4900, $pebble->price_cents);
+        $package = Product::sole();
+        $this->assertSame('affiliate-membership', $package->slug);
+        $this->assertTrue($package->active);
+        $this->assertSame(7900, $package->price_cents);
 
-        $this->get('/')->assertSee('View collectible &amp; order now', false)->assertSee('$49');
-        $this->get('/claim')->assertSee('Also available: the Space Pebble Collectible');
-        $this->get('/faq')->assertSee('What is the Space Pebble Collectible?')->assertSee('It is not lunar material');
+        $this->get('/')->assertSee('View package &amp; join', false)->assertSee('$79')->assertSee('+ $15 processing');
+        $this->get('/claim')->assertSee('Also available: the Affiliate Membership Package');
+        $this->get('/faq')->assertSee('What is the Affiliate Membership Package?')->assertSee('not lunar material');
 
-        $this->get('/souvenirs/space-pebble')
+        $this->get('/souvenirs/affiliate-membership')
             ->assertOk()
-            ->assertSee('One Space Pebble Collectible')
+            ->assertSee('Affiliate membership in the Lunar Society')
+            ->assertSee('does not include a Founder slot')
             ->assertSee('not lunar material');
 
-        Livewire::test('pages::souvenir-checkout', ['product' => $pebble])
+        Livewire::test('pages::souvenir-checkout', ['product' => $package])
             ->set('email', 'gift@example.test')
             ->set('consent_terms', true)
             ->call('start')
             ->assertHasNoErrors();
 
         $order = Order::sole();
-        $this->assertSame($pebble->id, $order->product_id);
+        $this->assertSame($package->id, $order->product_id);
         $this->assertNull($order->tier_id);
-        $this->assertSame(4900, $order->amount_cents);
+        $this->assertSame(9400, $order->amount_cents);
+        $this->assertSame(1500, $order->processing_fee_cents);
     }
 
     public function test_hero_matches_the_mock_and_labels_the_artwork(): void

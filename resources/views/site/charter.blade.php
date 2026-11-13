@@ -1,6 +1,6 @@
 @php
     $charter = config('lunar.charter');
-    $pebbleActive = \App\Models\Product::where('slug', 'space-pebble')->where('active', true)->exists();
+    $pebbleActive = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->exists();
 
     // Client's Charter text. Article II.2 lists what founders actually receive; II.5 adds the tax note.
     $articles = [
@@ -42,26 +42,26 @@
 <x-layouts::site title="Charter">
     <article class="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-16">
         <header class="text-center" data-reveal>
-            <x-logo-mark large class="mx-auto size-40 drop-shadow-[0_10px_40px_rgba(232,184,74,0.18)] sm:size-48" />
+            <x-logo-mark large class="mx-auto size-52 drop-shadow-[0_10px_40px_rgba(232,184,74,0.25)] sm:size-64" />
             <p class="eyebrow mt-8">The founding document</p>
-            <h1 class="mt-4 font-display text-5xl leading-[1.05] text-white sm:text-6xl">Charter of the Lunar Society</h1>
+            <h1 class="mt-4 font-charter-title text-3xl font-bold uppercase leading-tight tracking-[0.08em] text-gold sm:text-5xl">Charter of the Lunar Society</h1>
         </header>
 
         <section aria-labelledby="preamble-heading" class="mt-14" data-reveal>
-            <h2 id="preamble-heading" class="text-center font-mono text-xs uppercase tracking-[0.25em] text-gold">Preamble</h2>
-            <p class="mt-5 text-center font-display text-2xl italic leading-relaxed text-zinc-100 sm:text-3xl">{{ $charter['preamble'] }}</p>
+            <h2 id="preamble-heading" class="text-center font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-zinc-300">Preamble</h2>
+            <p class="mt-5 text-center font-charter text-2xl italic leading-relaxed text-zinc-100 sm:text-3xl">{{ $charter['preamble'] }}</p>
         </section>
 
         <div class="mt-16 space-y-14">
             @foreach ($articles as [$numeral, $heading, $clauses])
                 <section aria-labelledby="article-{{ $numeral }}" class="border-t border-white/10 pt-10" data-reveal>
-                    <p class="font-mono text-xs uppercase tracking-[0.25em] text-gold">Article {{ $numeral }}</p>
-                    <h2 id="article-{{ $numeral }}" class="mt-3 font-display text-4xl text-white">{{ $heading }}</h2>
+                    <p class="font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-gold">Article {{ $numeral }}</p>
+                    <h2 id="article-{{ $numeral }}" class="mt-3 font-charter-title text-2xl font-bold uppercase tracking-[0.05em] text-white sm:text-3xl">{{ $heading }}</h2>
 
-                    <ol class="mt-6 space-y-5 text-lg leading-relaxed text-zinc-300">
+                    <ol class="mt-6 space-y-5 font-charter text-xl leading-relaxed text-zinc-300">
                         @foreach ($clauses as [$title, $text])
                             <li class="flex gap-4">
-                                <span class="font-mono text-sm leading-8 text-gold">{{ $loop->iteration }}.</span>
+                                <span class="font-charter-title text-base leading-8 text-gold">{{ $loop->iteration }}.</span>
                                 <div>
                                     <span class="font-semibold text-white">{{ $title }}:</span>
                                     @if ($text)
@@ -82,11 +82,11 @@
                                                 </li>
                                             @endforeach
                                         </ul>
-                                        <p class="mt-3 text-base text-zinc-400">
+                                        <p class="mt-3 text-lg text-zinc-400">
                                             @if ($pebbleActive)
-                                                The <a href="{{ route('souvenirs') }}" class="text-gold underline underline-offset-2 hover:text-gold-light">Space Pebble Collectible</a> is available separately.
+                                                The Space Pebble Collectible is available separately with the <a href="{{ route('souvenirs') }}" class="text-gold underline underline-offset-2 hover:text-gold-light">Affiliate Membership Package</a>.
                                             @else
-                                                The Space Pebble Collectible is available separately.
+                                                The Space Pebble Collectible is available separately with the Affiliate Membership Package.
                                             @endif
                                         </p>
                                     @endif
@@ -99,10 +99,10 @@
         </div>
 
         <footer class="mt-16 rounded-3xl border border-gold/40 bg-gradient-to-br from-[#2a2110] via-[#17140d] to-panel p-8 text-center sm:p-12" data-reveal>
-            <p class="font-display text-2xl italic text-zinc-100">{{ $charter['adopted'] }}</p>
+            <p class="font-charter text-2xl italic text-zinc-100">{{ $charter['adopted'] }}</p>
             <p class="mt-2 text-zinc-400">{{ $charter['place'] }}</p>
-            <p class="mt-8 font-mono text-xs uppercase tracking-[0.25em] text-gold">Executed by</p>
-            <p class="mt-3 font-display text-4xl text-white">{{ $charter['signatory'] }}</p>
+            <p class="mt-8 font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-gold">Executed by</p>
+            <p class="mt-3 font-charter text-4xl italic text-white">{{ $charter['signatory'] }}</p>
             <p class="mt-1 text-zinc-300">Executive Director, The Lunar Society</p>
             <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="mt-10 h-12 rounded-full px-7 text-base">Become a Founding Member</flux:button>
         </footer>

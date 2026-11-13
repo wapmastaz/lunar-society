@@ -45,7 +45,6 @@ class PayPal
      */
     public function createOrder(Order $order): string
     {
-        $value = number_format($order->amount_cents / 100, 2, '.', '');
         $needsShipping = ! $order->isFounder() || config('lunar.pebble_included');
 
         $description = $order->isFounder()
@@ -60,10 +59,7 @@ class PayPal
                     'reference_id' => $order->uuid,
                     'custom_id' => $order->uuid,
                     'description' => mb_substr(config('lunar.brand').': '.$description, 0, 127),
-                    'amount' => [
-                        'currency_code' => config('services.paypal.currency'),
-                        'value' => $value,
-                    ],
+                    'amount' => $this->amount($order),
                 ]],
                 'payment_source' => [
                     'paypal' => [
@@ -84,6 +80,28 @@ class PayPal
         }
 
         return $id;
+    }
+
+    /**
+     * Order total, with the flat processing fee shown to the buyer as PayPal "handling".
+     *
+     * @return array<string, mixed>
+     */
+    protected function amount(Order $order): array
+    {
+        $currency = config('services.paypal.currency');
+        $money = fn (int $cents) => ['currency_code' => $currency, 'value' => number_format($cents / 100, 2, '.', '')];
+        $amount = $money($order->amount_cents);
+        $fee = (int) $order->processing_fee_cents;
+
+        if ($fee > 0) {
+            $amount['breakdown'] = [
+                'item_total' => $money($order->amount_cents - $fee),
+                'handling' => $money($fee),
+            ];
+        }
+
+        return $amount;
     }
 
     /**

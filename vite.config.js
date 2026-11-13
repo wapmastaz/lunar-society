@@ -23,6 +23,14 @@ export default defineConfig({
                 bunny('JetBrains Mono', {
                     weights: [400, 500],
                 }),
+                // Charter: engraved-style capitals for titles, classic book serif for the text.
+                bunny('Cinzel', {
+                    weights: [500, 700],
+                }),
+                bunny('Cormorant Garamond', {
+                    weights: [400, 500, 600],
+                    styles: ['normal', 'italic'],
+                }),
             ],
         }),
         tailwindcss(),

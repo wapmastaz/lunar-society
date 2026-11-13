@@ -82,7 +82,7 @@ class RegistryTest extends TestCase
         }
 
         $order = $this->registry->reserve($this->tier('standard'), ['email' => 'a@example.test', 'plaque_name' => 'Doe Family']);
-        $this->assertSame(17900, $order->amount_cents);
+        $this->assertSame(19400, $order->amount_cents);
         $this->assertTrue($order->couple_addon);
     }
 

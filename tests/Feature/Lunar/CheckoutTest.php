@@ -89,7 +89,7 @@ class CheckoutTest extends TestCase
 
         $order = Order::sole();
         $this->assertSame(OrderStatus::Pending, $order->status);
-        $this->assertSame(22900, $order->amount_cents);
+        $this->assertSame(24400, $order->amount_cents);
         $this->assertSame('Jane Patriot', $order->buyer_name);
         $this->assertNotNull($order->consented_at);
         $this->assertStringContainsString('unaffiliated with Donald J. Trump', $order->consent_text);
@@ -124,7 +124,7 @@ class CheckoutTest extends TestCase
 
     public function test_full_paypal_flow_marks_order_paid_and_sends_confirmation(): void
     {
-        $this->fakePayPal('149.00');
+        $this->fakePayPal('164.00');
         $order = app(Registry::class)->reserve($this->tier('standard'), ['email' => 'jane@example.test', 'plaque_name' => 'Jane Patriot']);
 
         $this->postJson(route('checkout.create', $order))->assertOk()->assertJson(['id' => 'PP-ORDER-1']);
@@ -143,13 +143,15 @@ class CheckoutTest extends TestCase
         $this->get(route('orders.show', $order))->assertSee('#051')->assertSee('Welcome, Founder');
 
         Http::assertSent(fn ($request) => str_ends_with($request->url(), '/v2/checkout/orders')
-            && $request['purchase_units'][0]['amount']['value'] === '149.00'
+            && $request['purchase_units'][0]['amount']['value'] === '164.00'
+            && $request['purchase_units'][0]['amount']['breakdown']['item_total']['value'] === '149.00'
+            && $request['purchase_units'][0]['amount']['breakdown']['handling']['value'] === '15.00'
             && $request['payment_source']['paypal']['experience_context']['shipping_preference'] === 'NO_SHIPPING');
     }
 
     public function test_capture_is_idempotent(): void
     {
-        $this->fakePayPal('149.00');
+        $this->fakePayPal('164.00');
         $order = app(Registry::class)->reserve($this->tier('standard'), ['email' => 'jane@example.test', 'plaque_name' => 'Jane Patriot']);
 
         $this->postJson(route('checkout.create', $order));

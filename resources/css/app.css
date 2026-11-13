@@ -39,6 +39,8 @@
 @theme {
     --font-display: var(--font-instrument-serif), Georgia, serif;
     --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+    --font-charter-title: var(--font-cinzel), 'Trajan Pro', Georgia, serif;
+    --font-charter: var(--font-cormorant-garamond), Garamond, Georgia, serif;
 
     --color-gold: #e8b84a;
     --color-gold-light: #f3d68a;

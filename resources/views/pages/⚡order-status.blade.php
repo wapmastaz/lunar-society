@@ -56,7 +56,7 @@ new #[Layout('layouts::site')] #[Title('Your order')] class extends Component {
             @endif
 
             <x-slot:summary>
-                <x-order-summary :tier="$order->tier" :couple="$order->couple_addon" :total="$order->amountLabel()" :number="$order->slotLabel()" />
+                <x-order-summary :tier="$order->tier" :couple="$order->couple_addon" :total="$order->amountLabel()" :number="$order->slotLabel()" :fee="$order->processing_fee_cents" />
             </x-slot:summary>
         </x-claim-shell>
     @else

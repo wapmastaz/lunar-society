@@ -1,4 +1,4 @@
-@props(['tier', 'couple' => false, 'total', 'number' => null])
+@props(['tier', 'couple' => false, 'total', 'number' => null, 'fee' => 0])
 
 <p class="font-mono text-xs uppercase tracking-[0.25em] text-zinc-400">Order summary</p>
 
@@ -21,6 +21,13 @@
             <span>+${{ number_format(config('lunar.couple_addon_cents') / 100) }}</span>
         </div>
     @endif
+@endif
+
+@if ($fee > 0)
+    <div class="mt-3 flex justify-between gap-4 text-sm text-zinc-300">
+        <span>Processing fee</span>
+        <span>+${{ number_format($fee / 100) }}</span>
+    </div>
 @endif
 
 <div class="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-6">

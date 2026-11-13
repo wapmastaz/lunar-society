@@ -35,6 +35,7 @@ return [
     'name_lock_hours' => 48,
     'name_max_length' => 30,
     'couple_addon_cents' => 3000,
+    'processing_fee_cents' => (int) env('LUNAR_PROCESSING_FEE_CENTS', 1500), // flat, added to every order
 
     /*
     |--------------------------------------------------------------------------
@@ -48,11 +49,13 @@ return [
 
     'pebble_included' => (bool) env('LUNAR_PEBBLE_INCLUDED', false),
 
-    // The Space Pebble Collectible sold on its own. Hidden until a price is set;
-    // run `php artisan db:seed --class=ProductSeeder` after changing these.
-    'pebble' => [
-        'price' => env('LUNAR_PEBBLE_PRICE'), // dollars, e.g. 49
-        'image' => env('LUNAR_PEBBLE_IMAGE'), // path under public/, e.g. images/space-pebble.jpg
+    // The $79 Affiliate Membership Package (affiliate membership + the Space Pebble
+    // Collectible). Not a Founder slot. Set the price to 0 to hide it; run
+    // `php artisan db:seed --class=ProductSeeder --force` after changing these.
+    'affiliate' => [
+        'slug' => 'affiliate-membership',
+        'price' => env('LUNAR_AFFILIATE_PRICE', 79), // dollars
+        'image' => env('LUNAR_AFFILIATE_IMAGE', env('LUNAR_PEBBLE_IMAGE')), // path under public/
     ],
 
     'shipping_cutoffs' => [

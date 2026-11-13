@@ -66,7 +66,7 @@ trait InteractsWithRegistry
     /**
      * @param  array<string, mixed>  $extra
      */
-    protected function fakePayPal(string $captureValue = '149.00', array $extra = []): void
+    protected function fakePayPal(string $captureValue = '164.00', array $extra = []): void
     {
         Http::fake(array_merge([
             '*/v1/oauth2/token' => Http::response(['access_token' => 'test-token']),

@@ -1,6 +1,6 @@
 @props(['product'])
 
-{{-- Homepage feature for the Space Pebble Collectible. Shows "coming soon" until it has a price. --}}
+{{-- Homepage feature for the Affiliate Membership Package (affiliate membership + Space Pebble). "Coming soon" while it has no price. --}}
 <section aria-labelledby="pebble-heading" {{ $attributes->merge(['class' => 'mx-auto max-w-7xl px-4 sm:px-6']) }}>
     <div class="grid items-center gap-10 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-panel via-[#121729] to-[#1a1710] p-7 sm:p-12 lg:grid-cols-2 lg:gap-16" data-reveal>
         <div class="relative order-last lg:order-first">
@@ -13,7 +13,7 @@
 
         <div>
             <p class="eyebrow">{{ $product->tagline ?? 'Own a piece of space history' }}</p>
-            <h2 id="pebble-heading" class="mt-4 font-display text-4xl leading-[1.05] text-white sm:text-5xl">Introducing the exclusive {{ $product->name }}</h2>
+            <h2 id="pebble-heading" class="mt-4 font-display text-4xl leading-[1.05] text-white sm:text-5xl">Introducing the {{ $product->name }}</h2>
             <p class="mt-5 leading-relaxed text-zinc-300">{{ $product->description }}</p>
 
             @if ($product->highlights)
@@ -30,13 +30,13 @@
 
             <div class="mt-8 flex flex-wrap items-center gap-4">
                 @if ($product->active)
-                    <span class="font-display text-4xl text-white">{{ $product->priceLabel() }}</span>
-                    <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" icon:trailing="arrow-right" class="h-12 px-6 text-base">View collectible &amp; order now</flux:button>
+                    <span class="font-display text-4xl text-white">{{ $product->priceLabel() }} <span class="font-sans text-sm text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span></span>
+                    <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" icon:trailing="arrow-right" class="h-12 px-6 text-base">View package &amp; join</flux:button>
                 @else
                     <flux:button disabled class="h-12 px-6 text-base">Coming soon</flux:button>
                 @endif
             </div>
-            <p class="mt-4 text-xs text-zinc-500">Sold separately from founder slots. A commemorative keepsake, not lunar material.</p>
+            <p class="mt-4 text-xs text-zinc-500">Not a Founder slot: affiliate names are not engraved on the plaque. The Space Pebble is a commemorative keepsake, not lunar material.</p>
         </div>
     </div>
 </section>

@@ -37,7 +37,7 @@ class WebhookTest extends TestCase
 
     public function test_capture_completed_webhook_pays_an_abandoned_checkout(): void
     {
-        $this->fakePayPal('149.00', $this->verified());
+        $this->fakePayPal('164.00', $this->verified());
         $order = app(Registry::class)->reserve($this->tier('standard'), ['email' => 'jane@example.test', 'plaque_name' => 'Jane Patriot']);
         $order->update(['paypal_order_id' => 'PP-ORDER-1']);
 

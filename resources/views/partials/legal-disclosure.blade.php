@@ -34,6 +34,7 @@
                 <li>Alpha Founder Tier (Registrants 1 to 50): Priced at $199 USD.</li>
                 <li>Standard Founder Tier (Registrants 51 to 1,000): Priced at $149 USD.</li>
             </ul>
+            <p class="mt-1">A flat {{ \App\Services\Registry::processingFeeLabel() }} USD processing fee is added to every order and shown before payment.</p>
             <p class="mt-1">
                 Maximum capacity for this seasonal edition manifest is strictly limited to one thousand (1,000) registration slots. Sequenced
                 numbers are assigned automatically based on the precise timestamp of transaction completion and cannot be manually exchanged
