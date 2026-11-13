@@ -22,7 +22,8 @@ class SiteTest extends TestCase
         foreach (['/', '/claim', '/founders', '/souvenirs', '/charter', '/faq', '/about', '/terms', '/privacy', '/disclaimer'] as $uri) {
             $this->get($uri)
                 ->assertOk()
-                ->assertSee(config('lunar.disclaimer'));
+                ->assertSee(config('lunar.disclaimer'))
+                ->assertSee('The Lunar Society is a division of Adventures With Mr SuperTrump LLC');
         }
     }
 

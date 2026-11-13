@@ -176,7 +176,8 @@
                     </nav>
                 </div>
 
-                <p class="mt-8 text-xs text-zinc-400">&copy; {{ now()->year }} {{ config('lunar.entity') }}. {{ config('lunar.podcast') }} is available on Spotify, YouTube and Beehiiv.</p>
+                <p class="mt-8 text-xs text-zinc-400">{{ config('lunar.podcast') }} is available on Spotify, YouTube and Beehiiv.</p>
+                <p class="mt-3 text-xs text-zinc-400">&copy; {{ now()->year }} The Lunar Society is a division of Adventures With Mr SuperTrump LLC</p>
             </div>
         </footer>
 
