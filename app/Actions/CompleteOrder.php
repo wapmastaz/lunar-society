@@ -71,7 +71,11 @@ class CompleteOrder
         if ($completed) {
             $order->refresh();
             Mail::to($order->email)->queue(new OrderConfirmation($order));
-            SubscribeToBeehiiv::dispatch($order->email);
+
+            // Newsletter only for buyers who ticked the permission box.
+            if ($order->marketing_opt_in) {
+                SubscribeToBeehiiv::dispatch($order->email);
+            }
         }
 
         return true;

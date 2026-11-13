@@ -114,7 +114,7 @@ class SiteTest extends TestCase
             ->assertSee('Every founder receives')
             ->assertSee('Please note')
             ->assertSee('Delivery of the plaque to the Moon is a goal, not a guarantee.')
-            ->assertSee('+ $15 processing');
+            ->assertSee('Plus a $15 processing fee per order.');
 
         $this->get('/')->assertSee('plus a $15 processing fee');
         $this->get('/faq')->assertSee('Are there any extra fees?');
@@ -167,7 +167,15 @@ class SiteTest extends TestCase
     public function test_charter_opens_the_home_page_and_has_its_own_page(): void
     {
         $home = $this->get('/')->assertOk()->assertSee(route('charter'), false)->getContent();
-        $this->assertLessThan(strpos($home, 'Be Part of History</span>'), strpos($home, 'Charter of the Lunar Society</h1>'));
+        $logo = strpos($home, 'images/logo.webp');
+        $title = strpos($home, 'Founders Charter</a>');
+        $quick = strpos($home, 'Quick Registry');
+        $this->assertNotFalse($logo);
+        $this->assertNotFalse($title);
+        $this->assertNotFalse($quick);
+        $this->assertLessThan($title, $logo);
+        $this->assertLessThan($quick, $title);
+        $this->assertLessThan(strpos($home, 'Be Part of History</span>'), $quick);
 
         $this->get('/charter')
             ->assertOk()

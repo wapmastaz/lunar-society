@@ -16,6 +16,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
     public string $email = '';
     public bool $consent_terms = false;
+    public bool $marketing_opt_in = false;
 
     #[Locked]
     public ?string $orderUuid = null;
@@ -51,6 +52,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
         $this->orderUuid = $registry->reserveSouvenir($this->product, [
             'email' => $this->email,
+            'marketing_opt_in' => $this->marketing_opt_in,
             'ip_address' => request()->ip(),
         ])->uuid;
     }
@@ -114,6 +116,11 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
                                 I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.
                             </flux:label>
                             <flux:error name="consent_terms" />
+                        </flux:field>
+
+                        <flux:field variant="inline">
+                            <flux:checkbox wire:model="marketing_opt_in" />
+                            <flux:label class="!leading-snug">{{ config('lunar.marketing_consent') }} <span class="text-zinc-400">(Optional)</span></flux:label>
                         </flux:field>
 
                         <flux:button type="submit" variant="primary" icon:trailing="arrow-right" class="h-12 w-full text-base">Continue to PayPal</flux:button>

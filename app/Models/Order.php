@@ -49,6 +49,7 @@ class Order extends Model
         return [
             'status' => OrderStatus::class,
             'couple_addon' => 'boolean',
+            'marketing_opt_in' => 'boolean',
             'show_full_name' => 'boolean',
             'shipping' => 'array',
             'consented_at' => 'datetime',

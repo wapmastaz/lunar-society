@@ -56,7 +56,7 @@ class Registry
      * The couple/family add-on applies when the buyer asks for it or the
      * name clearly needs it, whichever the form sent.
      *
-     * @param  array{email: string, plaque_name: string, buyer_name?: string|null, couple_addon?: bool, listener_handle?: string|null, show_full_name?: bool, ip_address?: string|null}  $data
+     * @param  array{email: string, plaque_name: string, buyer_name?: string|null, city?: string|null, state?: string|null, postal_code?: string|null, marketing_opt_in?: bool, couple_addon?: bool, listener_handle?: string|null, show_full_name?: bool, consent_text?: string|null, ip_address?: string|null}  $data
      *
      * @throws SoldOutException
      */
@@ -78,11 +78,15 @@ class Registry
                 'processing_fee_cents' => self::processingFeeCents(),
                 'email' => $data['email'],
                 'buyer_name' => $data['buyer_name'] ?? null,
+                'city' => $data['city'] ?? null,
+                'state' => $data['state'] ?? null,
+                'postal_code' => $data['postal_code'] ?? null,
+                'marketing_opt_in' => $data['marketing_opt_in'] ?? false,
                 'plaque_name' => $data['plaque_name'],
                 'couple_addon' => $couple,
                 'listener_handle' => $data['listener_handle'] ?? null,
                 'show_full_name' => $data['show_full_name'] ?? false,
-                'consent_text' => config('lunar.consent_spelling')."\n".config('lunar.consent_terms'),
+                'consent_text' => $data['consent_text'] ?? config('lunar.consent_spelling')."\n".config('lunar.consent_terms'),
                 'consented_at' => now(),
                 'hold_expires_at' => now()->addMinutes((int) config('lunar.hold_minutes')),
                 'ip_address' => $data['ip_address'] ?? null,
@@ -93,7 +97,7 @@ class Registry
     /**
      * Create a pending souvenir order (no slot, no capacity limit).
      *
-     * @param  array{email: string, ip_address?: string|null}  $data
+     * @param  array{email: string, marketing_opt_in?: bool, ip_address?: string|null}  $data
      */
     public function reserveSouvenir(Product $product, array $data): Order
     {
@@ -103,6 +107,7 @@ class Registry
             'amount_cents' => $product->price_cents + self::processingFeeCents(),
             'processing_fee_cents' => self::processingFeeCents(),
             'email' => $data['email'],
+            'marketing_opt_in' => $data['marketing_opt_in'] ?? false,
             'consent_text' => config('lunar.consent_terms'),
             'consented_at' => now(),
             'hold_expires_at' => now()->addMinutes((int) config('lunar.hold_minutes')),

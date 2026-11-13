@@ -22,7 +22,7 @@ new #[Layout('layouts::site')] #[Title('Your order')] class extends Component {
 
 <div @if ($order->status === OrderStatus::Pending) wire:poll.5s="refreshStatus" @endif>
     @if ($order->isFounder() && in_array($order->status, [OrderStatus::Paid, OrderStatus::Pending]))
-        <x-claim-shell :step="$order->isPaid() ? 6 : 5">
+        <x-claim-shell :step="$order->isPaid() ? 3 : 2">
             @if ($order->isPaid())
                 <div class="py-4 text-center">
                     <span aria-hidden="true" class="relative mx-auto grid size-16 place-items-center">

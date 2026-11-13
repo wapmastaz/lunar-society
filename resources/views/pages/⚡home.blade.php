@@ -28,9 +28,13 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         <div aria-hidden="true" class="absolute left-1/2 top-24 -z-10 size-[34rem] -translate-x-1/2 rounded-full bg-gold/10 blur-3xl"></div>
         <div class="mx-auto max-w-3xl text-center">
             <x-logo-mark large class="animate-rise mx-auto size-52 drop-shadow-[0_10px_40px_rgba(232,184,74,0.25)] sm:size-64" />
-            <p class="animate-rise eyebrow mt-8" style="--reveal-delay: 100ms">The founding document</p>
-            <h1 id="charter-heading" class="animate-rise mt-4 font-charter-title text-3xl font-bold uppercase leading-tight tracking-[0.08em] text-gold sm:text-5xl" style="--reveal-delay: 160ms">Charter of the Lunar Society</h1>
-            <div aria-hidden="true" class="animate-rise mx-auto mt-5 flex max-w-xs items-center gap-3 text-gold" style="--reveal-delay: 200ms"><span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold"></span><flux:icon.star variant="solid" class="size-4" /><span class="h-px flex-1 bg-gradient-to-l from-transparent to-gold"></span></div>
+            <h1 id="charter-heading" class="animate-rise mt-8 font-charter-title text-4xl font-bold uppercase leading-tight tracking-[0.1em] text-gold sm:text-6xl" style="--reveal-delay: 120ms">
+                <a href="{{ route('charter') }}" class="transition hover:text-gold-light">Founders Charter</a>
+            </h1>
+            <div class="animate-rise mt-7" style="--reveal-delay: 200ms">
+                <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="animate-glow h-14 rounded-full px-9 font-charter-title text-lg font-bold uppercase tracking-[0.12em]">Quick Registry</flux:button>
+            </div>
+            <div aria-hidden="true" class="animate-rise mx-auto mt-9 flex max-w-xs items-center gap-3 text-gold" style="--reveal-delay: 240ms"><span class="h-px flex-1 bg-gradient-to-r from-transparent to-gold"></span><flux:icon.star variant="solid" class="size-4" /><span class="h-px flex-1 bg-gradient-to-l from-transparent to-gold"></span></div>
 
             <p class="animate-rise mt-8 font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-zinc-300" style="--reveal-delay: 240ms">Preamble</p>
             <p class="animate-rise mt-4 font-charter text-2xl italic leading-relaxed text-zinc-100 sm:text-[1.7rem]" style="--reveal-delay: 280ms">{{ $charter['preamble'] }}</p>
@@ -43,7 +47,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
 
             <div class="animate-rise mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row" style="--reveal-delay: 440ms">
                 <flux:button href="{{ route('charter') }}" variant="ghost" icon:trailing="arrow-right" class="h-12 rounded-full border border-gold/50 px-6 text-base text-gold hover:text-gold-light">Read the full Charter</flux:button>
-                <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="h-12 rounded-full px-6 text-base">Register Today</flux:button>
+                <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="chevron-right" class="h-12 rounded-full px-6 text-base">Quick Registry</flux:button>
             </div>
         </div>
     </section>
@@ -262,7 +266,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 <p class="eyebrow">Stay connected</p>
                 <h2 id="newsletter-heading" class="mt-4 font-display text-4xl text-white sm:text-5xl">The Lunar Society newsletter</h2>
                 <p class="mt-4 text-zinc-300">
-                    The road to {{ config('lunar.target_date_short') }} is a long-term mission. Every registered founder receives our newsletter
+                    The road to {{ config('lunar.target_date_short') }} is a long-term mission. Founders who opt in receive our newsletter
                     on Beehiiv to stay locked into the updates over the years. Unsubscribe anytime.
                 </p>
             </div>

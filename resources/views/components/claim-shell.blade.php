@@ -2,14 +2,14 @@
 
 {{-- Shared frame for the claim wizard and its confirmation page. --}}
 @php
-    $steps = ['Tier', 'Details', 'Engraving', 'Review', 'Payment', 'Done'];
+    $steps = ['Registration', 'Payment', 'Done'];
 @endphp
 
 <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
-    <p class="eyebrow animate-rise">Claim a Founder slot</p>
-    <h1 class="animate-rise mt-4 font-display text-4xl text-white sm:text-6xl" style="--reveal-delay: 100ms">Secure your place on the Founders Plaque</h1>
+    <p class="eyebrow animate-rise">Quick Registry</p>
+    <h1 class="animate-rise mt-4 font-display text-4xl text-white sm:text-6xl" style="--reveal-delay: 100ms">Become a Founding Member</h1>
 
-    <ol class="mt-8 grid grid-cols-6 gap-2" aria-label="Progress">
+    <ol class="mt-8 grid grid-cols-3 gap-2" aria-label="Progress">
         @foreach ($steps as $i => $label)
             @php $n = $i + 1; @endphp
             <li>

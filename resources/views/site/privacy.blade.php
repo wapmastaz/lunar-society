@@ -13,7 +13,7 @@
     <ul>
         <li>To fulfill your order, engrave the plaque and send your certificate.</li>
         <li>To show your plaque name on the public Founders list, using the display choice you made.</li>
-        <li>To send project updates and the {{ config('lunar.podcast') }} newsletter (via Beehiiv). You can unsubscribe at any time.</li>
+        <li>If you opt in at checkout, to send project updates and the {{ config('lunar.podcast') }} newsletter (via Beehiiv). You can unsubscribe at any time.</li>
     </ul>
 
     <h2>Sharing</h2>

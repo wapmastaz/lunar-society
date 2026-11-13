@@ -28,31 +28,51 @@ class CheckoutTest extends TestCase
         Queue::fake([SubscribeToBeehiiv::class]);
     }
 
-    public function test_each_wizard_step_validates_before_moving_on(): void
+    /**
+     * @return array<string, mixed>
+     */
+    protected function application(array $overrides = []): array
+    {
+        return array_merge([
+            'plaque_name' => 'Jane Patriot',
+            'email' => 'jane@example.test',
+            'city' => 'Delray Beach',
+            'state' => 'FL',
+            'postal_code' => '33445',
+            'us_citizen' => true,
+            'consent_terms' => true,
+            'consent_spelling' => true,
+            'signature' => 'Jane Patriot',
+        ], $overrides);
+    }
+
+    protected function fill($component, array $fields)
+    {
+        foreach ($fields as $key => $value) {
+            $component->set($key, $value);
+        }
+
+        return $component;
+    }
+
+    public function test_registration_form_validates_every_field(): void
     {
         Livewire::test('pages::claim')
-            ->assertSet('step', 1)
-            ->call('next')
-            ->assertSet('step', 2)
-            ->call('next')
-            ->assertHasErrors(['buyer_name' => 'required', 'email' => 'required'])
-            ->assertSet('step', 2)
-            ->set('buyer_name', 'Jane Patriot')
-            ->set('email', 'jane@example.test')
-            ->call('next')
-            ->assertSet('step', 3)
-            ->set('plaque_name', 'John 🚀 Doe')
-            ->call('next')
-            ->assertHasErrors(['plaque_name' => 'regex'])
-            ->set('plaque_name', str_repeat('a', 31))
-            ->call('next')
-            ->assertHasErrors(['plaque_name' => 'max'])
-            ->set('plaque_name', 'Jane Patriot')
-            ->call('next')
-            ->assertSet('step', 4)
+            ->assertSee('Registration and Enrollment')
+            ->assertSee('Only US Citizens')
+            ->assertSee('B: General ($149)')
             ->call('reserve')
-            ->assertHasErrors(['consent_spelling' => 'accepted', 'consent_terms' => 'accepted'])
-            ->assertSet('step', 4);
+            ->assertHasErrors([
+                'plaque_name' => 'required', 'email' => 'required', 'city' => 'required', 'state' => 'required',
+                'postal_code' => 'required', 'us_citizen' => 'accepted', 'consent_terms' => 'accepted',
+                'consent_spelling' => 'accepted', 'signature' => 'required',
+            ])
+            ->set('plaque_name', 'John 🚀 Doe')
+            ->set('postal_code', '1234')
+            ->set('state', 'ZZ')
+            ->call('reserve')
+            ->assertHasErrors(['plaque_name' => 'regex', 'postal_code' => 'regex', 'state' => 'in'])
+            ->assertSet('step', 1);
 
         $this->assertSame(0, Order::count());
     }
@@ -60,56 +80,55 @@ class CheckoutTest extends TestCase
     public function test_couple_names_force_the_add_on(): void
     {
         Livewire::test('pages::claim')
-            ->set('step', 3)
-            ->set('plaque_name', 'Doe Family')
+            ->set('plaque_name', 'The Jon Doe Family')
             ->assertSet('couple_addon', true)
             ->set('couple_addon', false)
             ->assertSet('couple_addon', true)
             ->assertHasErrors('couple_addon');
     }
 
-    public function test_wizard_reserves_a_slot_with_server_side_price(): void
+    public function test_application_reserves_a_slot_with_server_side_price(): void
     {
-        Livewire::test('pages::claim', ['tier' => 'alpha'])
-            ->assertSet('tierCode', 'alpha')
-            ->call('next')
-            ->set('buyer_name', 'Jane Patriot')
-            ->set('email', 'jane@example.test')
-            ->call('next')
-            ->set('plaque_name', 'Mr & Mrs John Doe')
-            ->assertSee('#001')
-            ->call('next')
-            ->assertSee('Mr & Mrs John Doe')
-            ->set('consent_spelling', true)
-            ->set('consent_terms', true)
+        $component = Livewire::test('pages::claim', ['tier' => 'alpha'])->assertSet('tierCode', 'alpha');
+
+        $this->fill($component, $this->application(['plaque_name' => 'Mr & Mrs John Doe', 'marketing_opt_in' => true]))
             ->call('reserve')
             ->assertHasNoErrors()
-            ->assertSet('step', 5)
+            ->assertSet('step', 2)
             ->assertSee('Secure payment');
 
         $order = Order::sole();
         $this->assertSame(OrderStatus::Pending, $order->status);
         $this->assertSame(24400, $order->amount_cents);
         $this->assertSame('Jane Patriot', $order->buyer_name);
+        $this->assertSame(['Delray Beach', 'FL', '33445'], [$order->city, $order->state, $order->postal_code]);
+        $this->assertTrue($order->marketing_opt_in);
         $this->assertNotNull($order->consented_at);
+        $this->assertStringContainsString('United States citizen', $order->consent_text);
         $this->assertStringContainsString('unaffiliated with Donald J. Trump', $order->consent_text);
+        $this->assertStringContainsString('Signed: Jane Patriot', $order->consent_text);
     }
 
     public function test_going_back_from_payment_releases_the_hold(): void
     {
-        $component = Livewire::test('pages::claim', ['tier' => 'alpha'])
-            ->set('buyer_name', 'Jane Patriot')
-            ->set('email', 'jane@example.test')
-            ->set('plaque_name', 'Jane Patriot')
-            ->set('consent_spelling', true)
-            ->set('consent_terms', true)
-            ->set('step', 4)
+        $component = $this->fill(Livewire::test('pages::claim', ['tier' => 'alpha']), $this->application())
             ->call('reserve')
-            ->assertSet('step', 5);
+            ->assertSet('step', 2);
 
-        $component->call('back')->assertSet('step', 4)->assertSet('orderUuid', null);
+        $component->call('back')->assertSet('step', 1)->assertSet('orderUuid', null);
 
         $this->assertSame(OrderStatus::Expired, Order::sole()->status);
+    }
+
+    public function test_newsletter_only_for_buyers_who_opt_in(): void
+    {
+        $this->fakePayPal('164.00');
+        $order = app(Registry::class)->reserve($this->tier('standard'), ['email' => 'no@example.test', 'plaque_name' => 'Jane Patriot']);
+
+        $this->postJson(route('checkout.create', $order));
+        $this->postJson(route('checkout.capture', $order))->assertOk();
+
+        Queue::assertNotPushed(SubscribeToBeehiiv::class);
     }
 
     public function test_sold_out_tier_cannot_be_preselected(): void
@@ -125,7 +144,7 @@ class CheckoutTest extends TestCase
     public function test_full_paypal_flow_marks_order_paid_and_sends_confirmation(): void
     {
         $this->fakePayPal('164.00');
-        $order = app(Registry::class)->reserve($this->tier('standard'), ['email' => 'jane@example.test', 'plaque_name' => 'Jane Patriot']);
+        $order = app(Registry::class)->reserve($this->tier('standard'), ['email' => 'jane@example.test', 'plaque_name' => 'Jane Patriot', 'marketing_opt_in' => true]);
 
         $this->postJson(route('checkout.create', $order))->assertOk()->assertJson(['id' => 'PP-ORDER-1']);
         $this->postJson(route('checkout.capture', $order))->assertOk()->assertJson(['redirect' => route('orders.show', $order)]);

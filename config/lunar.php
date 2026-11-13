@@ -88,6 +88,12 @@ return [
 
     'satire_notice' => "The Lunar Society is a creative extension of an independent comedy broadcast. Our goal is to send the Founders Plaque to the Moon on a commercial payload. If that can't happen, it will be permanently displayed in the podcast studio.",
 
+    'citizenship' => 'I certify that I am a United States citizen.',
+
+    'acknowledgement' => 'The above applicant hereby applies to be a founding member of The Lunar Society and, by doing so, acknowledges having read the Society\'s Charter. Further, the applicant agrees to abide by these terms and conditions and now wishes to become a founding member of The Lunar Society.',
+
+    'marketing_consent' => 'I give permission to receive additional emails and communications from The Lunar Society.',
+
     'consent_spelling' => 'I certify that the spelling of the name is correct. I understand the name locks 48 hours after my confirmation email and cannot be changed after that, because the plaque is laser engraved.',
 
     'consent_terms' => 'I have read and agree to the Terms of Service. I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the Disclaimer.',
