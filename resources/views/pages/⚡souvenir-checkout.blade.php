@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\Registry;
@@ -7,6 +8,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Session;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -14,17 +16,34 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
     #[Locked]
     public Product $product;
 
+    // Kept in the session so a page reload doesn't wipe the form or the PayPal step.
+    #[Session(key: 'souvenir.email')]
     public string $email = '';
+    #[Session(key: 'souvenir.consent_terms')]
     public bool $consent_terms = false;
+    #[Session(key: 'souvenir.marketing_opt_in')]
     public bool $marketing_opt_in = false;
 
     #[Locked]
+    #[Session(key: 'souvenir.order')]
     public ?string $orderUuid = null;
 
     public function mount(Product $product): void
     {
         abort_unless($product->active, 404);
         $this->product = $product;
+
+        $order = $this->order;
+
+        // Resume only a live hold for this product; start over once it's paid or lapsed.
+        if ($order && ($order->product_id !== $product->id || $order->status !== OrderStatus::Pending || ! $order->hold_expires_at?->isFuture())) {
+            if ($order->isPaid()) {
+                $this->reset('email', 'consent_terms', 'marketing_opt_in');
+            }
+
+            $this->orderUuid = null;
+            unset($this->order);
+        }
     }
 
     #[Computed]

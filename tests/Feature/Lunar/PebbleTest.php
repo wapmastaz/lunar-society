@@ -62,6 +62,11 @@ class PebbleTest extends TestCase
             ->call('start')
             ->assertHasNoErrors();
 
+        // A reload goes straight back to the PayPal step.
+        Livewire::test('pages::souvenir-checkout', ['product' => $package])
+            ->assertSet('email', 'gift@example.test')
+            ->assertSet('orderUuid', Order::sole()->uuid);
+
         $order = Order::sole();
         $this->assertSame($package->id, $order->product_id);
         $this->assertNull($order->tier_id);

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Session;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -33,30 +34,83 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
 
     public int $step = 1;
 
+    // Answers are kept in the session so a page reload doesn't wipe the form.
+    #[Session(key: 'claim.tier')]
     public string $tierCode = 'standard';
+    #[Session(key: 'claim.plaque_name')]
     public string $plaque_name = '';
+    #[Session(key: 'claim.couple_addon')]
     public bool $couple_addon = false;
+    #[Session(key: 'claim.email')]
     public string $email = '';
+    #[Session(key: 'claim.city')]
     public string $city = '';
+    #[Session(key: 'claim.state')]
     public string $state = '';
+    #[Session(key: 'claim.postal_code')]
     public string $postal_code = '';
+    #[Session(key: 'claim.us_citizen')]
     public bool $us_citizen = false;
+    #[Session(key: 'claim.consent_terms')]
     public bool $consent_terms = false;
+    #[Session(key: 'claim.consent_spelling')]
     public bool $consent_spelling = false;
+    #[Session(key: 'claim.marketing_opt_in')]
     public bool $marketing_opt_in = false;
+    #[Session(key: 'claim.signature')]
     public string $signature = '';
 
+    // The held order, so a reload during payment goes straight back to PayPal.
     #[Locked]
+    #[Session(key: 'claim.order')]
     public ?string $orderUuid = null;
 
     public function mount(?string $tier = null): void
     {
         $tiers = $this->tiers;
         $requested = $tiers->firstWhere('code', $tier);
+        $current = $tiers->firstWhere('code', $this->tierCode);
 
-        $this->tierCode = ($requested && ! $requested->isSoldOut())
-            ? $requested->code
-            : ($tiers->first(fn (Tier $t) => ! $t->isSoldOut())?->code ?? 'standard');
+        if ($requested && ! $requested->isSoldOut()) {
+            $this->tierCode = $requested->code;
+        } elseif (! $current || $current->isSoldOut()) {
+            $this->tierCode = $tiers->first(fn (Tier $t) => ! $t->isSoldOut())?->code ?? 'standard';
+        }
+
+        $this->resumeOrder();
+    }
+
+    /**
+     * Pick up where the buyer left off: back on the payment step while the hold
+     * is alive, or a fresh form once the order is paid.
+     */
+    protected function resumeOrder(): void
+    {
+        $order = $this->order;
+
+        if (! $order) {
+            $this->orderUuid = null;
+
+            return;
+        }
+
+        if ($order->isPaid()) {
+            $this->reset();
+            unset($this->order);
+            $this->mount();
+
+            return;
+        }
+
+        if ($order->status === OrderStatus::Pending && $order->hold_expires_at?->isFuture()) {
+            $this->step = 2;
+
+            return;
+        }
+
+        // The hold lapsed: keep the answers, start the payment over.
+        $this->orderUuid = null;
+        unset($this->order);
     }
 
     #[Computed]

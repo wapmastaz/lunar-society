@@ -120,6 +120,27 @@ class CheckoutTest extends TestCase
         $this->assertSame(OrderStatus::Expired, Order::sole()->status);
     }
 
+    public function test_reloading_keeps_the_answers_and_the_payment_step(): void
+    {
+        $this->fill(Livewire::test('pages::claim'), ['plaque_name' => 'Jane Patriot', 'email' => 'jane@example.test', 'city' => 'Delray Beach']);
+
+        Livewire::test('pages::claim')
+            ->assertSet('plaque_name', 'Jane Patriot')
+            ->assertSet('email', 'jane@example.test')
+            ->assertSet('city', 'Delray Beach')
+            ->assertSet('step', 1);
+
+        $this->fill(Livewire::test('pages::claim', ['tier' => 'alpha']), $this->application())->call('reserve')->assertSet('step', 2);
+        $uuid = Order::sole()->uuid;
+
+        Livewire::test('pages::claim')->assertSet('step', 2)->assertSet('orderUuid', $uuid)->assertSet('tierCode', 'alpha');
+
+        // Once paid, the next visit starts a fresh form.
+        Order::sole()->update(['status' => OrderStatus::Paid, 'paid_at' => now()]);
+
+        Livewire::test('pages::claim')->assertSet('step', 1)->assertSet('orderUuid', null)->assertSet('plaque_name', '');
+    }
+
     public function test_newsletter_only_for_buyers_who_opt_in(): void
     {
         $this->fakePayPal('164.00');
