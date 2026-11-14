@@ -130,16 +130,16 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
                         <flux:field variant="inline">
                             <flux:checkbox wire:model="consent_terms" />
-                            <flux:label class="!leading-snug">
+                            <flux:label class="!leading-snug"><span class="block">
                                 I have read and agree to the <a href="{{ route('terms') }}" target="_blank" class="text-gold underline underline-offset-2">Terms of Service</a>.
-                                I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.
+                                I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.</span>
                             </flux:label>
                             <flux:error name="consent_terms" />
                         </flux:field>
 
                         <flux:field variant="inline">
                             <flux:checkbox wire:model="marketing_opt_in" />
-                            <flux:label class="!leading-snug">{{ config('lunar.marketing_consent') }} <span class="text-zinc-400">(Optional)</span></flux:label>
+                            <flux:label class="!leading-snug"><span class="block">{{ config('lunar.marketing_consent') }} <span class="text-zinc-400">(Optional)</span></span></flux:label>
                         </flux:field>
 
                         <flux:button type="submit" variant="primary" icon:trailing="arrow-right" class="h-12 w-full text-base">Continue to PayPal</flux:button>

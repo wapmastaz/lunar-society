@@ -352,38 +352,61 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
             <fieldset class="mt-8 border-t border-white/10 pt-7">
                 <legend class="sr-only">II. Contact</legend>
                 <p class="font-charter-title text-sm font-bold uppercase tracking-[0.25em] text-gold">II. Contact</p>
-                <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                    <flux:input wire:model="buyer_name" label="Full name" description="Your own full legal name." autocomplete="name" required class="sm:col-span-2" />
-                    <flux:input wire:model="email" type="email" label="Email address" description="Your receipt and certificate are sent here." autocomplete="email" required />
-                    <flux:input wire:model="phone" type="tel" label="Phone number" autocomplete="tel" required />
+                <div class="mt-5 grid gap-x-4 gap-y-5 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <flux:input wire:model="buyer_name" label="Full name" description="Your own full legal name." autocomplete="name" required />
+                    </div>
+                    <div>
+                        <flux:input wire:model="email" type="email" label="Email address" autocomplete="email" required />
+                    </div>
+                    <div>
+                        <flux:input wire:model="phone" type="tel" label="Phone number" autocomplete="tel" required />
+                    </div>
                 </div>
+                <p class="mt-2 text-sm text-zinc-400">Your receipt and certificate are sent to this email.</p>
             </fieldset>
 
             {{-- III. Shipping address --}}
             <fieldset class="mt-8 border-t border-white/10 pt-7">
                 <legend class="sr-only">III. Shipping address</legend>
                 <p class="font-charter-title text-sm font-bold uppercase tracking-[0.25em] text-gold">III. Shipping address</p>
-                <div class="mt-4 grid gap-4 sm:grid-cols-6">
-                    <flux:input wire:model="address_line1" label="Street address" autocomplete="address-line1" required class="sm:col-span-6" />
-                    <flux:input wire:model="address_line2" label="Apartment / Suite" badge="Optional" autocomplete="address-line2" class="sm:col-span-6" />
-                    <flux:input wire:model="city" label="City" autocomplete="address-level2" required class="sm:col-span-6" />
+                <div class="mt-5 grid gap-x-4 gap-y-5 sm:grid-cols-6">
+                    <div class="sm:col-span-4">
+                        <flux:input wire:model="address_line1" label="Street address" autocomplete="address-line1" required />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <flux:input wire:model="address_line2" label="Apt / Suite" placeholder="Optional" autocomplete="address-line2" />
+                    </div>
+                    <div class="sm:col-span-6">
+                        <flux:input wire:model="city" label="City" autocomplete="address-level2" required />
+                    </div>
                     @if ($country === 'US')
-                        <flux:select wire:model="state" label="State" autocomplete="address-level1" required class="sm:col-span-4">
-                            <flux:select.option value="">Choose…</flux:select.option>
-                            @foreach ($this::STATES as $code => $name)
+                        <div class="sm:col-span-4">
+                            <flux:select wire:model="state" label="State" autocomplete="address-level1" required>
+                                <flux:select.option value="">Choose a state</flux:select.option>
+                                @foreach ($this::STATES as $code => $name)
+                                    <flux:select.option value="{{ $code }}">{{ $name }}</flux:select.option>
+                                @endforeach
+                            </flux:select>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <flux:input wire:model="postal_code" label="ZIP code" inputmode="numeric" autocomplete="postal-code" maxlength="10" required />
+                        </div>
+                    @else
+                        <div class="sm:col-span-4">
+                            <flux:input wire:model="state" label="State / Province / Region" autocomplete="address-level1" required />
+                        </div>
+                        <div class="sm:col-span-2">
+                            <flux:input wire:model="postal_code" label="Postal code" autocomplete="postal-code" maxlength="20" required />
+                        </div>
+                    @endif
+                    <div class="sm:col-span-6">
+                        <flux:select wire:model.live="country" label="Country" autocomplete="country" required>
+                            @foreach (config('countries') as $code => $name)
                                 <flux:select.option value="{{ $code }}">{{ $name }}</flux:select.option>
                             @endforeach
                         </flux:select>
-                        <flux:input wire:model="postal_code" label="ZIP code" inputmode="numeric" autocomplete="postal-code" maxlength="10" required class="sm:col-span-2" />
-                    @else
-                        <flux:input wire:model="state" label="State / Province / Region" autocomplete="address-level1" required class="sm:col-span-4" />
-                        <flux:input wire:model="postal_code" label="Postal code" autocomplete="postal-code" maxlength="20" required class="sm:col-span-2" />
-                    @endif
-                    <flux:select wire:model.live="country" label="Country" autocomplete="country" required class="sm:col-span-6">
-                        @foreach (config('countries') as $code => $name)
-                            <flux:select.option value="{{ $code }}">{{ $name }}</flux:select.option>
-                        @endforeach
-                    </flux:select>
+                    </div>
                 </div>
             </fieldset>
 
@@ -425,30 +448,30 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
 
                 <flux:field variant="inline">
                     <flux:checkbox wire:model="us_citizen" />
-                    <flux:label class="!leading-snug">{{ config('lunar.citizenship') }}</flux:label>
+                    <flux:label class="!leading-snug"><span class="block">{{ config('lunar.citizenship') }}</span></flux:label>
                     <flux:error name="us_citizen" />
                 </flux:field>
 
                 <flux:field variant="inline">
                     <flux:checkbox wire:model="consent_terms" />
-                    <flux:label class="!leading-snug">
+                    <flux:label class="!leading-snug"><span class="block">
                         I have read the <a href="{{ route('charter') }}" target="_blank" class="text-gold underline underline-offset-2">Charter</a> and agree to the
                         <a href="{{ route('terms') }}" target="_blank" class="text-gold underline underline-offset-2">Terms of Service</a>.
                         I understand and agree that this is an independent project unaffiliated with Donald J. Trump or any government agency, as detailed in the
-                        <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.
+                        <a href="{{ route('disclaimer') }}" target="_blank" class="text-gold underline underline-offset-2">Disclaimer</a>.</span>
                     </flux:label>
                     <flux:error name="consent_terms" />
                 </flux:field>
 
                 <flux:field variant="inline">
                     <flux:checkbox wire:model="consent_spelling" />
-                    <flux:label class="!leading-snug">{{ config('lunar.consent_spelling') }}</flux:label>
+                    <flux:label class="!leading-snug"><span class="block">{{ config('lunar.consent_spelling') }}</span></flux:label>
                     <flux:error name="consent_spelling" />
                 </flux:field>
 
                 <flux:field variant="inline">
                     <flux:checkbox wire:model="marketing_opt_in" />
-                    <flux:label class="!leading-snug">{{ config('lunar.marketing_consent') }} <span class="text-zinc-400">(Optional)</span></flux:label>
+                    <flux:label class="!leading-snug"><span class="block">{{ config('lunar.marketing_consent') }} <span class="text-zinc-400">(Optional)</span></span></flux:label>
                 </flux:field>
             </div>
 
