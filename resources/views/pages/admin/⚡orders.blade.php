@@ -63,6 +63,8 @@ new #[Title('Orders')] class extends Component {
             ->when($this->search !== '', fn ($q) => $q->where(fn ($q) => $q
                 ->where('plaque_name', 'like', "%{$this->search}%")
                 ->orWhere('email', 'like', "%{$this->search}%")
+                ->orWhere('buyer_name', 'like', "%{$this->search}%")
+                ->orWhere('phone', 'like', "%{$this->search}%")
                 ->when(is_numeric(ltrim($this->search, '#')), fn ($q) => $q->orWhere('slot_number', (int) ltrim($this->search, '#')))))
             ->orderByRaw('slot_number is null, slot_number')
             ->latest('paid_at')
@@ -129,7 +131,7 @@ new #[Title('Orders')] class extends Component {
     </div>
 
     <div class="flex flex-col gap-3 sm:flex-row">
-        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Name, email or slot #" class="sm:max-w-xs" clearable />
+        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Name, email, phone or slot #" class="sm:max-w-xs" clearable />
         <flux:select wire:model.live="status" class="sm:max-w-40">
             <flux:select.option value="paid">Paid</flux:select.option>
             <flux:select.option value="pending">Pending</flux:select.option>
@@ -154,7 +156,7 @@ new #[Title('Orders')] class extends Component {
             <flux:table.column>Slot</flux:table.column>
             <flux:table.column>Plaque name</flux:table.column>
             <flux:table.column>Item</flux:table.column>
-            <flux:table.column>Email</flux:table.column>
+            <flux:table.column>Buyer</flux:table.column>
             <flux:table.column>Amount</flux:table.column>
             <flux:table.column>Status</flux:table.column>
             <flux:table.column>Paid</flux:table.column>
@@ -174,7 +176,16 @@ new #[Title('Orders')] class extends Component {
                         @endif
                     </flux:table.cell>
                     <flux:table.cell>{{ $order->itemLabel() }}</flux:table.cell>
-                    <flux:table.cell>{{ $order->email }}</flux:table.cell>
+                    <flux:table.cell>
+                        <span class="block font-medium">{{ $order->buyer_name ?? '·' }}</span>
+                        <span class="block text-xs text-zinc-500">{{ $order->email }}@if ($order->phone) · {{ $order->phone }}@endif</span>
+                        @if ($order->address_line1)
+                            <span class="block text-xs text-zinc-500">{{ $order->address_line1 }}@if ($order->address_line2), {{ $order->address_line2 }}@endif, {{ $order->city }}, {{ $order->state }} {{ $order->postal_code }}, {{ $order->country }}</span>
+                        @endif
+                        @if ($order->marketing_opt_in)
+                            <flux:badge size="sm" color="sky" class="mt-1">newsletter</flux:badge>
+                        @endif
+                    </flux:table.cell>
                     <flux:table.cell>{{ $order->amountLabel() }}</flux:table.cell>
                     <flux:table.cell>
                         <flux:badge size="sm" :color="match ($order->status) { OrderStatus::Paid => 'green', OrderStatus::Pending => 'blue', OrderStatus::Refunded => 'red', default => 'zinc' }">{{ $order->status->value }}</flux:badge>

@@ -56,7 +56,7 @@ class Registry
      * The couple/family add-on applies when the buyer asks for it or the
      * name clearly needs it, whichever the form sent.
      *
-     * @param  array{email: string, plaque_name: string, buyer_name?: string|null, city?: string|null, state?: string|null, postal_code?: string|null, marketing_opt_in?: bool, couple_addon?: bool, listener_handle?: string|null, show_full_name?: bool, consent_text?: string|null, ip_address?: string|null}  $data
+     * @param  array{email: string, plaque_name: string, buyer_name?: string|null, phone?: string|null, address_line1?: string|null, address_line2?: string|null, city?: string|null, country?: string|null, state?: string|null, postal_code?: string|null, marketing_opt_in?: bool, couple_addon?: bool, listener_handle?: string|null, show_full_name?: bool, consent_text?: string|null, ip_address?: string|null}  $data
      *
      * @throws SoldOutException
      */
@@ -78,7 +78,11 @@ class Registry
                 'processing_fee_cents' => self::processingFeeCents(),
                 'email' => $data['email'],
                 'buyer_name' => $data['buyer_name'] ?? null,
+                'phone' => $data['phone'] ?? null,
+                'address_line1' => $data['address_line1'] ?? null,
+                'address_line2' => $data['address_line2'] ?? null,
                 'city' => $data['city'] ?? null,
+                'country' => $data['country'] ?? null,
                 'state' => $data['state'] ?? null,
                 'postal_code' => $data['postal_code'] ?? null,
                 'marketing_opt_in' => $data['marketing_opt_in'] ?? false,

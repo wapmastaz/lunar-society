@@ -79,6 +79,22 @@ class SiteTest extends TestCase
         $this->assertStringStartsWith('60,', $lines[2]);
     }
 
+    public function test_shipping_export_includes_registration_addresses(): void
+    {
+        $this->paidOrder('standard', [
+            'plaque_name' => 'Jane Patriot', 'buyer_name' => 'Jane Patriot', 'phone' => '561-555-0100',
+            'address_line1' => '100 Ocean Blvd', 'address_line2' => 'Apt 4', 'city' => 'Delray Beach',
+            'state' => 'FL', 'postal_code' => '33445', 'country' => 'US', 'marketing_opt_in' => true,
+        ]);
+
+        $csv = $this->actingAs(User::factory()->create())->get(route('admin.exports.shipping'))->assertOk()->streamedContent();
+
+        $this->assertStringContainsString('"Jane Patriot","100 Ocean Blvd","Apt 4","Delray Beach",FL,33445,US,561-555-0100', $csv);
+        $this->assertStringContainsString(',yes', $csv);
+
+        $this->get(route('admin.orders'))->assertSee('100 Ocean Blvd')->assertSee('561-555-0100');
+    }
+
     public function test_public_site_stays_dark_whatever_the_system_setting(): void
     {
         $html = $this->get('/claim')->getContent();

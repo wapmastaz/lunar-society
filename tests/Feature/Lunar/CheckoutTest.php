@@ -35,7 +35,11 @@ class CheckoutTest extends TestCase
     {
         return array_merge([
             'plaque_name' => 'Jane Patriot',
+            'buyer_name' => 'Jane Patriot',
             'email' => 'jane@example.test',
+            'phone' => '(561) 555-0100',
+            'address_line1' => '100 Ocean Blvd',
+            'address_line2' => 'Apt 4',
             'city' => 'Delray Beach',
             'state' => 'FL',
             'postal_code' => '33445',
@@ -63,7 +67,8 @@ class CheckoutTest extends TestCase
             ->assertSee('B: General ($149)')
             ->call('reserve')
             ->assertHasErrors([
-                'plaque_name' => 'required', 'email' => 'required', 'city' => 'required', 'state' => 'required',
+                'plaque_name' => 'required', 'buyer_name' => 'required', 'email' => 'required', 'phone' => 'required',
+                'address_line1' => 'required', 'city' => 'required', 'state' => 'required',
                 'postal_code' => 'required', 'us_citizen' => 'accepted', 'consent_terms' => 'accepted',
                 'consent_spelling' => 'accepted', 'signature' => 'required',
             ])
@@ -75,6 +80,20 @@ class CheckoutTest extends TestCase
             ->assertSet('step', 1);
 
         $this->assertSame(0, Order::count());
+    }
+
+    public function test_addresses_outside_the_us_take_a_free_text_region(): void
+    {
+        $component = Livewire::test('pages::claim')->set('country', 'GB')->assertSee('State / Province / Region');
+
+        $this->fill($component, $this->application(['country' => 'GB', 'state' => 'Greater London', 'postal_code' => 'SW1A 1AA', 'phone' => '+44 20 7946 0000']))
+            ->set('country', 'GB')
+            ->set('state', 'Greater London')
+            ->set('postal_code', 'SW1A 1AA')
+            ->call('reserve')
+            ->assertHasNoErrors();
+
+        $this->assertSame(['GB', 'Greater London', 'SW1A 1AA'], [Order::sole()->country, Order::sole()->state, Order::sole()->postal_code]);
     }
 
     public function test_couple_names_force_the_add_on(): void
@@ -101,7 +120,10 @@ class CheckoutTest extends TestCase
         $this->assertSame(OrderStatus::Pending, $order->status);
         $this->assertSame(24400, $order->amount_cents);
         $this->assertSame('Jane Patriot', $order->buyer_name);
-        $this->assertSame(['Delray Beach', 'FL', '33445'], [$order->city, $order->state, $order->postal_code]);
+        $this->assertSame(
+            ['100 Ocean Blvd', 'Apt 4', 'Delray Beach', 'FL', '33445', 'US', '(561) 555-0100'],
+            [$order->address_line1, $order->address_line2, $order->city, $order->state, $order->postal_code, $order->country, $order->phone],
+        );
         $this->assertTrue($order->marketing_opt_in);
         $this->assertNotNull($order->consented_at);
         $this->assertStringContainsString('United States citizen', $order->consent_text);

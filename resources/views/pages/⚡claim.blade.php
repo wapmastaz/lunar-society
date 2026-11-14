@@ -41,14 +41,24 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
     public string $plaque_name = '';
     #[Session(key: 'claim.couple_addon')]
     public bool $couple_addon = false;
+    #[Session(key: 'claim.buyer_name')]
+    public string $buyer_name = '';
     #[Session(key: 'claim.email')]
     public string $email = '';
+    #[Session(key: 'claim.phone')]
+    public string $phone = '';
+    #[Session(key: 'claim.address_line1')]
+    public string $address_line1 = '';
+    #[Session(key: 'claim.address_line2')]
+    public string $address_line2 = '';
     #[Session(key: 'claim.city')]
     public string $city = '';
     #[Session(key: 'claim.state')]
     public string $state = '';
     #[Session(key: 'claim.postal_code')]
     public string $postal_code = '';
+    #[Session(key: 'claim.country')]
+    public string $country = 'US';
     #[Session(key: 'claim.us_citizen')]
     public bool $us_citizen = false;
     #[Session(key: 'claim.consent_terms')]
@@ -152,10 +162,19 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
         return [
             'plaque_name' => ['required', 'string', 'min:2', 'max:'.config('lunar.name_max_length'), "regex:/^[A-Za-z][A-Za-z .'&\-]*$/"],
             'couple_addon' => ['boolean'],
+            'buyer_name' => ['required', 'string', 'min:2', 'max:100'],
             'email' => ['required', 'email:rfc', 'max:255'],
+            'phone' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9 ().\-]{7,25}$/'],
+            'address_line1' => ['required', 'string', 'max:150'],
+            'address_line2' => ['nullable', 'string', 'max:150'],
             'city' => ['required', 'string', 'max:100'],
-            'state' => ['required', 'in:'.implode(',', array_keys(self::STATES))],
-            'postal_code' => ['required', 'regex:/^\d{5}(-\d{4})?$/'],
+            'country' => ['required', 'in:'.implode(',', array_keys(config('countries')))],
+            'state' => $this->country === 'US'
+                ? ['required', 'in:'.implode(',', array_keys(self::STATES))]
+                : ['required', 'string', 'max:100'],
+            'postal_code' => $this->country === 'US'
+                ? ['required', 'regex:/^\d{5}(-\d{4})?$/']
+                : ['required', 'string', 'max:20'],
             'tierCode' => ['required', 'exists:tiers,code'],
             'us_citizen' => ['accepted'],
             'consent_terms' => ['accepted'],
@@ -170,6 +189,7 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
         return [
             'plaque_name.regex' => 'Use letters, spaces and . \' & - only. No numbers, emojis or other symbols.',
             'postal_code.regex' => 'Enter a 5-digit ZIP code.',
+            'phone.regex' => 'Enter a phone number using digits, spaces, +, ( ) or -.',
             'state.in' => 'Choose a state.',
             'us_citizen.accepted' => 'Registration is open to US citizens only.',
             'consent_terms.accepted' => 'Please confirm you have read the Charter and agree to the terms.',
@@ -180,7 +200,14 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
 
     protected function validationAttributes(): array
     {
-        return ['plaque_name' => 'name on the certificate', 'tierCode' => 'membership', 'postal_code' => 'ZIP code'];
+        return [
+            'plaque_name' => 'name on the certificate',
+            'tierCode' => 'membership',
+            'buyer_name' => 'full name',
+            'address_line1' => 'street address',
+            'address_line2' => 'apartment or suite',
+            'postal_code' => $this->country === 'US' ? 'ZIP code' : 'postal code',
+        ];
     }
 
     public function updatedPlaqueName(): void
@@ -191,6 +218,13 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
         if ($this->nameNeedsAddon) {
             $this->couple_addon = true;
         }
+    }
+
+    public function updatedCountry(): void
+    {
+        // US uses state codes from the list; other countries type a region.
+        $this->state = '';
+        $this->resetValidation(['state', 'postal_code']);
     }
 
     public function updatedCoupleAddon(bool $value): void
@@ -227,8 +261,12 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
         try {
             $order = $registry->reserve($this->selectedTier, [
                 'email' => $this->email,
-                'buyer_name' => trim($this->signature),
+                'buyer_name' => trim($this->buyer_name),
+                'phone' => trim($this->phone),
+                'address_line1' => trim($this->address_line1),
+                'address_line2' => trim($this->address_line2) ?: null,
                 'city' => trim($this->city),
+                'country' => $this->country,
                 'state' => $this->state,
                 'postal_code' => $this->postal_code,
                 'marketing_opt_in' => $this->marketing_opt_in,
@@ -310,26 +348,42 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
                 </div>
             </fieldset>
 
-            {{-- II. Email --}}
+            {{-- II. Contact --}}
             <fieldset class="mt-8 border-t border-white/10 pt-7">
-                <legend class="sr-only">II. Email address</legend>
-                <p class="font-charter-title text-sm font-bold uppercase tracking-[0.25em] text-gold">II. Email address</p>
-                <flux:input wire:model="email" type="email" class="mt-4" autocomplete="email" required aria-label="Email address" description="Your receipt and certificate are sent here." />
+                <legend class="sr-only">II. Contact</legend>
+                <p class="font-charter-title text-sm font-bold uppercase tracking-[0.25em] text-gold">II. Contact</p>
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <flux:input wire:model="buyer_name" label="Full name" description="Your own full legal name." autocomplete="name" required class="sm:col-span-2" />
+                    <flux:input wire:model="email" type="email" label="Email address" description="Your receipt and certificate are sent here." autocomplete="email" required />
+                    <flux:input wire:model="phone" type="tel" label="Phone number" autocomplete="tel" required />
+                </div>
             </fieldset>
 
-            {{-- III. Area --}}
+            {{-- III. Shipping address --}}
             <fieldset class="mt-8 border-t border-white/10 pt-7">
-                <legend class="sr-only">III. Area</legend>
-                <p class="font-charter-title text-sm font-bold uppercase tracking-[0.25em] text-gold">III. Area</p>
-                <div class="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1fr)_12rem_8rem]">
-                    <flux:input wire:model="city" label="City" autocomplete="address-level2" required />
-                    <flux:select wire:model="state" label="State" autocomplete="address-level1" required>
-                        <flux:select.option value="">Choose…</flux:select.option>
-                        @foreach ($this::STATES as $code => $name)
+                <legend class="sr-only">III. Shipping address</legend>
+                <p class="font-charter-title text-sm font-bold uppercase tracking-[0.25em] text-gold">III. Shipping address</p>
+                <div class="mt-4 grid gap-4 sm:grid-cols-6">
+                    <flux:input wire:model="address_line1" label="Street address" autocomplete="address-line1" required class="sm:col-span-6" />
+                    <flux:input wire:model="address_line2" label="Apartment / Suite" badge="Optional" autocomplete="address-line2" class="sm:col-span-6" />
+                    <flux:input wire:model="city" label="City" autocomplete="address-level2" required class="sm:col-span-6" />
+                    @if ($country === 'US')
+                        <flux:select wire:model="state" label="State" autocomplete="address-level1" required class="sm:col-span-4">
+                            <flux:select.option value="">Choose…</flux:select.option>
+                            @foreach ($this::STATES as $code => $name)
+                                <flux:select.option value="{{ $code }}">{{ $name }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        <flux:input wire:model="postal_code" label="ZIP code" inputmode="numeric" autocomplete="postal-code" maxlength="10" required class="sm:col-span-2" />
+                    @else
+                        <flux:input wire:model="state" label="State / Province / Region" autocomplete="address-level1" required class="sm:col-span-4" />
+                        <flux:input wire:model="postal_code" label="Postal code" autocomplete="postal-code" maxlength="20" required class="sm:col-span-2" />
+                    @endif
+                    <flux:select wire:model.live="country" label="Country" autocomplete="country" required class="sm:col-span-6">
+                        @foreach (config('countries') as $code => $name)
                             <flux:select.option value="{{ $code }}">{{ $name }}</flux:select.option>
                         @endforeach
                     </flux:select>
-                    <flux:input wire:model="postal_code" label="ZIP" inputmode="numeric" autocomplete="postal-code" maxlength="10" required />
                 </div>
             </fieldset>
 

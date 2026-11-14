@@ -27,28 +27,37 @@ class ExportController extends Controller
     }
 
     /**
-     * Paid orders with a shipping address from PayPal.
+     * Paid orders with an address: the one typed on the registration form,
+     * or the one given to PayPal (souvenir orders).
      */
     public function shipping(): StreamedResponse
     {
-        $rows = Order::query()->paid()->with('tier', 'product')->whereNotNull('shipping')->orderBy('paid_at')->get()
-            ->map(fn (Order $o) => [
-                $o->uuid,
-                $o->paid_at?->toDateTimeString(),
-                $o->itemLabel(),
-                $o->slotLabel(),
-                $o->plaque_name,
-                Arr::get($o->shipping, 'name.full_name'),
-                Arr::get($o->shipping, 'address.address_line_1'),
-                Arr::get($o->shipping, 'address.address_line_2'),
-                Arr::get($o->shipping, 'address.admin_area_2'),
-                Arr::get($o->shipping, 'address.admin_area_1'),
-                Arr::get($o->shipping, 'address.postal_code'),
-                Arr::get($o->shipping, 'address.country_code'),
-                $o->email,
-            ]);
+        $rows = Order::query()->paid()->with('tier', 'product')
+            ->where(fn ($q) => $q->whereNotNull('address_line1')->orWhereNotNull('shipping'))
+            ->orderBy('paid_at')->get()
+            ->map(function (Order $o) {
+                $form = $o->address_line1 !== null;
 
-        return $this->csv('shipping', ['Order', 'Paid at', 'Item', 'Slot', 'Plaque name', 'Ship to', 'Address 1', 'Address 2', 'City', 'State', 'Postal code', 'Country', 'Email'], $rows->all());
+                return [
+                    $o->uuid,
+                    $o->paid_at?->toDateTimeString(),
+                    $o->itemLabel(),
+                    $o->slotLabel(),
+                    $o->plaque_name,
+                    $form ? $o->buyer_name : Arr::get($o->shipping, 'name.full_name'),
+                    $form ? $o->address_line1 : Arr::get($o->shipping, 'address.address_line_1'),
+                    $form ? $o->address_line2 : Arr::get($o->shipping, 'address.address_line_2'),
+                    $form ? $o->city : Arr::get($o->shipping, 'address.admin_area_2'),
+                    $form ? $o->state : Arr::get($o->shipping, 'address.admin_area_1'),
+                    $form ? $o->postal_code : Arr::get($o->shipping, 'address.postal_code'),
+                    $form ? $o->country : Arr::get($o->shipping, 'address.country_code'),
+                    $o->phone,
+                    $o->email,
+                    $o->marketing_opt_in ? 'yes' : 'no',
+                ];
+            });
+
+        return $this->csv('shipping', ['Order', 'Paid at', 'Item', 'Slot', 'Plaque name', 'Ship to', 'Address 1', 'Address 2', 'City', 'State', 'Postal code', 'Country', 'Phone', 'Email', 'Newsletter opt-in'], $rows->all());
     }
 
     /**
