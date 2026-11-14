@@ -63,6 +63,7 @@ new #[Layout('layouts::site')] #[Title('The Founders')] class extends Component 
         <p class="eyebrow animate-rise">The plaque · Live</p>
         <h1 class="animate-rise mt-4 font-display text-6xl text-white sm:text-7xl" style="--reveal-delay: 100ms">The Founders</h1>
         <p class="mx-auto mt-4 max-w-xl text-lg text-zinc-300">Every name below will be laser engraved on the Founders Plaque, in Founder number order.</p>
+        <flux:button href="{{ route('plaque') }}" variant="ghost" icon="photo" class="mt-6 h-11 rounded-full border border-gold/50 px-5 text-gold hover:text-gold-light">View the full plaque</flux:button>
     </header>
 
     <div class="mx-auto mt-8 max-w-lg">

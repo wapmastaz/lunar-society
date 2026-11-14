@@ -210,6 +210,27 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         </div>
     </section>
 
+    {{-- The plaque itself (facsimile); full view on /plaque --}}
+    <section aria-labelledby="plaque-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
+        <div class="grid items-center gap-10 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f1a3a] via-panel to-[#1a1710] p-7 sm:p-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16" data-reveal>
+            <a href="{{ route('plaque') }}" class="group relative mx-auto block h-80 w-full max-w-sm overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-2xl shadow-black/60 sm:h-[26rem]">
+                <img src="{{ asset('images/plaque/founders-plaque.webp') }}" width="848" height="1264" loading="lazy"
+                    alt="Facsimile of the Lunar Society Founders Plaque"
+                    class="size-full object-cover object-top transition duration-700 group-hover:scale-105">
+                <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/80 to-transparent px-4 pb-4 pt-12 text-center text-sm font-medium text-gold">Tap to see the full plaque</span>
+            </a>
+            <div>
+                <p class="eyebrow">Facsimile replica</p>
+                <h2 id="plaque-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white">The Founders Plaque</h2>
+                <p class="mt-5 text-lg leading-relaxed text-zinc-300">
+                    {{ config('lunar.plaque_size') }}, made of aerospace-grade 6061-T6 aluminum and laser engraved with the names of
+                    {{ number_format(config('lunar.capacity')) }} founders, for the future Moon base.
+                </p>
+                <flux:button href="{{ route('plaque') }}" variant="primary" icon:trailing="arrow-right" class="mt-8 h-12 rounded-full px-7 text-base">View the full plaque</flux:button>
+            </div>
+        </div>
+    </section>
+
     {{-- Tiers --}}
     <section id="tiers" aria-labelledby="tiers-heading" class="mx-auto mt-24 max-w-7xl scroll-mt-6 px-4 sm:px-6">
         <div class="text-center" data-reveal>

@@ -42,7 +42,7 @@ Satirical context line under it:
 - Button: CLAIM A FOUNDER SLOT ($149)
 
 **Why only 1,000?**
-The plaque is 11.5" x 8.5". At a readable engraving size, that fits exactly 1,000 names in a four-column grid. Once slot #1000 is claimed, the plaque is closed for good.
+The plaque is 12" x 18". At a readable engraving size, that fits exactly 1,000 names in a five-column grid. Once slot #1000 is claimed, the plaque is closed for good.
 
 **The mission (honest roadmap)**
 1. Fill all 1,000 slots.
@@ -93,7 +93,7 @@ Your payment is confirmed and you are Founder #[slot]. A confirmation email with
 **Your registry details**
 - Name for the plaque: [plaque name]
 - Founder number: #[slot] of 1,000 ([tier])
-- Plaque: 11.5" x 8.5" aerospace-grade 6061-T6 aluminum
+- Plaque: 12" x 18" aerospace-grade 6061-T6 aluminum
 
 Spotted a typo? Reply to this email before [lock date]. After that the name is locked for engraving.
 
@@ -113,7 +113,7 @@ Footer: the disclaimer.
 ## FAQ (merged)
 
 **What is the Founders Plaque?**
-A custom 11.5" x 8.5" plaque made of aerospace-grade 6061-T6 aluminum, laser engraved with the names of exactly 1,000 supporters and listeners of Adventures With Mr SuperTrump.
+A custom 12" x 18" plaque made of aerospace-grade 6061-T6 aluminum, laser engraved with the names of exactly 1,000 supporters and listeners of Adventures With Mr SuperTrump.
 
 **Is my name really going to the Moon?**
 That's our goal, not a guarantee. We intend to pursue a commercial lunar payload slot as commercial Moon missions mature, likely in the mid-2030s. Space timelines and payload costs are outside our control. If the plaque can't fly, it will be permanently displayed in the Adventures With Mr SuperTrump studio. Either way, your name is on it.

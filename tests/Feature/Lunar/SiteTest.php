@@ -19,7 +19,7 @@ class SiteTest extends TestCase
 
     public function test_every_public_page_shows_the_disclaimer_as_text(): void
     {
-        foreach (['/', '/claim', '/founders', '/souvenirs', '/charter', '/faq', '/about', '/terms', '/privacy', '/disclaimer'] as $uri) {
+        foreach (['/', '/claim', '/founders', '/souvenirs', '/charter', '/plaque', '/faq', '/about', '/terms', '/privacy', '/disclaimer'] as $uri) {
             $this->get($uri)
                 ->assertOk()
                 ->assertSee(config('lunar.disclaimer'))
@@ -77,6 +77,20 @@ class SiteTest extends TestCase
         $this->assertStringStartsWith('Slot,Tier,"Plaque name"', $lines[0]);
         $this->assertStringStartsWith("1,\"Alpha Founder\",\"'=HYPERLINK Evil\"", $lines[1]);
         $this->assertStringStartsWith('60,', $lines[2]);
+    }
+
+    public function test_plaque_facsimile_is_linked_from_home_and_founders(): void
+    {
+        $this->get('/plaque')
+            ->assertOk()
+            ->assertSee('images/plaque/founders-plaque.webp', false)
+            ->assertSee('12" x 18"')
+            ->assertSee('6061-T6')
+            ->assertSee('Facsimile mockup');
+
+        $this->get('/')->assertSee(route('plaque'), false)->assertSee('View the full plaque');
+        $this->get('/founders')->assertSee(route('plaque'), false);
+        $this->get('/faq')->assertSee('12" x 18"')->assertDontSee('11.5');
     }
 
     public function test_shipping_export_includes_registration_addresses(): void

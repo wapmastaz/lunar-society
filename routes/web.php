@@ -14,6 +14,7 @@ Route::livewire('souvenirs/{product}', 'pages::souvenir-checkout')->name('souven
 Route::livewire('orders/{order}', 'pages::order-status')->name('orders.show');
 
 Route::view('charter', 'site.charter')->name('charter');
+Route::view('plaque', 'site.plaque')->name('plaque');
 Route::view('faq', 'site.faq')->name('faq');
 Route::view('about', 'site.about')->name('about');
 Route::view('terms', 'site.terms')->name('terms');

@@ -9,7 +9,7 @@ Welcome to {{ config('lunar.brand') }}! Your name is now reserved on the Founder
 
 - **Name for the plaque:** {{ $order->plaque_name }}
 - **Founder number:** {{ $order->slotLabel() }} of 1,000 ({{ $order->tier->name }})
-- **Plaque:** 11.5" x 8.5" aerospace-grade 6061-T6 aluminum
+- **Plaque:** {{ config('lunar.plaque_size') }} {{ config('lunar.plaque_material') }}
 
 Spotted a typo? Reply to this email before **{{ $order->locks_at?->timezone('America/New_York')->format('F j, Y \a\t g:i A T') }}**. After that the name is locked for engraving.
 
