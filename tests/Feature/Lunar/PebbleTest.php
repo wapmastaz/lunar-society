@@ -20,20 +20,46 @@ class PebbleTest extends TestCase
         $this->setUpRegistry();
     }
 
-    public function test_affiliate_package_is_hidden_when_its_price_is_zero(): void
+    public function test_contributions_are_listed_apart_from_founders_and_hide_at_zero(): void
     {
         config(['lunar.affiliate.price' => 0]);
         $this->seed(ProductSeeder::class);
 
         $this->assertFalse(Product::firstWhere('slug', 'affiliate-membership')->active);
+        $this->get('/souvenirs/affiliate-membership')->assertNotFound();
 
         $this->get('/')
-            ->assertSee('Introducing the Affiliate Membership Package')
-            ->assertSee('Coming soon')
-            ->assertDontSee('View package &amp; join', false);
+            ->assertSee('We Need a Little Help from Our Friends')
+            ->assertSee('separate from Registered Founder memberships')
+            ->assertSee('Supporter')
+            ->assertSee('$25')
+            ->assertSee('Generous Supporter')
+            ->assertSee('$49')
+            ->assertSee('Moon Dust Sample')
+            ->assertSee('$99')
+            ->assertSee('Alpha Founder')
+            ->assertSee('Beta Founder')
+            ->assertSee('MJ Schultz, aka Mr SuperTrump, occupies positions #001 to #005')
+            ->assertSee('Holiday Gift Delivery Notice');
+    }
 
-        $this->get('/souvenirs/affiliate-membership')->assertNotFound();
-        $this->get('/claim')->assertDontSee('Also available: the Affiliate Membership Package');
+    public function test_contributions_only_charge_the_fee_when_they_ship(): void
+    {
+        $this->seed(ProductSeeder::class);
+
+        foreach (['supporter' => [2500, 0], 'moon-dust-sample' => [11400, 1500]] as $slug => [$amount, $fee]) {
+            Livewire::test('pages::souvenir-checkout', ['product' => Product::firstWhere('slug', $slug)])
+                ->set('email', "{$slug}@example.test")
+                ->set('consent_terms', true)
+                ->call('start')
+                ->assertHasNoErrors();
+
+            $order = Order::where('email', "{$slug}@example.test")->sole();
+            $this->assertSame([$amount, $fee], [$order->amount_cents, $order->processing_fee_cents]);
+        }
+
+        $this->get('/souvenirs/supporter')->assertSee('not tax-deductible')->assertDontSee('+ $15 processing');
+        $this->get('/souvenirs/moon-dust-sample')->assertSee('lunar meteorite dust')->assertSee('Holiday Gift Delivery Notice');
     }
 
     public function test_affiliate_package_costs_79_plus_processing_and_ships(): void
@@ -41,12 +67,12 @@ class PebbleTest extends TestCase
         Product::create(['slug' => 'space-pebble', 'name' => 'Old pebble', 'price_cents' => 0, 'active' => false]);
         $this->seed(ProductSeeder::class);
 
-        $package = Product::sole();
-        $this->assertSame('affiliate-membership', $package->slug);
+        $package = Product::firstWhere('slug', 'affiliate-membership');
+        $this->assertSame(0, Product::where('slug', 'space-pebble')->count());
         $this->assertTrue($package->active);
         $this->assertSame(7900, $package->price_cents);
 
-        $this->get('/')->assertSee('View package &amp; join', false)->assertSee('$79')->assertSee('+ $15 processing');
+        $this->get('/')->assertSee('Affiliate Membership Package')->assertSee('$79')->assertSee('+ $15 processing');
         $this->get('/claim')->assertSee('Also available: the Affiliate Membership Package');
         $this->get('/faq')->assertSee('What is the Affiliate Membership Package?')->assertSee('not lunar material');
 

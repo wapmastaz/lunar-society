@@ -51,6 +51,19 @@ return [
 
     'pebble_included' => (bool) env('LUNAR_PEBBLE_INCLUDED', false),
 
+    // The physical Founder gift package, mailed to the address on the registration form.
+    'founder_package' => [
+        'A personalized Lunar Society certificate',
+        'A Lunar Society presentation folder',
+        'A vial of lunar meteorite dust with its certificate of authenticity',
+        'Confirmation of your name\'s inclusion on the Founders Plaque',
+        'Other special Lunar Society collectibles',
+    ],
+
+    'delivery_by' => 'January 31, 2027',
+
+    'delivery_notice' => 'Physical gift packages are expected to be delivered by January 31, 2027. Please consider this delivery timeframe when purchasing a membership as a Christmas gift.',
+
     // The $79 Affiliate Membership Package (affiliate membership + the Space Pebble
     // Collectible). Not a Founder slot. Set the price to 0 to hide it; run
     // `php artisan db:seed --class=ProductSeeder --force` after changing these.
@@ -58,6 +71,13 @@ return [
         'slug' => 'affiliate-membership',
         'price' => env('LUNAR_AFFILIATE_PRICE', 79), // dollars
         'image' => env('LUNAR_AFFILIATE_IMAGE', env('LUNAR_PEBBLE_IMAGE')), // path under public/
+    ],
+
+    // Appreciative Contributions, separate from Founder memberships (dollars; 0 hides one).
+    'contributions' => [
+        'supporter' => env('LUNAR_SUPPORTER_PRICE', 25),
+        'generous-supporter' => env('LUNAR_GENEROUS_SUPPORTER_PRICE', 49),
+        'moon-dust-sample' => env('LUNAR_MOON_DUST_PRICE', 99),
     ],
 
     'shipping_cutoffs' => [

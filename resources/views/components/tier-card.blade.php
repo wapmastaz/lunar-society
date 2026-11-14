@@ -64,7 +64,7 @@
             <flux:button disabled class="w-full">{{ Str::upper($tier->name) }} SLOTS SOLD OUT</flux:button>
         @else
             <flux:button href="{{ route('claim', $tier->code) }}" :variant="$alpha ? 'primary' : 'outline'" class="w-full">
-                {{ $alpha ? 'Claim an Alpha slot' : 'Claim a Standard slot' }}
+                {{ $alpha ? 'Claim an Alpha slot' : 'Claim a Beta slot' }}
             </flux:button>
         @endif
     </div>

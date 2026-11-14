@@ -88,7 +88,11 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
                 <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="aspect-square w-full rounded-3xl object-cover shadow-2xl shadow-black/60 ring-1 ring-white/15">
             @else
                 <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-panel via-[#121729] to-[#1a1710] p-8">
-                    <x-pebble-art class="mx-auto w-full max-w-md" />
+                    @if ($product->slug === config('lunar.affiliate.slug'))
+                        <x-pebble-art class="mx-auto w-full max-w-md" />
+                    @else
+                        <x-logo-mark large class="mx-auto w-full max-w-sm" />
+                    @endif
                 </div>
             @endif
         </div>
@@ -96,7 +100,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
         <div class="animate-rise" style="--reveal-delay: 120ms">
             <p class="eyebrow">{{ $product->tagline ?? 'Lunar Society collectible' }}</p>
             <h1 class="mt-4 font-display text-5xl leading-[1.02] text-white sm:text-6xl">{{ $product->name }}</h1>
-            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }} <span class="font-sans text-base text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span></p>
+            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="font-sans text-base text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span>@endif</p>
 
             @if ($product->description)
                 <p class="mt-5 leading-relaxed text-zinc-300">{{ $product->description }}</p>
@@ -115,18 +119,25 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
             @endif
 
             <p class="mt-6 text-sm text-zinc-400">
-                The Space Pebble is a commemorative keepsake, not lunar material. This package does not include a Founder slot or a name on the Founders Plaque.
-                <a href="{{ route('claim') }}" class="text-gold underline underline-offset-2">Claim a founder slot</a>.
+                Separate from Registered Founder memberships: this does not include a Founder slot or a name on the Founders Plaque.
+                @if ($product->slug === config('lunar.affiliate.slug'))
+                    The Space Pebble is a commemorative keepsake, not lunar material.
+                @endif
+                <a href="{{ route('claim') }}" class="text-gold underline underline-offset-2">Become a Founder</a>.
             </p>
-            <p class="mt-2 text-sm text-zinc-400">
-                Ships to the address you give PayPal. For Christmas delivery, order by {{ config('lunar.shipping_cutoffs.standard') }} (standard)
-                or {{ config('lunar.shipping_cutoffs.expedited') }} (expedited).
-            </p>
+            @if ($product->ships)
+                <p class="mt-3 rounded-lg border border-gold/30 bg-gold/5 p-3 text-sm text-zinc-200">
+                    <span class="font-semibold text-gold">Holiday Gift Delivery Notice:</span> {{ config('lunar.delivery_notice') }}
+                    It ships to the address you give PayPal.
+                </p>
+            @else
+                <p class="mt-2 text-sm text-zinc-400">Nothing is shipped. The Lunar Society is a for-profit organization, so contributions are not tax-deductible.</p>
+            @endif
 
             <div class="panel mt-8 p-6">
                 @if (! $this->order)
                     <form wire:submit="start" class="space-y-6" novalidate>
-                        <flux:input wire:model="email" type="email" label="Email address" description="Your receipt and shipping updates are sent here." autocomplete="email" required />
+                        <flux:input wire:model="email" type="email" label="Email address" description="{{ $product->ships ? 'Your receipt and shipping updates are sent here.' : 'Your receipt is sent here.' }}" autocomplete="email" required />
 
                         <flux:field variant="inline">
                             <flux:checkbox wire:model="consent_terms" />

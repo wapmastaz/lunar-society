@@ -417,7 +417,7 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
                     @foreach ($this->tiers as $tier)
                         @php
                             $active = $tierCode === $tier->code;
-                            $label = $tier->code === 'alpha' ? 'A: Alpha' : 'B: General';
+                            $label = $tier->code === 'alpha' ? 'A: Alpha' : 'B: Beta';
                         @endphp
                         <label @class([
                             'relative flex cursor-pointer items-center justify-between gap-4 rounded-xl border p-5 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold',
@@ -494,12 +494,10 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
             <p class="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">Every founder receives</p>
             <ul class="mt-4 grid gap-3 text-sm text-zinc-200 sm:grid-cols-2">
                 @foreach (array_filter([
-                    'Your name laser engraved on the Founders Plaque',
-                    'A numbered digital Founder certificate',
-                    'Your name on the public Founders list',
+                    ...config('lunar.founder_package'),
+                    'Your name laser engraved on the Founders Plaque and on the public Founders list',
                     'The Lunar Society newsletter, if you opt in',
-                    config('lunar.pebble_included') ? 'A commemorative space pebble in a gift box' : null,
-                    $tierCode === 'alpha' ? 'Alpha: a top-row position, #001 to #050, and a gold-foil certificate' : null,
+                    $tierCode === 'alpha' ? 'Alpha: a top-row position, #001 to #050, and eligibility for board membership' : null,
                 ]) as $perk)
                     <li class="flex gap-3">
                         <span aria-hidden="true" class="mt-1.5 size-1.5 shrink-0 rotate-45 bg-gold"></span>
@@ -507,6 +505,9 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
                     </li>
                 @endforeach
             </ul>
+            <p class="mt-5 rounded-lg border border-gold/30 bg-gold/5 p-3 text-sm leading-relaxed text-zinc-200">
+                <span class="font-semibold text-gold">Holiday Gift Delivery Notice:</span> {{ config('lunar.delivery_notice') }}
+            </p>
         </div>
 
         @php $pebble = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->first(); @endphp

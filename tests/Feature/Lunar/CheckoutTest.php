@@ -64,7 +64,8 @@ class CheckoutTest extends TestCase
         Livewire::test('pages::claim')
             ->assertSee('Registration and Enrollment')
             ->assertSee('Only US Citizens')
-            ->assertSee('B: General ($149)')
+            ->assertSee('B: Beta ($149)')
+            ->assertSee('Holiday Gift Delivery Notice')
             ->call('reserve')
             ->assertHasErrors([
                 'plaque_name' => 'required', 'buyer_name' => 'required', 'email' => 'required', 'phone' => 'required',

@@ -140,7 +140,7 @@ new #[Layout('layouts::site')] #[Title('The Founders')] class extends Component 
     <div class="mt-6 flex flex-col gap-4 text-sm sm:flex-row sm:items-center sm:justify-between">
         <ul class="flex flex-wrap gap-5 text-zinc-300">
             <li class="flex items-center gap-2"><span class="h-2.5 w-4 rounded-sm bg-[#dcc68f]"></span> Alpha (open)</li>
-            <li class="flex items-center gap-2"><span class="h-2.5 w-4 rounded-sm bg-zinc-300"></span> Standard (open)</li>
+            <li class="flex items-center gap-2"><span class="h-2.5 w-4 rounded-sm bg-zinc-300"></span> Beta (open)</li>
             <li class="flex items-center gap-2"><span class="h-2.5 w-4 rounded-sm bg-zinc-700"></span> Engraved</li>
         </ul>
         <p class="text-white">

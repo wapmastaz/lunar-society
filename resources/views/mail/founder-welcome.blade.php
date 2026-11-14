@@ -15,9 +15,25 @@ Spotted a typo? Reply to this email before **{{ $order->locks_at?->timezone('Ame
 
 Your digital certificate is attached.
 
+## Your Founder gift package
+
+As a Registered Founder, you will receive:
+
+@foreach (config('lunar.founder_package') as $item)
+- {{ $item }}
+@endforeach
+
+@if ($order->address_line1)
+We'll mail it to: {{ $order->address_line1 }}@if ($order->address_line2), {{ $order->address_line2 }}@endif, {{ $order->city }}, {{ $order->state }} {{ $order->postal_code }}, {{ $order->country }}. If that's not right, reply to this email.
+@endif
+
+<x-mail::panel>
+**Holiday Gift Delivery Notice:** {{ config('lunar.delivery_notice') }}
+</x-mail::panel>
+
 ## What happens next
 
-1. **Production:** once all 1,000 slots are filled, we lay out the four-column name grid and engrave the plaque.
+1. **Production:** once all 1,000 slots are filled, we lay out the five-column name grid and engrave the plaque.
 2. **Unveiling:** the finished plaque is shown live on the podcast.
 3. **The Moon:** we pursue a commercial lunar payload slot. Until then, and if it never flies, the plaque is permanently displayed in the podcast studio.
 

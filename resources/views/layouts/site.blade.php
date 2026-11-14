@@ -9,7 +9,7 @@
     ];
 
     if (\App\Models\Product::where('active', true)->exists()) {
-        $nav[] = ['souvenirs', 'Souvenirs'];
+        $nav[] = ['souvenirs', 'Contribute'];
     }
 @endphp
 

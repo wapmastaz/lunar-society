@@ -15,9 +15,9 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
     }
 
     #[Computed]
-    public function pebble(): ?Product
+    public function contributions()
     {
-        return Product::firstWhere('slug', config('lunar.affiliate.slug'));
+        return Product::where('active', true)->orderBy('sort')->orderBy('price_cents')->get();
     }
 }; ?>
 
@@ -234,9 +234,9 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
     {{-- Tiers --}}
     <section id="tiers" aria-labelledby="tiers-heading" class="mx-auto mt-24 max-w-7xl scroll-mt-6 px-4 sm:px-6">
         <div class="text-center" data-reveal>
-            <p class="eyebrow">Two tiers · One plaque</p>
-            <h2 id="tiers-heading" class="mt-4 font-display text-5xl text-white">Choose your place on the plaque</h2>
-            <p class="mx-auto mt-4 max-w-md text-zinc-300">Founder numbers are assigned in order. Every name is laser engraved, one person per slot.</p>
+            <p class="eyebrow">Registered Founder memberships</p>
+            <h2 id="tiers-heading" class="mt-4 font-display text-5xl text-white">Founders</h2>
+            <p class="mx-auto mt-4 max-w-md text-zinc-300">Alpha Founder or Beta Founder. Founder numbers are assigned in order, and every name is laser engraved, one person per slot.</p>
         </div>
         <div class="mt-12 grid gap-6 md:grid-cols-2">
             @foreach ($this->tiers as $tier)
@@ -248,9 +248,71 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         </div>
     </section>
 
-    {{-- Space Pebble Collectible (sold separately) --}}
-    @if ($this->pebble)
-        <x-pebble-feature :product="$this->pebble" class="mt-24" />
+    {{-- What every Founder receives, the delivery notice, and board eligibility --}}
+    <section aria-label="Founder gift package" class="mx-auto mt-8 grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-2">
+        <div class="panel p-7 sm:p-9" data-reveal>
+            <p class="eyebrow">Your Founder gift package</p>
+            <h3 class="mt-3 font-display text-3xl text-white">What every Founder receives</h3>
+            <ul class="mt-5 space-y-3 text-zinc-200">
+                @foreach (config('lunar.founder_package') as $item)
+                    <li class="flex gap-3">
+                        <span aria-hidden="true" class="mt-2 size-1.5 shrink-0 rotate-45 bg-gold"></span>
+                        <span>{{ $item }}</span>
+                    </li>
+                @endforeach
+            </ul>
+            <p class="mt-6 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm leading-relaxed text-zinc-200">
+                <span class="font-semibold text-gold">Holiday Gift Delivery Notice:</span> {{ config('lunar.delivery_notice') }}
+            </p>
+        </div>
+
+        <div class="panel p-7 sm:p-9" data-reveal style="--reveal-delay: 150ms">
+            <p class="eyebrow">Original Founders and Board Members</p>
+            <h3 class="mt-3 font-display text-3xl text-white">The first 50 positions</h3>
+            <ul class="mt-5 space-y-3 text-zinc-200">
+                @foreach ([
+                    'The first 50 Founder positions (the Alpha Founders) will determine who is eligible for board membership.',
+                    'MJ Schultz, aka Mr SuperTrump, occupies positions #001 to #005, at a 50% discount.',
+                    'The Society hopes to secure a minimum of 250 initial paid registrations to fund its operations and growth.',
+                ] as $item)
+                    <li class="flex gap-3">
+                        <span aria-hidden="true" class="mt-2 size-1.5 shrink-0 rotate-45 bg-gold"></span>
+                        <span>{{ $item }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </section>
+
+    {{-- Appreciative Contributions (separate from Founder memberships) --}}
+    @if ($this->contributions->isNotEmpty())
+        <section id="contribute" aria-labelledby="contribute-heading" class="mx-auto mt-24 max-w-7xl scroll-mt-6 px-4 sm:px-6">
+            <div class="text-center" data-reveal>
+                <p class="eyebrow">Appreciative Contributions</p>
+                <h2 id="contribute-heading" class="mt-4 font-display text-5xl text-white">We Need a Little Help from Our Friends</h2>
+                <p class="mx-auto mt-4 max-w-xl text-zinc-300"><span class="font-semibold text-white">Important:</span> these are separate from Registered Founder memberships and don't include a slot on the Founders Plaque.</p>
+            </div>
+            <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($this->contributions as $product)
+                    <div class="flex" data-reveal style="--reveal-delay: {{ $loop->index * 120 }}ms">
+                        <a href="{{ route('souvenirs.show', $product) }}" class="panel hover-lift group flex w-full flex-col p-6">
+                            <span class="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">{{ $product->ships ? 'Ships to you' : 'Contribution' }}</span>
+                            <span class="mt-3 text-xl font-semibold text-white">{{ $product->name }}</span>
+                            <span class="mt-2 font-display text-4xl text-white">{{ $product->priceLabel() }}</span>
+                            @if ($product->ships)
+                                <span class="text-xs text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span>
+                            @endif
+                            <span class="mt-4 text-sm leading-relaxed text-zinc-300">{{ \Illuminate\Support\Str::before($product->description, '.') }}.</span>
+                            <span class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-gold">
+                                {{ $product->ships ? 'Order now' : 'Contribute' }}
+                                <flux:icon.arrow-right variant="micro" class="size-4 transition group-hover:translate-x-1" />
+                            </span>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. The Lunar Society is a for-profit organization, so contributions are not tax-deductible.</p>
+        </section>
     @endif
 
     {{-- How it works --}}
@@ -270,15 +332,6 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         </ol>
     </section>
 
-    @if (config('lunar.pebble_included'))
-        <section class="mx-auto mt-24 max-w-3xl px-4 text-center sm:px-6">
-            <h2 class="font-display text-4xl text-white">The ultimate out-of-this-world Christmas gift</h2>
-            <p class="mt-4 text-lg text-zinc-300">
-                Every Founder slot ships with a commemorative space pebble in a gift box, plus a printed certificate.
-                Order by {{ config('lunar.shipping_cutoffs.standard') }} for standard shipping or {{ config('lunar.shipping_cutoffs.expedited') }} for expedited delivery before Christmas.
-            </p>
-        </section>
-    @endif
 
     {{-- Newsletter --}}
     <section aria-labelledby="newsletter-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">

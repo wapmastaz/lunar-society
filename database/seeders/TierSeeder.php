@@ -17,7 +17,7 @@ class TierSeeder extends Seeder
         ]);
 
         Tier::updateOrCreate(['code' => 'standard'], [
-            'name' => 'Standard Founder',
+            'name' => 'Beta Founder',
             'price_cents' => 14900,
             'slot_start' => 51,
             'slot_end' => 1000,

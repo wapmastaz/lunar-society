@@ -21,7 +21,7 @@ class Product extends Model
 
     protected function casts(): array
     {
-        return ['active' => 'boolean', 'highlights' => 'array'];
+        return ['active' => 'boolean', 'ships' => 'boolean', 'highlights' => 'array'];
     }
 
     public function getRouteKeyName(): string

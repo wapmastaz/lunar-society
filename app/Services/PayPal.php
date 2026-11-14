@@ -45,7 +45,8 @@ class PayPal
      */
     public function createOrder(Order $order): string
     {
-        $needsShipping = ! $order->isFounder() || config('lunar.pebble_included');
+        // Founders give their address on the registration form; shippable contributions give it to PayPal.
+        $needsShipping = $order->isFounder() ? (bool) config('lunar.pebble_included') : (bool) $order->product?->ships;
 
         $description = $order->isFounder()
             ? "{$order->tier->name} slot".($order->couple_addon ? ' + couple/family name' : '')

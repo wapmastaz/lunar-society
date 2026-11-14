@@ -1,6 +1,5 @@
 @php
     $charter = config('lunar.charter');
-    $pebbleActive = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->exists();
 
     // Client's Charter text. Article II.2 lists what founders actually receive; II.5 adds the tax note.
     $articles = [
@@ -19,7 +18,7 @@
         ]],
         ['III', 'The Intergalactic Peace & Astronaut Children\'s Fund', [
             ['Establishment and 5% Commitment', 'The Lunar Society shall contribute five percent (5%) of all contributions, membership fees, dues, and donations received by the organization to establish and maintain a dedicated, growing fund for the benefit of the children of astronauts who visit, construct, or inhabit the Lunar Moon Base.'],
-            ['Purpose and Stewardship', 'This fund shall be continuously grown and faithfully maintained for the specific purpose of supporting the families and children of the pioneering astronauts responsible for establishing and safeguarding Intergalactic Peace on the lunar frontier.'],
+            ['Purpose and Stewardship', 'This fund shall be continuously grown and faithfully maintained for the specific purpose of supporting the families and children of the pioneering fallen astronauts responsible for establishing and safeguarding Intergalactic Peace on the lunar frontier.'],
         ]],
         ['IV', 'Meetings and Gatherings', [
             ['Schedule', 'In keeping with tradition, the Society shall convene once a month on the Monday nearest the full moon, ensuring safe passage, bright reflection, and clear skies for observation.'],
@@ -71,24 +70,14 @@
                                         foundational roster to the first 1,000 Founding Members. Each of these initial 1,000 members receives
                                         a commemorative membership package, suitable as a unique gift or personal keepsake, which includes:
                                         <ul class="mt-3 space-y-2">
-                                            @foreach ([
-                                                'Their name engraved on the official Founders Plaque, intended for permanent placement within the future Lunar Moon Base. If that cannot happen, the plaque will be permanently displayed in the podcast studio.',
-                                                'A personalized certificate, emailed as a PDF, confirming their name and Founder number on the plaque.',
-                                                'A welcome package by email with introductory descriptions, history, and guiding principles of the Society.',
-                                            ] as $item)
+                                            @foreach (config('lunar.founder_package') as $item)
                                                 <li class="flex gap-3">
                                                     <span aria-hidden="true" class="mt-3 size-1.5 shrink-0 rotate-45 bg-gold"></span>
                                                     <span>{{ $item }}</span>
                                                 </li>
                                             @endforeach
                                         </ul>
-                                        <p class="mt-3 text-lg text-zinc-400">
-                                            @if ($pebbleActive)
-                                                The Space Pebble Collectible is available separately with the <a href="{{ route('souvenirs') }}" class="text-gold underline underline-offset-2 hover:text-gold-light">Affiliate Membership Package</a>.
-                                            @else
-                                                The Space Pebble Collectible is available separately with the Affiliate Membership Package.
-                                            @endif
-                                        </p>
+                                        <p class="mt-3 text-lg text-zinc-400">Physical gift packages are expected to be delivered by {{ config('lunar.delivery_by') }}.</p>
                                     @endif
                                 </div>
                             </li>

@@ -6,9 +6,10 @@
         <li>
             <p class="font-semibold text-zinc-300">1. Nature of the Service and Gift</p>
             <p class="mt-1">
-                The purchase of a Lunar Society Registry Package constitutes the acquisition of a symbolic commemorative gift, a serialized
-                registry certificate, and a reservation for the engraving of the registrant's name on a planned physical plaque (the "Lunar
-                Society Moonbase Plaque"). The Space Pebble Collectible is sold separately and is not included. This purchase does not grant,
+                The purchase of a Lunar Society Registry Package constitutes the acquisition of a symbolic commemorative gift package (a
+                serialized registry certificate, a presentation folder, and a vial of lunar meteorite dust with its certificate of authenticity)
+                and a reservation for the engraving of the registrant's name on a planned physical plaque (the "Lunar Society Moonbase
+                Plaque"). Physical gift packages are expected to be delivered by {{ config('lunar.delivery_by') }}. This purchase does not grant,
                 convey, or imply any legal title, ownership, deed, mineral rights, or real estate property rights to any lunar soil, territory,
                 or celestial body under current international space treaties, including the Outer Space Treaty of 1967.
             </p>
@@ -32,9 +33,9 @@
             <p class="mt-1">Registry pricing is structurally adjusted based on the chronological sequence of submission and verification:</p>
             <ul class="mt-1 list-disc space-y-0.5 ps-5">
                 <li>Alpha Founder Tier (Registrants 1 to 50): Priced at $199 USD.</li>
-                <li>Standard Founder Tier (Registrants 51 to 1,000): Priced at $149 USD.</li>
+                <li>Beta Founder Tier (Registrants 51 to 1,000): Priced at $149 USD.</li>
             </ul>
-            <p class="mt-1">A flat {{ \App\Services\Registry::processingFeeLabel() }} USD processing fee is added to every order and shown before payment.</p>
+            <p class="mt-1">A flat {{ \App\Services\Registry::processingFeeLabel() }} USD processing fee is added to every Founder membership and every item that ships, and is shown before payment.</p>
             <p class="mt-1">
                 Maximum capacity for this seasonal edition manifest is strictly limited to one thousand (1,000) registration slots. Sequenced
                 numbers are assigned automatically based on the precise timestamp of transaction completion and cannot be manually exchanged

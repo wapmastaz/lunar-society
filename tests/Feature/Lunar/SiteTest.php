@@ -215,7 +215,9 @@ class SiteTest extends TestCase
             ->assertSee('Intergalactic Peace &amp; Astronaut Children', false)
             ->assertSee('Mitchell J. Schultz')
             ->assertSee('contributions are not tax-deductible')
-            ->assertSee('The Space Pebble Collectible is available separately with the Affiliate Membership Package')
+            ->assertSee('A vial of lunar meteorite dust with its certificate of authenticity')
+            ->assertSee('Physical gift packages are expected to be delivered by January 31, 2027.')
+            ->assertSee('pioneering fallen astronauts')
             ->assertDontSee('authentic lunar specimen');
     }
 
@@ -226,7 +228,7 @@ class SiteTest extends TestCase
                 ->assertSee('Lunar Society Registry: Terms &amp; Legal Disclosure', false)
                 ->assertSee('Outer Space Treaty of 1967')
                 ->assertSee('two hundred and fifty (250)')
-                ->assertSee('Space Pebble Collectible is sold separately')
+                ->assertSee('lunar meteorite dust with its certificate of authenticity')
                 ->assertDontSee('certified space artifact specimen');
         }
     }

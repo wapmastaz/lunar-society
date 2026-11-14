@@ -45,6 +45,14 @@ class Registry
         return max(0, (int) config('lunar.processing_fee_cents'));
     }
 
+    /**
+     * Contributions that ship carry the processing fee; the others don't.
+     */
+    public static function feeFor(Product $product): int
+    {
+        return $product->ships ? self::processingFeeCents() : 0;
+    }
+
     public static function processingFeeLabel(): string
     {
         return '$'.number_format(self::processingFeeCents() / 100);
@@ -108,8 +116,8 @@ class Registry
         return Order::create([
             'product_id' => $product->id,
             'status' => OrderStatus::Pending,
-            'amount_cents' => $product->price_cents + self::processingFeeCents(),
-            'processing_fee_cents' => self::processingFeeCents(),
+            'amount_cents' => $product->price_cents + self::feeFor($product),
+            'processing_fee_cents' => self::feeFor($product),
             'email' => $data['email'],
             'marketing_opt_in' => $data['marketing_opt_in'] ?? false,
             'consent_text' => config('lunar.consent_terms'),
