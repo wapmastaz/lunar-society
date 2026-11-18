@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'brand' => "Mr SuperTrump's Lunar Society",
+    'brand' => 'The Lunar Society Network',
     'podcast' => 'Adventures With Mr SuperTrump',
     'entity' => env('LUNAR_ENTITY', 'Mr SuperTrump'), // CONFIRM exact legal name on PayPal
     'domain' => env('LUNAR_DOMAIN', 'MrSuperTrump.com'), // CONFIRM
@@ -53,11 +53,11 @@ return [
 
     // The physical Founder gift package, mailed to the address on the registration form.
     'founder_package' => [
-        'A personalized Lunar Society certificate',
-        'A Lunar Society presentation folder',
+        'A personalized Lunar Society Network certificate',
+        'A Lunar Society Network presentation folder',
         'A vial of lunar meteorite dust with its certificate of authenticity',
         'Confirmation of your name\'s inclusion on the Founders Plaque',
-        'Other special Lunar Society collectibles',
+        'Other special Lunar Society Network collectibles',
     ],
 
     // The gift package ships in a 12" x 14" mailing box.
@@ -98,7 +98,7 @@ return [
         'adopted' => 'Adopted on this 13th day of November 2026, under the light of the full moon.',
         'place' => 'Delray Beach, Florida',
         'signatory' => 'Mitchell J. Schultz',
-        'preamble' => 'We, the founding members of The Lunar Society, unite in the spirit of free inquiry, mutual curiosity, and cosmic stewardship. Inspired by the fellowship of philosophers, makers, and thinkers who once gathered under the light of the full moon, we establish this Society to bridge the gap between theoretical knowledge and real-world application, extending our vigilance from the Earth beneath our feet to the stars above our heads.',
+        'preamble' => 'We, the founding members of The Lunar Society Network, unite in the spirit of free inquiry, mutual curiosity, and cosmic stewardship. Inspired by the fellowship of philosophers, makers, and thinkers who once gathered under the light of the full moon, we establish this Society to bridge the gap between theoretical knowledge and real-world application, extending our vigilance from the Earth beneath our feet to the stars above our heads.',
         'mission' => 'The purpose of the Society is to foster interdisciplinary dialogue, collaborative experimentation, and the advancement of science, technology, commerce, and the humanities for the betterment of humankind and the cosmos.',
         'peace' => 'The Society is dedicated to the active fostering of Intergalactic Peace in Space. We stand firmly for the prevention and avoidance of space wars.',
     ],
@@ -109,15 +109,15 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'disclaimer' => "Mr SuperTrump's Lunar Society is an independent listener engagement project produced by the Adventures With Mr SuperTrump podcast and is not affiliated with, sponsored by, or endorsed by Donald J. Trump, the Trump Organization, NASA, or any government agency.",
+    'disclaimer' => 'The Lunar Society Network is an independent listener engagement project produced by the Adventures With Mr SuperTrump podcast and is not affiliated with, sponsored by, or endorsed by Donald J. Trump, the Trump Organization, NASA, or any government agency.',
 
-    'satire_notice' => "The Lunar Society is a creative extension of an independent comedy broadcast. Our goal is to send the Founders Plaque to the Moon on a commercial payload. If that can't happen, it will be permanently displayed in the podcast studio.",
+    'satire_notice' => "The Lunar Society Network is a creative extension of an independent comedy broadcast. Our goal is to send the Founders Plaque to the Moon on a commercial payload. If that can't happen, it will be permanently displayed in the podcast studio.",
 
     'citizenship' => 'I certify that I am a United States citizen.',
 
-    'acknowledgement' => 'The above applicant hereby applies to be a founding member of The Lunar Society and, by doing so, acknowledges having read the Society\'s Charter. Further, the applicant agrees to abide by these terms and conditions and now wishes to become a founding member of The Lunar Society.',
+    'acknowledgement' => 'The above applicant hereby applies to be a founding member of The Lunar Society Network and, by doing so, acknowledges having read the Society\'s Charter. Further, the applicant agrees to abide by these terms and conditions and now wishes to become a founding member of The Lunar Society Network.',
 
-    'marketing_consent' => 'I give permission to receive additional emails and communications from The Lunar Society.',
+    'marketing_consent' => 'I give permission to receive additional emails and communications from The Lunar Society Network.',
 
     'consent_spelling' => 'I certify that the spelling of the name is correct. I understand the name locks 48 hours after my confirmation email and cannot be changed after that, because the plaque is laser engraved.',
 

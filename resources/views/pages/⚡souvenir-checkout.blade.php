@@ -79,7 +79,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
 <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
     <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white">
-        <flux:icon.arrow-left variant="micro" class="size-4" /> Back to the Lunar Society
+        <flux:icon.arrow-left variant="micro" class="size-4" /> Back to the Lunar Society Network
     </a>
 
     <div class="mt-8 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
@@ -98,7 +98,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
         </div>
 
         <div class="animate-rise" style="--reveal-delay: 120ms">
-            <p class="eyebrow">{{ $product->tagline ?? 'Lunar Society collectible' }}</p>
+            <p class="eyebrow">{{ $product->tagline ?? 'Lunar Society Network collectible' }}</p>
             <h1 class="mt-4 font-display text-5xl leading-[1.02] text-white sm:text-6xl">{{ $product->name }}</h1>
             <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="font-sans text-base text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span>@endif</p>
 
@@ -131,7 +131,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
                     It ships to the address you give PayPal.
                 </p>
             @else
-                <p class="mt-2 text-sm text-zinc-400">Nothing is shipped. The Lunar Society is a for-profit organization, so contributions are not tax-deductible.</p>
+                <p class="mt-2 text-sm text-zinc-400">Nothing is shipped. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible.</p>
             @endif
 
             <div class="panel mt-8 p-6">

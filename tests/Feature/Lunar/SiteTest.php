@@ -23,7 +23,7 @@ class SiteTest extends TestCase
             $this->get($uri)
                 ->assertOk()
                 ->assertSee(config('lunar.disclaimer'))
-                ->assertSee('The Lunar Society is a division of Adventures With Mr SuperTrump LLC');
+                ->assertSee('The Lunar Society Network is a division of Adventures With Mr SuperTrump LLC');
         }
     }
 
@@ -183,7 +183,7 @@ class SiteTest extends TestCase
     public function test_about_page_tells_mjs_story_with_photos(): void
     {
         $this->get('/about')
-            ->assertSee('Why MJ Schultz created the Lunar Society')
+            ->assertSee('Why MJ Schultz created the Lunar Society Network')
             ->assertSee('Junior Rocket Ranger')
             ->assertSee('None of them is involved')
             ->assertSee('not because they are easy, but because they are hard')
@@ -224,7 +224,7 @@ class SiteTest extends TestCase
 
         $this->get('/charter')
             ->assertOk()
-            ->assertSee('Charter of the Lunar Society')
+            ->assertSee('Charter of the Lunar Society Network')
             ->assertSee('Article VI')
             ->assertSee('Intergalactic Peace &amp; Astronaut Children', false)
             ->assertSee('Mitchell J. Schultz')
@@ -239,7 +239,7 @@ class SiteTest extends TestCase
     {
         foreach (['/', '/claim', '/faq'] as $uri) {
             $this->get($uri)
-                ->assertSee('Lunar Society Registry: Terms &amp; Legal Disclosure', false)
+                ->assertSee('Lunar Society Network: Terms &amp; Legal Disclosure', false)
                 ->assertSee('Outer Space Treaty of 1967')
                 ->assertSee('two hundred and fifty (250)')
                 ->assertSee('lunar meteorite dust with its certificate of authenticity')

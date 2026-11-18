@@ -11,7 +11,7 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group heading="Lunar Society" class="grid">
+                <flux:sidebar.group heading="Lunar Society Network" class="grid">
                     <flux:sidebar.item icon="clipboard-document-list" :href="route('admin.orders')" :current="request()->routeIs('admin.orders')" wire:navigate>
                         Orders
                     </flux:sidebar.item>

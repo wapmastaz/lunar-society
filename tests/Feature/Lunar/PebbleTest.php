@@ -78,7 +78,7 @@ class PebbleTest extends TestCase
 
         $this->get('/souvenirs/affiliate-membership')
             ->assertOk()
-            ->assertSee('Affiliate membership in the Lunar Society')
+            ->assertSee('Affiliate membership in the Lunar Society Network')
             ->assertSee('does not include a Founder slot')
             ->assertSee('not lunar material');
 
@@ -104,7 +104,7 @@ class PebbleTest extends TestCase
     {
         $this->get('/')
             ->assertSee('Be Part of History')
-            ->assertSee('Join the Lunar Society')
+            ->assertSee('Join the Lunar Society Network')
             ->assertSee('Register Today')
             ->assertSee('Prestigious Membership')
             ->assertSee('images/hero.webp', false)

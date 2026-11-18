@@ -6,7 +6,7 @@
     $faqs = [
         ['Who leads the society?', 'Executive Director MJ Schultz. He has created as "Mr SuperTrump" since 2016, using animated promotional art to comment on (and, he would say, predict) political shifts. This lunar initiative grew out of ideas from his first book, The Predictor.'],
         ['What is the Founders Plaque?', 'A custom '.config('lunar.plaque_size').' plaque made of '.config('lunar.plaque_material').', laser engraved with the names of exactly 1,000 supporters and listeners of '.config('lunar.podcast').'.'],
-        ['What do I receive?', "For {$standard} (Beta) or {$alpha} (Alpha), you become one of the society's 1,000 founders and receive a gift package: ".mb_strtolower(implode(', ', config('lunar.founder_package'))).". Your name is also engraved on the Founders Plaque and listed on our public Founders list, and if you opt in, you get the Lunar Society newsletter."],
+        ['What do I receive?', "For {$standard} (Beta) or {$alpha} (Alpha), you become one of the society's 1,000 founders and receive a gift package: ".mb_strtolower(implode(', ', config('lunar.founder_package'))).". Your name is also engraved on the Founders Plaque and listed on our public Founders list, and if you opt in, you get the Lunar Society Network newsletter."],
         ['When will my gift package arrive?', 'Physical gift packages are expected to be delivered by '.config('lunar.delivery_by').'. Please consider this delivery timeframe when purchasing a membership as a Christmas gift. Packages are mailed in a '.config('lunar.package_box_size').' box to the shipping address on your registration form.'],
         ['Is the Moon dust real?', 'Yes. It is lunar meteorite dust: material from meteorites that originated on the Moon and fell to Earth, supplied with a certificate of authenticity. It is not an Apollo mission sample.'],
         ['How will the plaque get to the Moon?', 'Our goal is to have it carried by an astronaut and installed at the resource-rich lunar South Pole, within the boundaries of a future international Moon base. That is a goal, not a guarantee: no lunar base exists yet, and flights and payload costs are outside our control. Until the plaque can fly, and if it never does, MJ Schultz keeps it on display in the '.config('lunar.podcast').' studio. Either way, your name is on it.'],
@@ -26,7 +26,7 @@
     $pebble = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->first();
     if ($pebble) {
         array_splice($faqs, 3, 0, [
-            ['What is the Affiliate Membership Package?', 'For '.$pebble->priceLabel().' (plus the '.\App\Services\Registry::processingFeeLabel().' processing fee) you become an affiliate member of the Lunar Society and receive the Space Pebble Collectible, a commemorative keepsake. The pebble is not lunar material, and the package does not include a Founder slot or a name on the Founders Plaque. It ships to the address you give PayPal at checkout.'],
+            ['What is the Affiliate Membership Package?', 'For '.$pebble->priceLabel().' (plus the '.\App\Services\Registry::processingFeeLabel().' processing fee) you become an affiliate member of the Lunar Society Network and receive the Space Pebble Collectible, a commemorative keepsake. The pebble is not lunar material, and the package does not include a Founder slot or a name on the Founders Plaque. It ships to the address you give PayPal at checkout.'],
         ]);
     }
 

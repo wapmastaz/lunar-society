@@ -33,7 +33,7 @@
         <section id="story" aria-labelledby="story-heading" class="mt-24 scroll-mt-24">
             <div class="max-w-3xl" data-reveal>
                 <p class="eyebrow">Our Director's story</p>
-                <h2 id="story-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white sm:text-6xl">Why MJ Schultz created the Lunar Society</h2>
+                <h2 id="story-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white sm:text-6xl">Why MJ Schultz created the Lunar Society Network</h2>
                 <p class="mt-4 font-display text-2xl italic text-zinc-300">A lifelong dream to be part of space history.</p>
             </div>
 
@@ -54,11 +54,11 @@
                     </p>
                     <p>
                         Now MJ wants his place in space history, celebrating, in his words, that "after 54 years, President Trump brings us
-                        back to the Moon." The Lunar Society is how he, and 1,000 founders, can be part of it.
+                        back to the Moon." The Lunar Society Network is how he, and 1,000 founders, can be part of it.
                     </p>
                     <p class="text-sm text-zinc-500">
                         Elon Musk, Buzz Aldrin, SpaceX and XCOR are mentioned as part of MJ's personal history only. None of them is involved
-                        with, or has endorsed, the Lunar Society.
+                        with, or has endorsed, the Lunar Society Network.
                     </p>
                 </div>
 
@@ -133,7 +133,7 @@
         </section>
 
         <section data-reveal aria-labelledby="society-heading" class="mt-24 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12">
-            <h2 id="society-heading" class="font-display text-4xl text-white sm:text-5xl">About the Lunar Society</h2>
+            <h2 id="society-heading" class="font-display text-4xl text-white sm:text-5xl">About the Lunar Society Network</h2>
             <p class="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">
                 {{ config('lunar.brand') }} grew out of the show's episodes on America's return to the Moon. It's a crowd-powered,
                 independent listener project: 1,000 Founders, one aerospace-grade plaque, and a long-haul goal of getting it to the lunar

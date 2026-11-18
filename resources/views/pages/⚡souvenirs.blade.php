@@ -18,7 +18,7 @@ new #[Layout('layouts::site')] #[Title('Appreciative Contributions')] class exte
     <header class="text-center">
         <p class="eyebrow">Appreciative Contributions</p>
         <h1 class="mt-4 font-display text-5xl text-white sm:text-6xl">We Need a Little Help from Our Friends</h1>
-        <p class="mx-auto mt-3 max-w-2xl text-zinc-300">Ways to support the Lunar Society. These are separate from Registered Founder memberships and don't include a slot on the Founders Plaque.</p>
+        <p class="mx-auto mt-3 max-w-2xl text-zinc-300">Ways to support the Lunar Society Network. These are separate from Registered Founder memberships and don't include a slot on the Founders Plaque.</p>
     </header>
 
     @if ($this->products->isEmpty())

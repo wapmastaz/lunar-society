@@ -22,10 +22,10 @@ class OrderConfirmation extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         $subject = $this->order->isFounder()
-            ? "Welcome to the Frontier, Founder {$this->order->slotLabel()}! Your Lunar Society confirmation"
+            ? "Welcome to the Frontier, Founder {$this->order->slotLabel()}! Your Lunar Society Network confirmation"
             : ($this->order->product?->ships
-                ? 'Your '.config('lunar.brand').' order is confirmed'
-                : 'Thank you for supporting the Lunar Society');
+                ? 'Your order with '.config('lunar.brand').' is confirmed'
+                : 'Thank you for supporting the Lunar Society Network');
 
         return new Envelope(
             subject: $subject,

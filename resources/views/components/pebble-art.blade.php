@@ -5,7 +5,7 @@
     {{-- Display box --}}
     <div class="absolute inset-x-[12%] bottom-[10%] top-[38%] rounded-2xl border border-gold/40 bg-gradient-to-b from-[#1d2236] to-[#0b0f1c] shadow-2xl shadow-black/70">
         <div class="absolute inset-x-[10%] top-[18%] h-[46%] rounded-[50%] bg-black/50 blur-sm"></div>
-        <p class="absolute inset-x-0 bottom-[10%] text-center font-mono text-[10px] uppercase tracking-[0.35em] text-gold/80">Lunar Society</p>
+        <p class="absolute inset-x-0 bottom-[10%] text-center font-mono text-[10px] uppercase tracking-[0.35em] text-gold/80">Lunar Society Network</p>
     </div>
 
     {{-- Pebble --}}

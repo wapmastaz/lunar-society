@@ -43,7 +43,7 @@
                 <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2 sm:gap-4 sm:px-6 sm:py-4">
                     <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5 font-semibold sm:gap-3">
                         <x-logo-mark class="size-11 sm:size-14" />
-                        <span class="truncate text-[15px] leading-tight sm:text-lg"><span class="max-sm:hidden">Mr SuperTrump's </span>Lunar Society</span>
+                        <span class="truncate text-[15px] leading-tight sm:text-lg"><span class="max-sm:hidden">The </span>Lunar Society Network</span>
                     </a>
 
                     <nav aria-label="Main" class="ms-auto hidden items-center gap-8 md:flex">
@@ -101,7 +101,7 @@
                     <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
                         <span class="flex items-center gap-3 font-semibold">
                             <x-logo-mark class="size-12" />
-                            Lunar Society
+                            Lunar Society Network
                         </span>
                         <button type="button" class="-me-2 grid size-10 place-items-center rounded-lg text-zinc-300 hover:bg-white/10 hover:text-white" @click="menu = false">
                             <flux:icon.x-mark class="size-6" />
@@ -177,7 +177,7 @@
                 </div>
 
                 <p class="mt-8 text-xs text-zinc-400">{{ config('lunar.podcast') }} is available on Spotify, YouTube and Beehiiv.</p>
-                <p class="mt-3 text-xs text-zinc-400">&copy; {{ now()->year }} The Lunar Society is a division of Adventures With Mr SuperTrump LLC</p>
+                <p class="mt-3 text-xs text-zinc-400">&copy; {{ now()->year }} The Lunar Society Network is a division of Adventures With Mr SuperTrump LLC</p>
             </div>
         </footer>
 

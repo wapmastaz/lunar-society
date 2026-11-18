@@ -496,7 +496,7 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
                 @foreach (array_filter([
                     ...config('lunar.founder_package'),
                     'Your name laser engraved on the Founders Plaque and on the public Founders list',
-                    'The Lunar Society newsletter, if you opt in',
+                    'The Lunar Society Network newsletter, if you opt in',
                     $tierCode === 'alpha' ? 'Alpha: a top-row position, #001 to #050, and eligibility for board membership' : null,
                 ]) as $perk)
                     <li class="flex gap-3">

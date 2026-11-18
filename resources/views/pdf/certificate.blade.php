@@ -29,7 +29,7 @@
         <div class="certifies">This certifies that</div>
         <div class="name">{{ $order->plaque_name }}</div>
         <div class="body">
-            is registered as a Founder of the Lunar Society and will be laser engraved on the Founders Plaque.
+            is registered as a Founder of the Lunar Society Network and will be laser engraved on the Founders Plaque.
             Our goal is to carry the plaque to the Moon on a commercial payload. Until then, it will be displayed
             in the {{ config('lunar.podcast') }} studio.
         </div>

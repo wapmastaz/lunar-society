@@ -6,7 +6,7 @@
     <h2>2. What you are buying</h2>
     <p>A Founder slot gives you:</p>
     <ul>
-        <li>a numbered place for one name (or one couple/family name with the add-on) on the Lunar Society Founders Plaque;</li>
+        <li>a numbered place for one name (or one couple/family name with the add-on) on the Lunar Society Network Founders Plaque;</li>
         <li>a digital Founder certificate;</li>
         <li>a listing on our public Founders page.</li>
         @if (config('lunar.pebble_included'))

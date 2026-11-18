@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         // Admin login comes from .env so no credentials live in the repo.
         if ($email = env('ADMIN_EMAIL')) {
             User::updateOrCreate(['email' => $email], [
-                'name' => 'Lunar Society Admin',
+                'name' => 'Lunar Society Network Admin',
                 'password' => env('ADMIN_PASSWORD'),
             ])->forceFill(['email_verified_at' => now()])->save();
         }

@@ -26,13 +26,13 @@ Hi {{ $order->payer_first_name ?: 'there' }},
 
 Your **{{ $order->product->name }}** contribution of {{ $order->amountLabel() }} is confirmed. We need a little help from our friends, and you came through. Thank you.
 
-This is separate from Registered Founder memberships and does not include a slot on the Founders Plaque. The Lunar Society is a for-profit organization, so contributions are not tax-deductible.
+This is separate from Registered Founder memberships and does not include a slot on the Founders Plaque. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible.
 @endif
 
 Questions? Just reply to this email.
 
 To the Moon and beyond,<br>
-The Lunar Society team, {{ config('lunar.podcast') }}
+The Lunar Society Network team, {{ config('lunar.podcast') }}
 
 <x-mail::subcopy>
 {{ config('lunar.disclaimer') }}

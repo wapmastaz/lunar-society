@@ -46,7 +46,7 @@ See the Founders list
 Thank you for supporting the broadcast.
 
 To the Moon and beyond,<br>
-The Lunar Society team, {{ config('lunar.podcast') }}<br>
+The Lunar Society Network team, {{ config('lunar.podcast') }}<br>
 {{ config('lunar.city') }}
 
 <x-mail::subcopy>

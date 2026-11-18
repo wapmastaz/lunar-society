@@ -101,7 +101,7 @@ new #[Layout('layouts::site')] #[Title('The Founders')] class extends Component 
     @else
         <div x-data="{ picked: null }" class="metal metal-shine animate-rise mt-3 rounded-2xl p-4 shadow-2xl shadow-black/60 ring-1 ring-white/20 sm:p-7" style="--reveal-delay: 250ms">
             <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.3em] text-zinc-600 sm:text-xs">
-                <span>Mr SuperTrump's Lunar Society</span>
+                <span>The Lunar Society Network</span>
                 <span x-show="!picked">{{ number_format(count($this->founders)) }} / 1,000 engraved</span>
                 <span x-show="picked" x-text="picked" x-cloak class="normal-case tracking-normal text-zinc-800"></span>
             </div>

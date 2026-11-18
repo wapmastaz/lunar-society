@@ -13,7 +13,7 @@
         <figure class="mx-auto mt-10 max-w-3xl" data-reveal>
             <a href="{{ asset('images/plaque/founders-plaque.webp') }}" target="_blank" class="group block overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-2xl shadow-black/60">
                 <img src="{{ asset('images/plaque/founders-plaque.webp') }}" width="848" height="1264"
-                    alt="Facsimile of the Lunar Society Founders Plaque: a blue and gold {{ config('lunar.plaque_size') }} aluminum plaque with the Lunar Society emblem and five columns of engraved founder names"
+                    alt="Facsimile of the Lunar Society Network Founders Plaque: a blue and gold {{ config('lunar.plaque_size') }} aluminum plaque with the Lunar Society Network emblem and five columns of engraved founder names"
                     class="w-full transition duration-500 group-hover:scale-[1.01]">
             </a>
             <figcaption class="mt-4 text-center text-sm text-zinc-400">

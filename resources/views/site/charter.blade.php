@@ -4,7 +4,7 @@
     // Client's Charter text. Article II.2 lists what founders actually receive; II.5 adds the tax note.
     $articles = [
         ['I', 'Name, Structure, and Purpose', [
-            ['Name and Legal Nature', 'The organization shall be known as The Lunar Society (hereafter referred to as "the Society"). The Society operates as a for-profit organization, combining commercial enterprise and visionary membership programs with dedicated philanthropic stewardship.'],
+            ['Name and Legal Nature', 'The organization shall be known as The Lunar Society Network (hereafter referred to as "the Society"). The Society operates as a for-profit organization, combining commercial enterprise and visionary membership programs with dedicated philanthropic stewardship.'],
             ['Mission', $charter['mission']],
             ['Intergalactic Peace and Cosmic Non-Aggression', 'The Society is dedicated to the active fostering of Intergalactic Peace in Space. We stand firmly for the prevention and avoidance of space wars, whether instigated by rival terrestrial nations or arising from encounters with invading aliens from outer space, should such civilizations exist. All technological, commercial, and philosophical pursuits of the Society shall prioritize de-escalation, planetary defense through diplomacy, and peaceful first-contact protocols.'],
             ['Spirit of Inquiry', 'Discussions shall be conducted in an atmosphere of intellectual generosity, free from dogma, partisanship, or hierarchy. Every member enters as an equal seeker of truth.'],
@@ -17,7 +17,7 @@
             ['Donations and Support', 'All donations are welcome and appreciated. While the Society is a for-profit organization, voluntary financial contributions from members, patrons, and supporters directly fuel our mission, programs, and charitable commitments. Because the Society is a for-profit organization, contributions are not tax-deductible.'],
         ]],
         ['III', 'The Intergalactic Peace & Astronaut Children\'s Fund', [
-            ['Establishment and 5% Commitment', 'The Lunar Society shall contribute five percent (5%) of all contributions, membership fees, dues, and donations received by the organization to establish and maintain a dedicated, growing fund for the benefit of the children of astronauts who visit, construct, or inhabit the Lunar Moon Base.'],
+            ['Establishment and 5% Commitment', 'The Lunar Society Network shall contribute five percent (5%) of all contributions, membership fees, dues, and donations received by the organization to establish and maintain a dedicated, growing fund for the benefit of the children of astronauts who visit, construct, or inhabit the Lunar Moon Base.'],
             ['Purpose and Stewardship', 'This fund shall be continuously grown and faithfully maintained for the specific purpose of supporting the families and children of the pioneering fallen astronauts responsible for establishing and safeguarding Intergalactic Peace on the lunar frontier.'],
         ]],
         ['IV', 'Meetings and Gatherings', [
@@ -43,7 +43,7 @@
         <header class="text-center" data-reveal>
             <x-logo-mark large class="mx-auto size-52 drop-shadow-[0_10px_40px_rgba(232,184,74,0.25)] sm:size-64" />
             <p class="eyebrow mt-8">The founding document</p>
-            <h1 class="mt-4 font-charter-title text-3xl font-bold uppercase leading-tight tracking-[0.08em] text-gold sm:text-5xl">Charter of the Lunar Society</h1>
+            <h1 class="mt-4 font-charter-title text-3xl font-bold uppercase leading-tight tracking-[0.08em] text-gold sm:text-5xl">Charter of the Lunar Society Network</h1>
         </header>
 
         <section aria-labelledby="preamble-heading" class="mt-14" data-reveal>
@@ -92,7 +92,7 @@
             <p class="mt-2 text-zinc-400">{{ $charter['place'] }}</p>
             <p class="mt-8 font-charter-title text-sm font-medium uppercase tracking-[0.3em] text-gold">Executed by</p>
             <p class="mt-3 font-charter text-4xl italic text-white">{{ $charter['signatory'] }}</p>
-            <p class="mt-1 text-zinc-300">Executive Director, The Lunar Society</p>
+            <p class="mt-1 text-zinc-300">Executive Director, The Lunar Society Network</p>
             <flux:button href="{{ route('claim') }}" variant="primary" icon:trailing="arrow-right" class="mt-10 h-12 rounded-full px-7 text-base">Become a Founding Member</flux:button>
         </footer>
     </article>

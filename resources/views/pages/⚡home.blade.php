@@ -75,7 +75,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 <source media="(min-width: 1024px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
                 <img src="{{ asset($heroMobile) }}?v={{ substr(md5_file(public_path($heroMobile)), 0, 8) }}"
                     width="{{ $heroW }}" height="{{ $heroH }}"
-                    alt="Artist's concept of the Lunar Society Founders Plaque on the Moon, with Earth rising behind it"
+                    alt="Artist's concept of the Lunar Society Network Founders Plaque on the Moon, with Earth rising behind it"
                     fetchpriority="high"
                     class="size-full object-fill">
             </picture>
@@ -93,7 +93,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
 
                 <h2 class="animate-rise mt-6 font-display leading-[0.98] drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]" style="--reveal-delay: 120ms">
                     <span class="block text-5xl text-white sm:text-6xl lg:text-7xl">Be Part of History</span>
-                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Lunar Society</span>
+                    <span class="text-gold-sheen mt-1 block pb-1 text-5xl text-gold sm:text-6xl lg:text-7xl">Join the Lunar Society Network</span>
                 </h2>
 
                 <p class="animate-rise mt-5 font-display text-2xl italic leading-snug text-zinc-100 sm:text-3xl" style="--reveal-delay: 260ms">
@@ -145,7 +145,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
     <section aria-labelledby="society-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
             <div data-reveal>
-                <p class="eyebrow">The Lunar Society</p>
+                <p class="eyebrow">The Lunar Society Network</p>
                 <h2 id="society-heading" class="mt-4 font-display text-5xl leading-[1.05] text-white">A society for the Moon base of the future</h2>
                 <p class="mt-5 text-zinc-400">
                     Named in the spirit of the Lunar Society.
@@ -153,7 +153,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
             </div>
             <div class="space-y-5 text-lg leading-relaxed text-zinc-200" data-reveal style="--reveal-delay: 150ms">
                 <p>
-                    The Lunar Society Registry is the home of the Society for the Future Establishment of the Trumpian Lunar International
+                    The Lunar Society Network is the home of the Society for the Future Establishment of the Trumpian Lunar International
                     Moon Base, a base we hope to see built in the years ahead. All visitors are welcome.
                 </p>
                 <p>
@@ -175,7 +175,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     <span class="min-w-0 flex-1">
                         <span class="block font-mono text-[11px] uppercase tracking-[0.2em] text-gold">Executive Director</span>
                         <span class="mt-1 block font-display text-2xl text-white">MJ Schultz</span>
-                        <span class="block text-sm text-zinc-400">A space enthusiast since his teens. Read why he created the Lunar Society.</span>
+                        <span class="block text-sm text-zinc-400">A space enthusiast since his teens. Read why he created the Lunar Society Network.</span>
                     </span>
                     <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-zinc-500 transition group-hover:translate-x-1 group-hover:text-gold" />
                     <span class="sr-only">Read his story</span>
@@ -215,7 +215,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         <div class="grid items-center gap-10 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f1a3a] via-panel to-[#1a1710] p-7 sm:p-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16" data-reveal>
             <a href="{{ route('plaque') }}" class="group relative mx-auto block h-80 w-full max-w-sm overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-2xl shadow-black/60 sm:h-[26rem]">
                 <img src="{{ asset('images/plaque/founders-plaque.webp') }}" width="848" height="1264" loading="lazy"
-                    alt="Facsimile of the Lunar Society Founders Plaque"
+                    alt="Facsimile of the Lunar Society Network Founders Plaque"
                     class="size-full object-cover object-top transition duration-700 group-hover:scale-105">
                 <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/80 to-transparent px-4 pb-4 pt-12 text-center text-sm font-medium text-gold">Tap to see the full plaque</span>
             </a>
@@ -312,7 +312,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     </div>
                 @endforeach
             </div>
-            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. The Lunar Society is a for-profit organization, so contributions are not tax-deductible.</p>
+            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible.</p>
         </section>
     @endif
 
@@ -339,7 +339,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         <div class="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12 lg:grid-cols-2" data-reveal>
             <div>
                 <p class="eyebrow">Stay connected</p>
-                <h2 id="newsletter-heading" class="mt-4 font-display text-4xl text-white sm:text-5xl">The Lunar Society newsletter</h2>
+                <h2 id="newsletter-heading" class="mt-4 font-display text-4xl text-white sm:text-5xl">The Lunar Society Network newsletter</h2>
                 <p class="mt-4 text-zinc-300">
                     The road to {{ config('lunar.target_date_short') }} is a long-term mission. Founders who opt in receive our newsletter
                     on Beehiiv to stay locked into the updates over the years. Unsubscribe anytime.
