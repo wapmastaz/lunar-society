@@ -95,7 +95,7 @@ class PayPal
         $amount = $money($order->amount_cents);
         $fee = (int) $order->processing_fee_cents;
 
-        if ($fee > 0) {
+        if ($fee > 0 && $order->amount_cents > $fee) {
             $amount['breakdown'] = [
                 'item_total' => $money($order->amount_cents - $fee),
                 'handling' => $money($fee),

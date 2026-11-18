@@ -173,6 +173,7 @@
                         <a href="{{ route('privacy') }}" class="hover:text-white">Privacy</a>
                         <a href="{{ route('disclaimer') }}" class="hover:text-white">Disclaimer</a>
                         <a href="{{ route('faq') }}" class="hover:text-white">FAQ</a>
+                        <a href="{{ route('supporters') }}" class="hover:text-white">Supporters</a>
                     </nav>
                 </div>
 

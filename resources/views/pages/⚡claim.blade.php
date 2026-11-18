@@ -438,7 +438,7 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
                         </label>
                     @endforeach
                 </div>
-                <p class="mt-3 text-sm text-zinc-400">Plus a {{ \App\Services\Registry::processingFeeLabel() }} processing fee per order.</p>
+                <p class="mt-3 text-sm text-zinc-400">Plus {{ \App\Services\Registry::feeExplained() }} per order.</p>
                 <flux:error name="tierCode" class="mt-2" />
             </fieldset>
 
@@ -510,13 +510,12 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
             </p>
         </div>
 
-        @php $pebble = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->first(); @endphp
-        @if ($pebble)
-            <a href="{{ route('souvenirs.show', $pebble) }}" class="group mt-4 flex items-center gap-4 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm transition hover:border-gold/60">
+        @if (\App\Models\Product::where('active', true)->exists())
+            <a href="{{ route('souvenirs') }}" class="group mt-4 flex items-center gap-4 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm transition hover:border-gold/60">
                 <x-pebble-art class="size-14 shrink-0" />
                 <span class="min-w-0 flex-1 text-zinc-200">
-                    <span class="block font-medium text-white">Also available: the {{ $pebble->name }}</span>
-                    Affiliate membership and the Space Pebble Collectible, {{ $pebble->priceLabel() }} + {{ \App\Services\Registry::processingFeeLabel() }} processing. No Founder slot.
+                    <span class="block font-medium text-white">Also available: Booster, Follower, Supporter and Trade Associate</span>
+                    Get on our lists, with a souvenir or Lunar Moon Dust for your collection. No Founder slot.
                 </span>
                 <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-gold transition group-hover:translate-x-1" />
             </a>

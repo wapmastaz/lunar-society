@@ -59,6 +59,14 @@ class Registry
     }
 
     /**
+     * "$15 ($5 for the Fallen Astronauts Education Fund and $10 for shipping and handling)".
+     */
+    public static function feeExplained(): string
+    {
+        return self::processingFeeLabel().' ('.config('lunar.fee_note').')';
+    }
+
+    /**
      * Create a pending order that holds one slot in the tier.
      *
      * The couple/family add-on applies when the buyer asks for it or the
@@ -109,16 +117,20 @@ class Registry
     /**
      * Create a pending souvenir order (no slot, no capacity limit).
      *
-     * @param  array{email: string, marketing_opt_in?: bool, ip_address?: string|null}  $data
+     * A Barter Sales product's price is paid outside PayPal, so the order only charges the fee.
+     *
+     * @param  array{email: string, list_name?: string|null, show_full_name?: bool, marketing_opt_in?: bool, ip_address?: string|null}  $data
      */
     public function reserveSouvenir(Product $product, array $data): Order
     {
         return Order::create([
             'product_id' => $product->id,
             'status' => OrderStatus::Pending,
-            'amount_cents' => $product->price_cents + self::feeFor($product),
+            'amount_cents' => ($product->barter ? 0 : $product->price_cents) + self::feeFor($product),
             'processing_fee_cents' => self::feeFor($product),
             'email' => $data['email'],
+            'list_name' => $product->listing ? ($data['list_name'] ?? null) : null,
+            'show_full_name' => $data['show_full_name'] ?? false,
             'marketing_opt_in' => $data['marketing_opt_in'] ?? false,
             'consent_text' => config('lunar.consent_terms'),
             'consented_at' => now(),

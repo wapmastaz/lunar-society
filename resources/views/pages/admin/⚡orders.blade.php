@@ -62,6 +62,7 @@ new #[Title('Orders')] class extends Component {
             ->when($this->tier !== '' && $this->tier !== 'souvenir', fn ($q) => $q->whereRelation('tier', 'code', $this->tier))
             ->when($this->search !== '', fn ($q) => $q->where(fn ($q) => $q
                 ->where('plaque_name', 'like', "%{$this->search}%")
+                ->orWhere('list_name', 'like', "%{$this->search}%")
                 ->orWhere('email', 'like', "%{$this->search}%")
                 ->orWhere('buyer_name', 'like', "%{$this->search}%")
                 ->orWhere('phone', 'like', "%{$this->search}%")
@@ -167,7 +168,10 @@ new #[Title('Orders')] class extends Component {
                 <flux:table.row :key="$order->id">
                     <flux:table.cell class="font-mono tabular-nums">{{ $order->slotLabel() ?? '·' }}</flux:table.cell>
                     <flux:table.cell>
-                        {{ $order->plaque_name ?? '·' }}
+                        {{ $order->plaque_name ?? $order->list_name ?? '·' }}
+                        @if ($order->product?->barter)
+                            <flux:badge size="sm" color="sky" class="ms-1">{{ $order->product->priceLabel() }} by Barter Sales</flux:badge>
+                        @endif
                         @if ($order->couple_addon)
                             <flux:badge size="sm" color="amber" class="ms-1">couple</flux:badge>
                         @endif

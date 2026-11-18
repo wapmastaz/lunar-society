@@ -37,7 +37,7 @@
 
     <p class="mt-5 flex items-baseline gap-3">
         <span class="font-display text-6xl text-white">{{ $tier->priceLabel() }}</span>
-        <span class="text-sm text-zinc-400">one-time, plus a {{ \App\Services\Registry::processingFeeLabel() }} processing fee</span>
+        <span class="text-sm text-zinc-400">one-time, plus {{ \App\Services\Registry::processingFeeLabel() }} ($10 S&amp;H, $5 Fallen Astronauts Education Fund)</span>
     </p>
 
     <div class="mt-5">

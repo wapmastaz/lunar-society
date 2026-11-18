@@ -25,7 +25,7 @@
 
 @if ($fee > 0)
     <div class="mt-3 flex justify-between gap-4 text-sm text-zinc-300">
-        <span>Processing fee</span>
+        <span>S&amp;H and Fallen Astronauts Fund</span>
         <span>+${{ number_format($fee / 100) }}</span>
     </div>
 @endif

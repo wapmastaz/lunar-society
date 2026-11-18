@@ -18,15 +18,15 @@
         ['Will my name be public?', 'Yes, every Founder is listed on our Founders page, shown as first name and last initial.'],
         ['Is this affiliated with President Trump or NASA?', 'No. '.config('lunar.disclaimer')],
         ['What if timelines change?', "Space projects depend on things outside our control, so dates may shift. We'll share every update on the podcast and by email."],
-        ['Are there any extra fees?', 'Founder memberships and items that ship include a flat '.\App\Services\Registry::processingFeeLabel().' processing fee, shown before you pay. The Supporter and Generous Supporter contributions have no fee. There are no other charges.'],
+        ['Are there any extra fees?', 'Founder memberships and items that ship include a flat '.\App\Services\Registry::feeExplained().', shown before you pay. The Booster listing has no fee. There are no other charges.'],
         ['How do I pay?', 'All payments are processed securely by PayPal. You can pay with a PayPal account or a card through PayPal.'],
     ];
 
 
-    $pebble = \App\Models\Product::where('slug', config('lunar.affiliate.slug'))->where('active', true)->first();
-    if ($pebble) {
+    $offerings = \App\Models\Product::where('active', true)->orderBy('sort')->get();
+    if ($offerings->isNotEmpty()) {
         array_splice($faqs, 3, 0, [
-            ['What is the Affiliate Membership Package?', 'For '.$pebble->priceLabel().' (plus the '.\App\Services\Registry::processingFeeLabel().' processing fee) you become an affiliate member of the Lunar Society Network and receive the Space Pebble Collectible, a commemorative keepsake. The pebble is not lunar material, and the package does not include a Founder slot or a name on the Founders Plaque. It ships to the address you give PayPal at checkout.'],
+            ['Can I support without becoming a Founder?', 'Yes. '.$offerings->map(fn ($p) => $p->name.' ('.$p->priceWithFeeLabel().'): '.(str_starts_with($p->tagline, 'Lunar') ? $p->tagline : \Illuminate\Support\Str::lcfirst($p->tagline)))->implode('; ').'. None of these include a Founder slot or a name on the Founders Plaque. The Follower souvenir is a commemorative keepsake, not lunar material.'],
         ]);
     }
 

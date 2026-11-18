@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
  * @property string $email
  * @property string|null $buyer_name
  * @property string|null $plaque_name
+ * @property string|null $list_name
  * @property bool $couple_addon
  * @property string|null $listener_handle
  * @property bool $show_full_name
@@ -147,11 +148,9 @@ class Order extends Model
      */
     public function publicName(): string
     {
-        if ($this->show_full_name) {
-            return (string) $this->plaque_name;
-        }
+        $name = (string) ($this->plaque_name ?? $this->list_name);
 
-        return self::maskName((string) $this->plaque_name);
+        return $this->show_full_name ? $name : self::maskName($name);
     }
 
     /**

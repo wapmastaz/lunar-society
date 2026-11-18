@@ -19,6 +19,10 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
     // Kept in the session so a page reload doesn't wipe the form or the PayPal step.
     #[Session(key: 'souvenir.email')]
     public string $email = '';
+    #[Session(key: 'souvenir.list_name')]
+    public string $list_name = '';
+    #[Session(key: 'souvenir.show_full_name')]
+    public bool $show_full_name = false;
     #[Session(key: 'souvenir.consent_terms')]
     public bool $consent_terms = false;
     #[Session(key: 'souvenir.marketing_opt_in')]
@@ -38,7 +42,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
         // Resume only a live hold for this product; start over once it's paid or lapsed.
         if ($order && ($order->product_id !== $product->id || $order->status !== OrderStatus::Pending || ! $order->hold_expires_at?->isFuture())) {
             if ($order->isPaid()) {
-                $this->reset('email', 'consent_terms', 'marketing_opt_in');
+                $this->reset('email', 'list_name', 'show_full_name', 'consent_terms', 'marketing_opt_in');
             }
 
             $this->orderUuid = null;
@@ -54,10 +58,16 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
     public function start(Registry $registry): void
     {
+        $this->list_name = trim(preg_replace('/\s+/', ' ', $this->list_name));
+
         $this->validate([
             'email' => ['required', 'email:rfc', 'max:255'],
+            'list_name' => $this->product->listing ? ['required', 'string', 'max:'.config('lunar.name_max_length')] : ['nullable'],
             'consent_terms' => ['accepted'],
-        ], ['consent_terms.accepted' => 'Please agree to the Terms and the independence disclaimer.']);
+        ], [
+            'list_name.required' => 'Please enter the name to show on the list.',
+            'consent_terms.accepted' => 'Please agree to the Terms and the independence disclaimer.',
+        ]);
 
         $key = 'reserve:'.request()->ip();
 
@@ -71,6 +81,8 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
         $this->orderUuid = $registry->reserveSouvenir($this->product, [
             'email' => $this->email,
+            'list_name' => $this->list_name,
+            'show_full_name' => $this->show_full_name,
             'marketing_opt_in' => $this->marketing_opt_in,
             'ip_address' => request()->ip(),
         ])->uuid;
@@ -88,7 +100,7 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
                 <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="aspect-square w-full rounded-3xl object-cover shadow-2xl shadow-black/60 ring-1 ring-white/15">
             @else
                 <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-panel via-[#121729] to-[#1a1710] p-8">
-                    @if ($product->slug === config('lunar.affiliate.slug'))
+                    @if ($product->slug === 'follower')
                         <x-pebble-art class="mx-auto w-full max-w-md" />
                     @else
                         <x-logo-mark large class="mx-auto w-full max-w-sm" />
@@ -100,7 +112,16 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
         <div class="animate-rise" style="--reveal-delay: 120ms">
             <p class="eyebrow">{{ $product->tagline ?? 'Lunar Society Network collectible' }}</p>
             <h1 class="mt-4 font-display text-5xl leading-[1.02] text-white sm:text-6xl">{{ $product->name }}</h1>
-            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="font-sans text-base text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span>@endif</p>
+            <p class="mt-4 font-display text-4xl text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="font-sans text-base text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }}</span>@endif</p>
+            @if ($product->ships)
+                <p class="mt-1 text-sm text-zinc-400">The {{ \App\Services\Registry::feeExplained() }}.</p>
+            @endif
+            @if ($product->barter)
+                <p class="mt-3 rounded-lg border border-gold/30 bg-gold/5 p-3 text-sm text-zinc-200">
+                    <span class="font-semibold text-gold">Barter payment:</span> the {{ $product->priceLabel() }} is paid through Barter Sales, outside PayPal.
+                    Only the {{ \App\Services\Registry::processingFeeLabel() }} is paid here by PayPal.
+                </p>
+            @endif
 
             @if ($product->description)
                 <p class="mt-5 leading-relaxed text-zinc-300">{{ $product->description }}</p>
@@ -120,9 +141,6 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
 
             <p class="mt-6 text-sm text-zinc-400">
                 Separate from Registered Founder memberships: this does not include a Founder slot or a name on the Founders Plaque.
-                @if ($product->slug === config('lunar.affiliate.slug'))
-                    The Space Pebble is a commemorative keepsake, not lunar material.
-                @endif
                 <a href="{{ route('claim') }}" class="text-gold underline underline-offset-2">Become a Founder</a>.
             </p>
             @if ($product->ships)
@@ -138,6 +156,16 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
                 @if (! $this->order)
                     <form wire:submit="start" class="space-y-6" novalidate>
                         <flux:input wire:model="email" type="email" label="Email address" description="{{ $product->ships ? 'Your receipt and shipping updates are sent here.' : 'Your receipt is sent here.' }}" autocomplete="email" required />
+
+                        @if ($product->listTitle())
+                            <div class="space-y-3">
+                                <flux:input wire:model="list_name" label="Name for our {{ $product->listTitle() }}" description="Shown as first name and last initial unless you tick the box below." maxlength="{{ config('lunar.name_max_length') }}" autocomplete="name" required />
+                                <flux:field variant="inline">
+                                    <flux:checkbox wire:model="show_full_name" />
+                                    <flux:label class="!leading-snug">Show my full name on the list</flux:label>
+                                </flux:field>
+                            </div>
+                        @endif
 
                         <flux:field variant="inline">
                             <flux:checkbox wire:model="consent_terms" />

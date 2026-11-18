@@ -145,9 +145,9 @@ class SiteTest extends TestCase
             ->assertSee('Every founder receives')
             ->assertSee('Please note')
             ->assertSee('Delivery of the plaque to the Moon is a goal, not a guarantee.')
-            ->assertSee('Plus a $15 processing fee per order.');
+            ->assertSee('Plus $15 ($5 for the Fallen Astronauts Education Fund and $10 for shipping and handling) per order.');
 
-        $this->get('/')->assertSee('plus a $15 processing fee');
+        $this->get('/')->assertSee('plus $15 ($10 S&amp;H, $5 Fallen Astronauts Education Fund)', false);
         $this->get('/faq')->assertSee('Are there any extra fees?');
 
         $this->get('/')->assertSee('Executive Director')->assertSee('data-reveal', false);
@@ -201,6 +201,13 @@ class SiteTest extends TestCase
             ->assertSee('Our Name and Our Story')
             ->assertSee('The International Galactic Society For Outer Space . Com')
             ->assertSee('TheLunarSociety.net');
+    }
+
+    public function test_home_page_carries_the_press_release_headline(): void
+    {
+        $this->get('/')
+            ->assertSee('The National Lunar Society of America Launches Historic Founders Registry to Promote Intergalactic Peace Ahead of Upcoming Moon Base')
+            ->assertSee('www.TheLunarSociety.net');
     }
 
     public function test_gift_package_box_size_is_12_by_14(): void

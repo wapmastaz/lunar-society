@@ -19,6 +19,7 @@ new #[Layout('layouts::site')] #[Title('Appreciative Contributions')] class exte
         <p class="eyebrow">Appreciative Contributions</p>
         <h1 class="mt-4 font-display text-5xl text-white sm:text-6xl">We Need a Little Help from Our Friends</h1>
         <p class="mx-auto mt-3 max-w-2xl text-zinc-300">Ways to support the Lunar Society Network. These are separate from Registered Founder memberships and don't include a slot on the Founders Plaque.</p>
+        <p class="mx-auto mt-2 max-w-2xl text-sm text-zinc-400">Items that ship add {{ \App\Services\Registry::feeExplained() }}. <a href="{{ route('supporters') }}" class="text-gold underline underline-offset-2">See the lists</a>.</p>
     </header>
 
     @if ($this->products->isEmpty())
@@ -32,12 +33,12 @@ new #[Layout('layouts::site')] #[Title('Appreciative Contributions')] class exte
                     @endif
                     <div class="flex flex-1 flex-col p-6">
                         <h2 class="text-lg font-semibold text-white">{{ $product->name }}</h2>
-                        <p class="mt-1 text-2xl font-bold text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="text-sm font-normal text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span>@endif</p>
+                        <p class="mt-1 text-2xl font-bold text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="text-sm font-normal text-zinc-400">{{ $product->barter ? 'via Barter Sales, ' : '' }}+ {{ \App\Services\Registry::processingFeeLabel() }}{{ $product->barter ? ' by PayPal' : '' }}</span>@endif</p>
                         @if ($product->description)
                             <p class="mt-3 text-sm text-zinc-300">{{ $product->description }}</p>
                         @endif
                         <div class="mt-auto pt-6">
-                            <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" class="w-full">{{ $product->ships ? 'Order now' : 'Contribute' }}</flux:button>
+                            <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" class="w-full">{{ $product->ships ? 'Order now' : 'Become a Booster' }}</flux:button>
                         </div>
                     </div>
                 </article>

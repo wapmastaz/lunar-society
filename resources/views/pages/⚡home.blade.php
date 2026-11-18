@@ -141,6 +141,15 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
         <livewire:slot-counter variant="stat" />
     </section>
 
+    {{-- Press release headline, in the client's words. --}}
+    <section aria-labelledby="press-heading" class="mx-auto mt-16 max-w-5xl px-4 text-center sm:px-6" data-reveal>
+        <p class="eyebrow">Press release</p>
+        <h2 id="press-heading" class="mt-4 font-display text-3xl leading-tight text-white sm:text-5xl">
+            The National Lunar Society of America Launches Historic Founders Registry to Promote Intergalactic Peace Ahead of Upcoming Moon Base
+        </h2>
+        <p class="mt-5 font-mono text-xs uppercase tracking-[0.25em] text-gold">The National Lunar Society of America · www.TheLunarSociety.net</p>
+    </section>
+
     {{-- The society --}}
     <section aria-labelledby="society-heading" class="mx-auto mt-24 max-w-7xl px-4 sm:px-6">
         <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
@@ -297,22 +306,24 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                 @foreach ($this->contributions as $product)
                     <div class="flex" data-reveal style="--reveal-delay: {{ $loop->index * 120 }}ms">
                         <a href="{{ route('souvenirs.show', $product) }}" class="panel hover-lift group flex w-full flex-col p-6">
-                            <span class="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">{{ $product->ships ? 'Ships to you' : 'Contribution' }}</span>
+                            <span class="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">{{ $product->listTitle() ?? ($product->barter ? 'Trade associates' : 'Ships to you') }}</span>
                             <span class="mt-3 text-xl font-semibold text-white">{{ $product->name }}</span>
                             <span class="mt-2 font-display text-4xl text-white">{{ $product->priceLabel() }}</span>
-                            @if ($product->ships)
-                                <span class="text-xs text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} processing</span>
+                            @if ($product->barter)
+                                <span class="text-xs text-zinc-400">via Barter Sales, + {{ \App\Services\Registry::processingFeeLabel() }} by PayPal</span>
+                            @elseif ($product->ships)
+                                <span class="text-xs text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} S&amp;H and Fallen Astronauts Fund</span>
                             @endif
                             <span class="mt-4 text-sm leading-relaxed text-zinc-300">{{ \Illuminate\Support\Str::before($product->description, '.') }}.</span>
                             <span class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-gold">
-                                {{ $product->ships ? 'Order now' : 'Contribute' }}
+                                {{ $product->ships ? 'Order now' : 'Become a Booster' }}
                                 <flux:icon.arrow-right variant="micro" class="size-4 transition group-hover:translate-x-1" />
                             </span>
                         </a>
                     </div>
                 @endforeach
             </div>
-            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible.</p>
+            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. The {{ \App\Services\Registry::feeExplained() }}. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible. <a href="{{ route('supporters') }}" class="text-gold underline underline-offset-2">See the lists</a>.</p>
         </section>
     @endif
 

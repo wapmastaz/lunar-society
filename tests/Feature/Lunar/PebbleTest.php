@@ -2,10 +2,16 @@
 
 namespace Tests\Feature\Lunar;
 
+use App\Enums\OrderStatus;
+use App\Mail\OrderConfirmation;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\Registry;
 use Database\Seeders\ProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
 use Tests\Concerns\InteractsWithRegistry;
 use Tests\TestCase;
@@ -20,84 +26,121 @@ class PebbleTest extends TestCase
         $this->setUpRegistry();
     }
 
-    public function test_contributions_are_listed_apart_from_founders_and_hide_at_zero(): void
+    public function test_offerings_are_listed_apart_from_founders_and_hide_at_zero(): void
     {
-        config(['lunar.affiliate.price' => 0]);
+        Product::create(['slug' => 'generous-supporter', 'name' => 'Generous Supporter', 'price_cents' => 4900, 'active' => true]);
+        config(['lunar.offerings.trade-associate' => 0]);
         $this->seed(ProductSeeder::class);
 
-        $this->assertFalse(Product::firstWhere('slug', 'affiliate-membership')->active);
-        $this->get('/souvenirs/affiliate-membership')->assertNotFound();
+        $this->assertFalse(Product::firstWhere('slug', 'generous-supporter')->active);
+        $this->assertFalse(Product::firstWhere('slug', 'trade-associate')->active);
+        $this->get('/souvenirs/trade-associate')->assertNotFound();
 
         $this->get('/')
             ->assertSee('We Need a Little Help from Our Friends')
             ->assertSee('separate from Registered Founder memberships')
-            ->assertSee('Supporter')
+            ->assertSee('Booster')
             ->assertSee('$25')
-            ->assertSee('Generous Supporter')
+            ->assertSee('Follower')
             ->assertSee('$49')
-            ->assertSee('Moon Dust Sample')
-            ->assertSee('$99')
+            ->assertSee('Supporter')
+            ->assertSee('$79')
+            ->assertDontSee('Generous Supporter')
+            ->assertSee('$5 for the Fallen Astronauts Education Fund and $10 for shipping and handling')
             ->assertSee('Alpha Founder')
-            ->assertSee('Beta Founder')
             ->assertSee('MJ Schultz, aka Mr SuperTrump, occupies positions #001 to #005')
             ->assertSee('Holiday Gift Delivery Notice');
     }
 
-    public function test_contributions_only_charge_the_fee_when_they_ship(): void
+    public function test_each_offering_charges_the_right_amount_through_paypal(): void
     {
         $this->seed(ProductSeeder::class);
 
-        foreach (['supporter' => [2500, 0], 'moon-dust-sample' => [11400, 1500]] as $slug => [$amount, $fee]) {
-            Livewire::test('pages::souvenir-checkout', ['product' => Product::firstWhere('slug', $slug)])
+        // [PayPal amount, fee]: the Booster has no fee, the Trade Associate pays only the fee.
+        foreach (['booster' => [2500, 0], 'follower' => [6400, 1500], 'moon-dust-supporter' => [9400, 1500], 'trade-associate' => [1500, 1500]] as $slug => [$amount, $fee]) {
+            $product = Product::firstWhere('slug', $slug);
+
+            Livewire::test('pages::souvenir-checkout', ['product' => $product])
                 ->set('email', "{$slug}@example.test")
+                ->set('list_name', 'Jane Patriot')
                 ->set('consent_terms', true)
                 ->call('start')
                 ->assertHasNoErrors();
 
             $order = Order::where('email', "{$slug}@example.test")->sole();
-            $this->assertSame([$amount, $fee], [$order->amount_cents, $order->processing_fee_cents]);
+            $this->assertSame([$amount, $fee], [$order->amount_cents, $order->processing_fee_cents], $slug);
+            $this->assertSame($product->listing ? 'Jane Patriot' : null, $order->list_name, $slug);
         }
 
-        $this->get('/souvenirs/supporter')->assertSee('not tax-deductible')->assertDontSee('+ $15 processing');
-        $this->get('/souvenirs/moon-dust-sample')->assertSee('lunar meteorite dust')->assertSee('Holiday Gift Delivery Notice');
+        $this->get('/souvenirs/booster')->assertSee('Booster list')->assertSee('December 20')->assertDontSee('+ $15');
+        $this->get('/souvenirs/follower')->assertSee('Space Pebble Collectible')->assertSee('not lunar material')->assertSee('Name for our Followers list');
+        $this->get('/souvenirs/moon-dust-supporter')->assertSee('Lunar Moon Dust')->assertSee('Supporters list');
+        $this->get('/souvenirs/trade-associate')
+            ->assertSee('paid through Barter Sales, outside PayPal')
+            ->assertSee('certificate of authenticity')
+            ->assertDontSee('Name for our');
     }
 
-    public function test_affiliate_package_costs_79_plus_processing_and_ships(): void
+    public function test_listed_offerings_need_a_name_for_the_list(): void
     {
-        Product::create(['slug' => 'space-pebble', 'name' => 'Old pebble', 'price_cents' => 0, 'active' => false]);
         $this->seed(ProductSeeder::class);
 
-        $package = Product::firstWhere('slug', 'affiliate-membership');
-        $this->assertSame(0, Product::where('slug', 'space-pebble')->count());
-        $this->assertTrue($package->active);
-        $this->assertSame(7900, $package->price_cents);
-
-        $this->get('/')->assertSee('Affiliate Membership Package')->assertSee('$79')->assertSee('+ $15 processing');
-        $this->get('/claim')->assertSee('Also available: the Affiliate Membership Package');
-        $this->get('/faq')->assertSee('What is the Affiliate Membership Package?')->assertSee('not lunar material');
-
-        $this->get('/souvenirs/affiliate-membership')
-            ->assertOk()
-            ->assertSee('Affiliate membership in the Lunar Society Network')
-            ->assertSee('does not include a Founder slot')
-            ->assertSee('not lunar material');
-
-        Livewire::test('pages::souvenir-checkout', ['product' => $package])
-            ->set('email', 'gift@example.test')
+        Livewire::test('pages::souvenir-checkout', ['product' => Product::firstWhere('slug', 'follower')])
+            ->set('email', 'fan@example.test')
             ->set('consent_terms', true)
             ->call('start')
-            ->assertHasNoErrors();
+            ->assertHasErrors(['list_name' => 'required']);
+    }
 
-        // A reload goes straight back to the PayPal step.
-        Livewire::test('pages::souvenir-checkout', ['product' => $package])
-            ->assertSet('email', 'gift@example.test')
-            ->assertSet('orderUuid', Order::sole()->uuid);
+    public function test_lists_show_paid_names_and_boosters_only_from_december_20(): void
+    {
+        $this->seed(ProductSeeder::class);
 
-        $order = Order::sole();
-        $this->assertSame($package->id, $order->product_id);
-        $this->assertNull($order->tier_id);
-        $this->assertSame(9400, $order->amount_cents);
-        $this->assertSame(1500, $order->processing_fee_cents);
+        foreach (['booster' => 'Bob Booster', 'follower' => 'Fay Follower', 'moon-dust-supporter' => 'Sam Supporter'] as $slug => $name) {
+            Order::create([
+                'product_id' => Product::firstWhere('slug', $slug)->id,
+                'status' => OrderStatus::Paid,
+                'amount_cents' => 100,
+                'email' => "{$slug}@example.test",
+                'list_name' => $name,
+                'paid_at' => now(),
+            ]);
+        }
+
+        $this->travelTo('2026-12-19 12:00', fn () => $this->get('/supporters')
+            ->assertOk()
+            ->assertSee('Fay F.')
+            ->assertSee('Sam S.')
+            ->assertDontSee('Bob B.')
+            ->assertSee('The Booster list will be published here on December 20, 2026.'));
+
+        $this->travelTo('2026-12-20 12:00', fn () => $this->get('/supporters')->assertSee('Bob B.'));
+    }
+
+    public function test_trade_associate_pays_only_the_fee_by_paypal_and_gets_the_barter_receipt(): void
+    {
+        Mail::fake();
+        Queue::fake();
+        $this->seed(ProductSeeder::class);
+        $this->fakePayPal('15.00');
+
+        $order = app(Registry::class)->reserveSouvenir(Product::firstWhere('slug', 'trade-associate'), ['email' => 'trade@example.test']);
+
+        $this->postJson(route('checkout.create', $order))->assertOk();
+        $this->postJson(route('checkout.capture', $order))->assertOk();
+
+        $this->assertTrue($order->refresh()->isPaid());
+
+        Http::assertSent(fn ($request) => str_ends_with($request->url(), '/v2/checkout/orders')
+            && $request['purchase_units'][0]['amount']['value'] === '15.00'
+            && ! isset($request['purchase_units'][0]['amount']['breakdown'])
+            && $request['payment_source']['paypal']['experience_context']['shipping_preference'] === 'GET_FROM_FILE');
+
+        Mail::assertQueued(OrderConfirmation::class, function ($mail) {
+            $mail->assertSeeInHtml('paid as a Barter payment through Barter Sales');
+
+            return $mail->hasTo('trade@example.test');
+        });
     }
 
     public function test_hero_matches_the_mock_and_labels_the_artwork(): void

@@ -37,7 +37,7 @@ return [
     'name_lock_hours' => 48,
     'name_max_length' => 30,
     'couple_addon_cents' => 3000,
-    'processing_fee_cents' => (int) env('LUNAR_PROCESSING_FEE_CENTS', 1500), // flat, added to every order
+    'processing_fee_cents' => (int) env('LUNAR_PROCESSING_FEE_CENTS', 1500), // flat: $5 Fallen Astronauts Education Fund + $10 S&H
 
     /*
     |--------------------------------------------------------------------------
@@ -67,21 +67,23 @@ return [
 
     'delivery_notice' => 'Physical gift packages are expected to be delivered by January 31, 2027. Please consider this delivery timeframe when purchasing a membership as a Christmas gift.',
 
-    // The $79 Affiliate Membership Package (affiliate membership + the Space Pebble
-    // Collectible). Not a Founder slot. Set the price to 0 to hide it; run
+    // Ways to support besides a Founder slot (dollars; 0 hides one). Run
     // `php artisan db:seed --class=ProductSeeder --force` after changing these.
-    'affiliate' => [
-        'slug' => 'affiliate-membership',
-        'price' => env('LUNAR_AFFILIATE_PRICE', 79), // dollars
-        'image' => env('LUNAR_AFFILIATE_IMAGE', env('LUNAR_PEBBLE_IMAGE')), // path under public/
+    'offerings' => [
+        'booster' => env('LUNAR_BOOSTER_PRICE', 25),
+        'follower' => env('LUNAR_FOLLOWER_PRICE', 49),
+        'moon-dust-supporter' => env('LUNAR_MOON_DUST_SUPPORTER_PRICE', 79),
+        'trade-associate' => env('LUNAR_TRADE_ASSOCIATE_PRICE', 99), // paid through Barter Sales
     ],
 
-    // Appreciative Contributions, separate from Founder memberships (dollars; 0 hides one).
-    'contributions' => [
-        'supporter' => env('LUNAR_SUPPORTER_PRICE', 25),
-        'generous-supporter' => env('LUNAR_GENEROUS_SUPPORTER_PRICE', 49),
-        'moon-dust-sample' => env('LUNAR_MOON_DUST_PRICE', 99),
-    ],
+    // The Follower souvenir (the Space Pebble Collectible). Path under public/.
+    'souvenir_image' => env('LUNAR_PEBBLE_IMAGE'),
+
+    // The Booster list goes up on the site from this date.
+    'booster_list_from' => '2026-12-20',
+
+    // What the flat $15 fee pays for.
+    'fee_note' => '$5 for the Fallen Astronauts Education Fund and $10 for shipping and handling',
 
     'shipping_cutoffs' => [
         'standard' => 'December 12',
