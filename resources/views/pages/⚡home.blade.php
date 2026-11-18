@@ -305,20 +305,46 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
             <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($this->contributions as $product)
                     <div class="flex" data-reveal style="--reveal-delay: {{ $loop->index * 120 }}ms">
-                        <a href="{{ route('souvenirs.show', $product) }}" class="panel hover-lift group flex w-full flex-col p-6">
+                        <a href="{{ route('souvenirs.show', $product) }}" class="panel hover-lift group flex w-full flex-col overflow-hidden p-6">
                             <span class="font-mono text-xs uppercase tracking-[0.2em] text-zinc-400">{{ $product->listTitle() ?? ($product->barter ? 'Trade associates' : 'Ships to you') }}</span>
                             <span class="mt-3 text-xl font-semibold text-white">{{ $product->name }}</span>
-                            <span class="mt-2 font-display text-4xl text-white">{{ $product->priceLabel() }}</span>
+
                             @if ($product->barter)
-                                <span class="text-xs text-zinc-400">via Barter Sales, + {{ \App\Services\Registry::processingFeeLabel() }} by PayPal</span>
-                            @elseif ($product->ships)
-                                <span class="text-xs text-zinc-400">+ {{ \App\Services\Registry::processingFeeLabel() }} S&amp;H and Fallen Astronauts Fund</span>
+                                {{-- Total with breakdown in parens --}}
+                                <p class="mt-2 flex items-baseline gap-2 font-display text-4xl text-white">
+                                    ${{ number_format(($product->price_cents + \App\Services\Registry::processingFeeCents()) / 100) }}
+                                    <span class="font-sans text-base font-normal text-zinc-400">({{ $product->priceLabel() }} + {{ \App\Services\Registry::processingFeeLabel() }})</span>
+                                </p>
+                            @else
+                                {{-- Total with breakdown in parens for ships products --}}
+                                @if ($product->ships)
+                                    <p class="mt-2 flex items-baseline gap-2 font-display text-4xl text-white">
+                                        ${{ number_format(($product->price_cents + \App\Services\Registry::processingFeeCents()) / 100) }}
+                                        <span class="font-sans text-base font-normal text-zinc-400">({{ $product->priceLabel() }} + {{ \App\Services\Registry::processingFeeLabel() }})</span>
+                                    </p>
+                                @else
+                                    <span class="mt-2 font-display text-4xl text-white">{{ $product->priceLabel() }}</span>
+                                @endif
                             @endif
+
                             <span class="mt-4 text-sm leading-relaxed text-zinc-300">{{ \Illuminate\Support\Str::before($product->description, '.') }}.</span>
-                            <span class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-gold">
-                                {{ $product->ships ? 'Order now' : 'Become a Booster' }}
-                                <flux:icon.arrow-right variant="micro" class="size-4 transition group-hover:translate-x-1" />
-                            </span>
+
+                            @if ($product->barter)
+                                {{-- Red payment-split banner --}}
+                                <span class="-mx-6 mt-5 block bg-red-600 px-4 py-2 text-xs font-semibold text-white">
+                                    {{ $product->priceLabel() }} Payment through Barter Sales, with an additional {{ \App\Services\Registry::processingFeeLabel() }} collected separately.
+                                </span>
+                            @elseif ($product->ships)
+                                {{-- Yellow additional-fee banner --}}
+                                <span class="-mx-6 mt-5 block bg-amber-400 px-4 py-2 text-xs font-semibold text-zinc-900">
+                                    Additional {{ \App\Services\Registry::processingFeeLabel() }}: {{ config('lunar.fee_note') }}
+                                </span>
+                            @else
+                                <span class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-gold">
+                                    Become a Booster
+                                    <flux:icon.arrow-right variant="micro" class="size-4 transition group-hover:translate-x-1" />
+                                </span>
+                            @endif
                         </a>
                     </div>
                 @endforeach

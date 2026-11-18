@@ -118,8 +118,8 @@ new #[Layout('layouts::site')] #[Title('Souvenir checkout')] class extends Compo
             @endif
             @if ($product->barter)
                 <p class="mt-3 rounded-lg border border-gold/30 bg-gold/5 p-3 text-sm text-zinc-200">
-                    <span class="font-semibold text-gold">Barter payment:</span> the {{ $product->priceLabel() }} is paid through Barter Sales, outside PayPal.
-                    Only the {{ \App\Services\Registry::processingFeeLabel() }} is paid here by PayPal.
+                    <span class="font-semibold text-gold">Two-step payment — total {{ '$'.number_format(($product->price_cents + \App\Services\Registry::processingFeeCents()) / 100) }}:</span>
+                    the {{ $product->priceLabel() }} is paid through Barter Sales (outside PayPal), then the {{ \App\Services\Registry::processingFeeLabel() }} ({{ config('lunar.fee_note') }}) is collected separately here by PayPal.
                 </p>
             @endif
 
