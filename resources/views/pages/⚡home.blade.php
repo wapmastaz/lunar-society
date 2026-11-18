@@ -261,6 +261,7 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
                     </li>
                 @endforeach
             </ul>
+            <p class="mt-5 text-sm text-zinc-400">Mailed in a {{ config('lunar.package_box_size') }} box.</p>
             <p class="mt-6 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm leading-relaxed text-zinc-200">
                 <span class="font-semibold text-gold">Holiday Gift Delivery Notice:</span> {{ config('lunar.delivery_notice') }}
             </p>

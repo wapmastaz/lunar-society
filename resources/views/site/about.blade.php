@@ -120,6 +120,18 @@
             </div>
         </section>
 
+        {{-- The name history, from the client's own wording. --}}
+        <section id="our-name" aria-labelledby="our-name-heading" class="mt-24 scroll-mt-24" data-reveal>
+            <p class="eyebrow">The Lunar Society Network</p>
+            <h2 id="our-name-heading" class="mt-4 font-display text-4xl text-white sm:text-5xl">Our Name and Our Story</h2>
+            <div class="mt-6 max-w-3xl space-y-5 text-lg leading-relaxed text-zinc-300">
+                <p>We originally started as <em>The International Galactic Society For Outer Space . Com</em>.</p>
+                <p>Because the original name was much too long, we shortened it to <em>The Lunar Society Network</em>.</p>
+                <p>The new website address is <span class="font-semibold text-white">TheLunarSociety.net</span>.</p>
+                <p>The word "Network" is an important part of our identity. Welcome to The Lunar Society Network!</p>
+            </div>
+        </section>
+
         <section data-reveal aria-labelledby="society-heading" class="mt-24 rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1710] via-panel to-[#0f1428] p-7 sm:p-12">
             <h2 id="society-heading" class="font-display text-4xl text-white sm:text-5xl">About the Lunar Society</h2>
             <p class="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-200">

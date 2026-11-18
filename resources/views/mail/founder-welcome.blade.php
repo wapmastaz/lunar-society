@@ -23,6 +23,8 @@ As a Registered Founder, you will receive:
 - {{ $item }}
 @endforeach
 
+It ships in a {{ config('lunar.package_box_size') }} mailing box.
+
 @if ($order->address_line1)
 We'll mail it to: {{ $order->address_line1 }}@if ($order->address_line2), {{ $order->address_line2 }}@endif, {{ $order->city }}, {{ $order->state }} {{ $order->postal_code }}, {{ $order->country }}. If that's not right, reply to this email.
 @endif

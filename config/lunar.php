@@ -60,6 +60,9 @@ return [
         'Other special Lunar Society collectibles',
     ],
 
+    // The gift package ships in a 12" x 14" mailing box.
+    'package_box_size' => '12" x 14"',
+
     'delivery_by' => 'January 31, 2027',
 
     'delivery_notice' => 'Physical gift packages are expected to be delivered by January 31, 2027. Please consider this delivery timeframe when purchasing a membership as a Christmas gift.',

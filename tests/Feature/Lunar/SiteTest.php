@@ -195,6 +195,20 @@ class SiteTest extends TestCase
         $this->get('/')->assertSee('images/mj-schultz.webp', false)->assertSee('#story', false);
     }
 
+    public function test_about_page_tells_the_story_of_our_name(): void
+    {
+        $this->get('/about')
+            ->assertSee('Our Name and Our Story')
+            ->assertSee('The International Galactic Society For Outer Space . Com')
+            ->assertSee('TheLunarSociety.net');
+    }
+
+    public function test_gift_package_box_size_is_12_by_14(): void
+    {
+        $this->get('/')->assertSee('Mailed in a 12&quot; x 14&quot; box.', false);
+        $this->get('/faq')->assertSee('12&quot; x 14&quot; box', false);
+    }
+
     public function test_charter_opens_the_home_page_and_has_its_own_page(): void
     {
         $home = $this->get('/')->assertOk()->assertSee(route('charter'), false)->getContent();
