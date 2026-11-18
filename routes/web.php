@@ -24,9 +24,10 @@ Route::view('disclaimer', 'site.disclaimer')->name('disclaimer');
 
 // PayPal
 Route::middleware('throttle:30,1')->controller(CheckoutController::class)->group(function () {
-    Route::post('checkout/{order}/paypal', [CheckoutController::class, 'create'])->name('checkout.create');
-    Route::post('checkout/{order}/capture', [CheckoutController::class, 'capture'])->name('checkout.capture');
+    Route::post('checkout/{order}/paypal', 'create')->name('checkout.create');
+    Route::post('checkout/{order}/capture', 'capture')->name('checkout.capture');
 });
+
 Route::post('paypal/webhook', PayPalWebhookController::class)->name('paypal.webhook');
 
 // Admin
