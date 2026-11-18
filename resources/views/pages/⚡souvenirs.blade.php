@@ -33,12 +33,33 @@ new #[Layout('layouts::site')] #[Title('Appreciative Contributions')] class exte
                     @endif
                     <div class="flex flex-1 flex-col p-6">
                         <h2 class="text-lg font-semibold text-white">{{ $product->name }}</h2>
-                        <p class="mt-1 text-2xl font-bold text-white">{{ $product->priceLabel() }}@if ($product->ships) <span class="text-sm font-normal text-zinc-400">{{ $product->barter ? 'via Barter Sales, ' : '' }}+ {{ \App\Services\Registry::processingFeeLabel() }}{{ $product->barter ? ' by PayPal' : '' }}</span>@endif</p>
+                        @if ($product->barter || $product->ships)
+                            <p class="mt-1 flex items-baseline gap-2 font-display text-3xl text-white">
+                                ${{ number_format(($product->price_cents + \App\Services\Registry::processingFeeCents()) / 100) }}
+                                <span class="font-sans text-sm font-normal text-zinc-400">({{ $product->priceLabel() }} + {{ \App\Services\Registry::processingFeeLabel() }})</span>
+                            </p>
+                        @else
+                            <p class="mt-1 text-2xl font-bold text-white">{{ $product->priceLabel() }}</p>
+                        @endif
+
                         @if ($product->description)
                             <p class="mt-3 text-sm text-zinc-300">{{ $product->description }}</p>
                         @endif
+
+                        @if ($product->barter)
+                            {{-- Red payment-split banner --}}
+                            <div class="mt-4 rounded-lg bg-red-600/90 px-3.5 py-2.5 text-xs font-semibold text-white">
+                                {{ $product->priceLabel() }} Payment through Barter Sales, with an additional {{ \App\Services\Registry::processingFeeLabel() }} collected separately.
+                            </div>
+                        @elseif ($product->ships)
+                            {{-- Yellow additional-fee banner --}}
+                            <div class="mt-4 rounded-lg bg-amber-400 px-3.5 py-2.5 text-xs font-semibold text-zinc-950">
+                                Additional {{ \App\Services\Registry::processingFeeLabel() }}: {{ config('lunar.fee_note') }}
+                            </div>
+                        @endif
+
                         <div class="mt-auto pt-6">
-                            <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" class="w-full">{{ $product->ships ? 'Order now' : 'Become a Booster' }}</flux:button>
+                            <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" icon:trailing="arrow-right" class="w-full">{{ $product->ships ? 'Order now' : 'Become a Booster' }}</flux:button>
                         </div>
                     </div>
                 </article>
