@@ -4,6 +4,8 @@
 
 Hi {{ $order->payer_first_name ?: 'there' }},
 
+Thank you for your support of {{ config('lunar.brand') }}.
+
 Your order for **{{ $order->product->name }}** ({{ $order->amountLabel() }}) is confirmed. It will be mailed to the address you gave PayPal.
 
 @if ($order->product->barter)
@@ -33,6 +35,8 @@ This is separate from Registered Founder memberships and does not include a slot
 # Thank you for your support!
 
 Hi {{ $order->payer_first_name ?: 'there' }},
+
+Thank you for your support of {{ config('lunar.brand') }}.
 
 Your **{{ $order->product->name }}** contribution of {{ $order->amountLabel() }} is confirmed. We need a little help from our friends, and you came through. Thank you.
 

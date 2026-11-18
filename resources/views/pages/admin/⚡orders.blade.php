@@ -2,6 +2,7 @@
 
 use App\Enums\OrderStatus;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Tier;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
@@ -38,6 +39,13 @@ new #[Title('Orders')] class extends Component {
         return Tier::orderBy('slot_start')->get();
     }
 
+    /** Every offering that has been sold or is on sale, for the class counts and filter. */
+    #[Computed]
+    public function products()
+    {
+        return Product::where('active', true)->orWhereHas('orders', fn ($q) => $q->paid())->orderByDesc('active')->orderBy('sort')->get();
+    }
+
     #[Computed]
     public function stats(): array
     {
@@ -46,7 +54,7 @@ new #[Title('Orders')] class extends Component {
         return [
             'founders' => (clone $paid)->whereNotNull('tier_id')->count(),
             'byTier' => (clone $paid)->whereNotNull('tier_id')->selectRaw('tier_id, count(*) as c')->groupBy('tier_id')->pluck('c', 'tier_id'),
-            'souvenirs' => (clone $paid)->whereNotNull('product_id')->count(),
+            'byProduct' => (clone $paid)->whereNotNull('product_id')->selectRaw('product_id, count(*) as c')->groupBy('product_id')->pluck('c', 'product_id'),
             'gross' => (clone $paid)->sum('amount_cents'),
             'pending' => Order::where('status', OrderStatus::Pending)->where('hold_expires_at', '>', now())->count(),
         ];
@@ -59,7 +67,8 @@ new #[Title('Orders')] class extends Component {
             ->with('tier', 'product')
             ->when($this->status !== 'all', fn ($q) => $q->where('status', $this->status))
             ->when($this->tier === 'souvenir', fn ($q) => $q->whereNotNull('product_id'))
-            ->when($this->tier !== '' && $this->tier !== 'souvenir', fn ($q) => $q->whereRelation('tier', 'code', $this->tier))
+            ->when(str_starts_with($this->tier, 'product:'), fn ($q) => $q->whereRelation('product', 'slug', substr($this->tier, 8)))
+            ->when($this->tier !== '' && $this->tier !== 'souvenir' && ! str_starts_with($this->tier, 'product:'), fn ($q) => $q->whereRelation('tier', 'code', $this->tier))
             ->when($this->search !== '', fn ($q) => $q->where(fn ($q) => $q
                 ->where('plaque_name', 'like', "%{$this->search}%")
                 ->orWhere('list_name', 'like', "%{$this->search}%")
@@ -120,10 +129,12 @@ new #[Title('Orders')] class extends Component {
                 <flux:heading size="xl">{{ number_format($this->stats['byTier'][$t->id] ?? 0) }} <span class="text-sm font-normal text-zinc-500">/ {{ number_format($t->capacity()) }}</span></flux:heading>
             </flux:card>
         @endforeach
-        <flux:card class="space-y-1">
-            <flux:text>Souvenirs sold</flux:text>
-            <flux:heading size="xl">{{ number_format($this->stats['souvenirs']) }}</flux:heading>
-        </flux:card>
+        @foreach ($this->products as $p)
+            <flux:card class="space-y-1">
+                <flux:text>{{ $p->name }} <span class="text-zinc-500">({{ $p->priceWithFeeLabel() }})</span></flux:text>
+                <flux:heading size="xl">{{ number_format($this->stats['byProduct'][$p->id] ?? 0) }}</flux:heading>
+            </flux:card>
+        @endforeach
         <flux:card class="space-y-1">
             <flux:text>Gross (paid)</flux:text>
             <flux:heading size="xl">${{ number_format($this->stats['gross'] / 100, 2) }}</flux:heading>
@@ -145,7 +156,10 @@ new #[Title('Orders')] class extends Component {
             @foreach ($this->tiers as $t)
                 <flux:select.option :value="$t->code">{{ $t->name }}</flux:select.option>
             @endforeach
-            <flux:select.option value="souvenir">Souvenirs</flux:select.option>
+            <flux:select.option value="souvenir">All other classes</flux:select.option>
+            @foreach ($this->products as $p)
+                <flux:select.option :value="'product:'.$p->slug">{{ $p->name }}</flux:select.option>
+            @endforeach
         </flux:select>
         <flux:spacer />
         <flux:button :href="route('admin.exports.engraving')" icon="arrow-down-tray" size="sm">Engraving CSV</flux:button>
@@ -155,8 +169,8 @@ new #[Title('Orders')] class extends Component {
     <flux:table :paginate="$this->orders">
         <flux:table.columns>
             <flux:table.column>Slot</flux:table.column>
-            <flux:table.column>Plaque name</flux:table.column>
-            <flux:table.column>Item</flux:table.column>
+            <flux:table.column>Name</flux:table.column>
+            <flux:table.column>Class</flux:table.column>
             <flux:table.column>Buyer</flux:table.column>
             <flux:table.column>Amount</flux:table.column>
             <flux:table.column>Status</flux:table.column>
@@ -179,7 +193,7 @@ new #[Title('Orders')] class extends Component {
                             <flux:badge size="sm" :color="$order->isLocked() ? 'zinc' : 'green'" class="ms-1">{{ $order->isLocked() ? 'locked' : 'editable' }}</flux:badge>
                         @endif
                     </flux:table.cell>
-                    <flux:table.cell>{{ $order->itemLabel() }}</flux:table.cell>
+                    <flux:table.cell>{{ $order->classLabel() }}</flux:table.cell>
                     <flux:table.cell>
                         <span class="block font-medium">{{ $order->buyer_name ?? '·' }}</span>
                         <span class="block text-xs text-zinc-500">{{ $order->email }}@if ($order->phone) · {{ $order->phone }}@endif</span>

@@ -128,6 +128,14 @@ class Order extends Model
         return $this->payer_first_name ?: (Str::of((string) $this->buyer_name)->before(' ')->trim()->value() ?: null);
     }
 
+    /**
+     * The buyer's class: the Founder tier, or the offering (Booster, Follower, ...).
+     */
+    public function classLabel(): string
+    {
+        return $this->tier ? $this->tier->name : ($this->product?->name ?? 'Order');
+    }
+
     public function itemLabel(): string
     {
         return $this->tier?->name ?? $this->product?->name ?? 'Order';

@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Enums\OrderStatus;
 use App\Jobs\SubscribeToBeehiiv;
 use App\Mail\OrderConfirmation;
+use App\Mail\SaleNotification;
 use App\Models\Order;
 use App\Services\Registry;
 use Illuminate\Support\Arr;
@@ -71,6 +72,10 @@ class CompleteOrder
         if ($completed) {
             $order->refresh();
             Mail::to($order->email)->queue(new OrderConfirmation($order));
+
+            if ($office = config('lunar.notify_email')) {
+                Mail::to($office)->queue(new SaleNotification($order));
+            }
 
             // Newsletter only for buyers who ticked the permission box.
             if ($order->marketing_opt_in) {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Services\Registry;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -33,6 +34,14 @@ class Product extends Model
     protected function casts(): array
     {
         return ['active' => 'boolean', 'ships' => 'boolean', 'barter' => 'boolean', 'highlights' => 'array'];
+    }
+
+    /**
+     * @return HasMany<Order, $this>
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function getRouteKeyName(): string

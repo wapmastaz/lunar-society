@@ -3,6 +3,8 @@
 
 Dear {{ $order->greetingName() ?? 'Founder' }},
 
+Thank you for your support of {{ config('lunar.brand') }}.
+
 Welcome to {{ config('lunar.brand') }}! Your name is now reserved on the Founders Plaque, a custom aerospace-grade aluminum plaque engraved with the names of 1,000 founding listeners. Our goal is to send it to the Moon.
 
 ## Your registry details

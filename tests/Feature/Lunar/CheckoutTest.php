@@ -5,6 +5,7 @@ namespace Tests\Feature\Lunar;
 use App\Enums\OrderStatus;
 use App\Jobs\SubscribeToBeehiiv;
 use App\Mail\OrderConfirmation;
+use App\Mail\SaleNotification;
 use App\Models\Order;
 use App\Services\Registry;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -201,6 +202,18 @@ class CheckoutTest extends TestCase
         $this->assertTrue($order->locks_at->between(now()->addHours(47), now()->addHours(49)));
 
         Mail::assertQueued(OrderConfirmation::class, fn ($mail) => $mail->hasTo('jane@example.test') && $mail->order->slot_number === 51);
+        Mail::assertQueued(OrderConfirmation::class, function ($mail) {
+            $mail->assertSeeInHtml('Thank you for your support of The Lunar Society Network.');
+
+            return true;
+        });
+        Mail::assertQueued(SaleNotification::class, function ($mail) {
+            $mail->assertSeeInHtml('New payment: Beta Founder');
+            $mail->assertSeeInHtml('Jane Patriot');
+
+            return $mail->hasTo(config('lunar.notify_email'))
+                && str_starts_with($mail->envelope()->subject, 'New payment: Beta Founder, $164.00');
+        });
         Queue::assertPushed(SubscribeToBeehiiv::class);
 
         $this->get(route('orders.show', $order))->assertSee('#051')->assertSee('Welcome, Founder');
@@ -221,7 +234,8 @@ class CheckoutTest extends TestCase
         $this->postJson(route('checkout.capture', $order))->assertOk();
         $this->postJson(route('checkout.capture', $order))->assertOk();
 
-        Mail::assertQueuedCount(1);
+        Mail::assertQueued(OrderConfirmation::class, 1);
+        Mail::assertQueued(SaleNotification::class, 1);
     }
 
     public function test_amount_mismatch_does_not_mark_paid(): void

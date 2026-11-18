@@ -4,8 +4,10 @@ namespace Tests\Feature\Lunar;
 
 use App\Enums\OrderStatus;
 use App\Mail\OrderConfirmation;
+use App\Mail\SaleNotification;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\Registry;
 use Database\Seeders\ProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -138,9 +140,40 @@ class PebbleTest extends TestCase
 
         Mail::assertQueued(OrderConfirmation::class, function ($mail) {
             $mail->assertSeeInHtml('paid as a Barter payment through Barter Sales');
+            $mail->assertSeeInHtml('Thank you for your support of The Lunar Society Network.');
 
             return $mail->hasTo('trade@example.test');
         });
+        Mail::assertQueued(SaleNotification::class, function ($mail) {
+            $mail->assertSeeInHtml('$99 still to be collected through Barter Sales');
+
+            return str_starts_with($mail->envelope()->subject, 'New payment: Trade Associate, $15.00');
+        });
+    }
+
+    public function test_admin_counts_and_filters_orders_by_class(): void
+    {
+        $this->seed(ProductSeeder::class);
+
+        foreach (['booster' => 'Bob Booster', 'booster ' => 'Bea Booster', 'follower' => 'Fay Follower'] as $slug => $name) {
+            Order::create([
+                'product_id' => Product::firstWhere('slug', trim($slug))->id,
+                'status' => OrderStatus::Paid,
+                'amount_cents' => 2500,
+                'email' => str_replace(' ', '.', strtolower($name)).'@example.test',
+                'list_name' => $name,
+                'paid_at' => now(),
+            ]);
+        }
+
+        $this->actingAs(User::factory()->create());
+
+        Livewire::test('pages::admin.orders')
+            ->assertSeeInOrder(['Booster', '2', 'Follower', '1'])
+            ->set('tier', 'product:booster')
+            ->assertSee('Bob Booster')
+            ->assertSee('Bea Booster')
+            ->assertDontSee('Fay Follower');
     }
 
     public function test_hero_matches_the_mock_and_labels_the_artwork(): void
