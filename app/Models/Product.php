@@ -25,8 +25,9 @@ class Product extends Model
     /** Public lists a product can put its buyer on. */
     public const LISTS = [
         'boosters' => 'Booster list',
-        'followers' => 'Followers list',
+        'followers' => 'Followers list', // retired offering, kept for past orders
         'supporters' => 'Supporters list',
+        'members' => 'New Members list',
     ];
 
     protected $guarded = [];

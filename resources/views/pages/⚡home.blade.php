@@ -337,14 +337,14 @@ new #[Layout('layouts::site', ['overlayHeader' => true])] #[Title('Be Part of Hi
 
                             <div class="mt-auto pt-6">
                                 <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" icon:trailing="arrow-right" class="w-full">
-                                    {{ $product->ships ? 'Order now' : 'Become a Booster' }}
+                                    {{ $product->ships ? 'Order now' : 'Become a '.\Illuminate\Support\Str::after($product->name, 'New Lunar Society ') }}
                                 </flux:button>
                             </div>
                         </article>
                     </div>
                 @endforeach
             </div>
-            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. The {{ \App\Services\Registry::feeExplained() }}. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible. <a href="{{ route('supporters') }}" class="text-gold underline underline-offset-2">See the lists</a>.</p>
+            <p class="mt-6 text-center text-sm text-zinc-400">Paid securely with PayPal. Items that ship add {{ \App\Services\Registry::feeExplained() }}. The Lunar Society Network is a for-profit organization, so contributions are not tax-deductible. <a href="{{ route('supporters') }}" class="text-gold underline underline-offset-2">See the lists</a>.</p>
         </section>
     @endif
 

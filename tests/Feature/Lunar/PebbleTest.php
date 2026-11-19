@@ -30,36 +30,35 @@ class PebbleTest extends TestCase
 
     public function test_offerings_are_listed_apart_from_founders_and_hide_at_zero(): void
     {
-        Product::create(['slug' => 'generous-supporter', 'name' => 'Generous Supporter', 'price_cents' => 4900, 'active' => true]);
-        config(['lunar.offerings.trade-associate' => 0]);
+        Product::create(['slug' => 'follower', 'name' => 'Follower', 'price_cents' => 4900, 'active' => true]);
+        config(['lunar.offerings.moon-dust-sample' => 0]);
         $this->seed(ProductSeeder::class);
 
-        $this->assertFalse(Product::firstWhere('slug', 'generous-supporter')->active);
-        $this->assertFalse(Product::firstWhere('slug', 'trade-associate')->active);
-        $this->get('/souvenirs/trade-associate')->assertNotFound();
+        $this->assertFalse(Product::firstWhere('slug', 'follower')->active);
+        $this->assertFalse(Product::firstWhere('slug', 'moon-dust-sample')->active);
+        $this->get('/souvenirs/moon-dust-sample')->assertNotFound();
 
         $this->get('/')
             ->assertSee('We Need a Little Help from Our Friends')
             ->assertSee('separate from Registered Founder memberships')
             ->assertSee('Booster')
             ->assertSee('$25')
-            ->assertSee('Follower')
-            ->assertSee('$49')
             ->assertSee('Supporter')
+            ->assertSee('$49')
+            ->assertSee('New Lunar Society Member')
             ->assertSee('$79')
-            ->assertDontSee('Generous Supporter')
-            ->assertSee('$5 for the Fallen Astronauts Education Fund and $10 for shipping and handling')
+            ->assertDontSee('Follower')
             ->assertSee('Alpha Founder')
             ->assertSee('MJ Schultz, aka Mr SuperTrump, occupies positions #001 to #005')
             ->assertSee('Holiday Gift Delivery Notice');
     }
 
-    public function test_each_offering_charges_the_right_amount_through_paypal(): void
+    public function test_only_the_99_specimen_and_up_carry_the_fee(): void
     {
         $this->seed(ProductSeeder::class);
 
-        // [PayPal amount, fee]: the Booster has no fee, the Trade Associate pays only the fee.
-        foreach (['booster' => [2500, 0], 'follower' => [6400, 1500], 'moon-dust-supporter' => [9400, 1500], 'trade-associate' => [1500, 1500]] as $slug => [$amount, $fee]) {
+        // [PayPal amount, fee]
+        foreach (['booster' => [2500, 0], 'supporter' => [4900, 0], 'member' => [7900, 0], 'moon-dust-sample' => [11400, 1500]] as $slug => [$amount, $fee]) {
             $product = Product::firstWhere('slug', $slug);
 
             Livewire::test('pages::souvenir-checkout', ['product' => $product])
@@ -75,11 +74,13 @@ class PebbleTest extends TestCase
         }
 
         $this->get('/souvenirs/booster')->assertSee('Booster list')->assertSee('December 20')->assertDontSee('+ $15');
-        $this->get('/souvenirs/follower')->assertSee('Space Pebble Collectible')->assertSee('not lunar material')->assertSee('Name for our Followers list');
-        $this->get('/souvenirs/moon-dust-supporter')->assertSee('Lunar Moon Dust')->assertSee('Supporters list');
-        $this->get('/souvenirs/trade-associate')
-            ->assertSee('paid through Barter Sales, outside PayPal')
+        $this->get('/souvenirs/supporter')->assertSee('Supporters list')->assertDontSee('+ $15');
+        $this->get('/souvenirs/member')->assertSee('welcome e-card')->assertSee('New Members list')->assertDontSee('+ $15');
+        $this->get('/souvenirs/moon-dust-sample')
+            ->assertSee('lunar meteorite dust')
             ->assertSee('certificate of authenticity')
+            ->assertSee('not on the Founders Plaque')
+            ->assertSee('+ $15')
             ->assertDontSee('Name for our');
     }
 
@@ -87,7 +88,7 @@ class PebbleTest extends TestCase
     {
         $this->seed(ProductSeeder::class);
 
-        Livewire::test('pages::souvenir-checkout', ['product' => Product::firstWhere('slug', 'follower')])
+        Livewire::test('pages::souvenir-checkout', ['product' => Product::firstWhere('slug', 'member')])
             ->set('email', 'fan@example.test')
             ->set('consent_terms', true)
             ->call('start')
@@ -98,7 +99,7 @@ class PebbleTest extends TestCase
     {
         $this->seed(ProductSeeder::class);
 
-        foreach (['booster' => 'Bob Booster', 'follower' => 'Fay Follower', 'moon-dust-supporter' => 'Sam Supporter'] as $slug => $name) {
+        foreach (['booster' => 'Bob Booster', 'supporter' => 'Sam Supporter', 'member' => 'Mia Member'] as $slug => $name) {
             Order::create([
                 'product_id' => Product::firstWhere('slug', $slug)->id,
                 'status' => OrderStatus::Paid,
@@ -111,7 +112,8 @@ class PebbleTest extends TestCase
 
         $this->travelTo('2026-12-19 12:00', fn () => $this->get('/supporters')
             ->assertOk()
-            ->assertSee('Fay F.')
+            ->assertSee('New Members')
+            ->assertSee('Mia M.')
             ->assertSee('Sam S.')
             ->assertDontSee('Bob B.')
             ->assertSee('The Booster list will be published here on December 20, 2026.'));
@@ -119,14 +121,14 @@ class PebbleTest extends TestCase
         $this->travelTo('2026-12-20 12:00', fn () => $this->get('/supporters')->assertSee('Bob B.'));
     }
 
-    public function test_trade_associate_pays_only_the_fee_by_paypal_and_gets_the_barter_receipt(): void
+    public function test_specimen_is_paid_in_full_by_paypal_and_ships(): void
     {
         Mail::fake();
         Queue::fake();
         $this->seed(ProductSeeder::class);
-        $this->fakePayPal('15.00');
+        $this->fakePayPal('114.00');
 
-        $order = app(Registry::class)->reserveSouvenir(Product::firstWhere('slug', 'trade-associate'), ['email' => 'trade@example.test']);
+        $order = app(Registry::class)->reserveSouvenir(Product::firstWhere('slug', 'moon-dust-sample'), ['email' => 'dust@example.test']);
 
         $this->postJson(route('checkout.create', $order))->assertOk();
         $this->postJson(route('checkout.capture', $order))->assertOk();
@@ -134,28 +136,41 @@ class PebbleTest extends TestCase
         $this->assertTrue($order->refresh()->isPaid());
 
         Http::assertSent(fn ($request) => str_ends_with($request->url(), '/v2/checkout/orders')
-            && $request['purchase_units'][0]['amount']['value'] === '15.00'
-            && ! isset($request['purchase_units'][0]['amount']['breakdown'])
+            && $request['purchase_units'][0]['amount']['value'] === '114.00'
+            && $request['purchase_units'][0]['amount']['breakdown']['handling']['value'] === '15.00'
             && $request['payment_source']['paypal']['experience_context']['shipping_preference'] === 'GET_FROM_FILE');
 
         Mail::assertQueued(OrderConfirmation::class, function ($mail) {
-            $mail->assertSeeInHtml('paid as a Barter payment through Barter Sales');
-            $mail->assertSeeInHtml('Thank you for your support of The Lunar Society Network.');
+            $mail->assertSeeInHtml('Holiday Gift Delivery Notice');
+            $mail->assertDontSeeInHtml('Barter');
 
-            return $mail->hasTo('trade@example.test');
+            return $mail->hasTo('dust@example.test');
         });
-        Mail::assertQueued(SaleNotification::class, function ($mail) {
-            $mail->assertSeeInHtml('$99 still to be collected through Barter Sales');
+        Mail::assertQueued(SaleNotification::class, fn ($mail) => str_starts_with($mail->envelope()->subject, 'New payment: Moon Dust Specimen, $114.00'));
+    }
 
-            return str_starts_with($mail->envelope()->subject, 'New payment: Trade Associate, $15.00');
-        });
+    public function test_new_member_gets_the_welcome_e_card(): void
+    {
+        $this->seed(ProductSeeder::class);
+
+        $order = new Order(['amount_cents' => 7900, 'payer_first_name' => 'Mia', 'list_name' => 'Mia Member']);
+        $order->setRelation('product', Product::firstWhere('slug', 'member'));
+
+        $mail = new OrderConfirmation($order);
+        $this->assertSame('Your welcome e-card: you are a New Lunar Society Member!', $mail->envelope()->subject);
+        $mail->assertSeeInHtml('You are now a New Lunar Society Member.');
+        $mail->assertSeeInHtml('your special member offers will follow by email');
+        $mail->assertSeeInHtml('nothing is shipped');
+
+        config(['lunar.member_offers' => ['10% off the Moon Dust Specimen']]);
+        (new OrderConfirmation($order))->assertSeeInHtml('10% off the Moon Dust Specimen');
     }
 
     public function test_admin_counts_and_filters_orders_by_class(): void
     {
         $this->seed(ProductSeeder::class);
 
-        foreach (['booster' => 'Bob Booster', 'booster ' => 'Bea Booster', 'follower' => 'Fay Follower'] as $slug => $name) {
+        foreach (['booster' => 'Bob Booster', 'booster ' => 'Bea Booster', 'member' => 'Mia Member'] as $slug => $name) {
             Order::create([
                 'product_id' => Product::firstWhere('slug', trim($slug))->id,
                 'status' => OrderStatus::Paid,
@@ -169,11 +184,11 @@ class PebbleTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         Livewire::test('pages::admin.orders')
-            ->assertSeeInOrder(['Booster', '2', 'Follower', '1'])
+            ->assertSeeInOrder(['Booster', '2', 'New Lunar Society Member', '1'])
             ->set('tier', 'product:booster')
             ->assertSee('Bob Booster')
             ->assertSee('Bea Booster')
-            ->assertDontSee('Fay Follower');
+            ->assertDontSee('Mia Member');
     }
 
     public function test_hero_matches_the_mock_and_labels_the_artwork(): void

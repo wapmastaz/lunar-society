@@ -16,9 +16,8 @@ class ProductSeeder extends Seeder
         $prices = config('lunar.offerings');
         $listedFrom = Carbon::parse(config('lunar.booster_list_from'))->format('F j');
 
-        // The November line-up, retired for the Booster, Follower, Supporter and Trade Associate
-        // offerings. Kept (inactive) so past orders still show what was bought.
-        Product::whereIn('slug', ['space-pebble', 'supporter', 'generous-supporter', 'affiliate-membership', 'moon-dust-sample'])->update(['active' => false]);
+        // Earlier line-ups, retired. Kept (inactive) so past orders still show what was bought.
+        Product::whereIn('slug', ['space-pebble', 'generous-supporter', 'affiliate-membership', 'follower', 'moon-dust-supporter', 'trade-associate'])->update(['active' => false]);
 
         $products = [
             'booster' => [
@@ -31,35 +30,33 @@ class ProductSeeder extends Seeder
                 'listing' => 'boosters',
                 'sort' => 1,
             ],
-            'follower' => [
-                'name' => 'Follower',
-                'tagline' => 'A souvenir and a place on our Followers list',
-                'description' => 'Receive a souvenir, the Space Pebble Collectible, and get listed on our Followers list. The pebble is a commemorative keepsake, not lunar material. It does not include a Founder slot.',
-                'highlights' => ['The Space Pebble Collectible souvenir, shipped to you or as a gift', 'Your name on our Followers list'],
-                'price' => $prices['follower'],
-                'image_path' => config('lunar.souvenir_image'),
-                'ships' => true,
-                'listing' => 'followers',
+            'supporter' => [
+                'name' => 'Supporter',
+                'tagline' => 'Your name on our Supporters list',
+                'description' => 'Support the Lunar Society Network and get your name on our Supporters list. Nothing is shipped, and it does not include a Founder slot.',
+                'highlights' => ['Your name on our Supporters list', 'Our heartfelt thanks'],
+                'price' => $prices['supporter'],
+                'ships' => false,
+                'listing' => 'supporters',
                 'sort' => 2,
             ],
-            'moon-dust-supporter' => [
-                'name' => 'Supporter',
-                'tagline' => 'Lunar Moon Dust for your space collection',
-                'description' => 'Receive a specimen of Lunar Moon Dust (lunar meteorite dust) for your space collection, and be listed as a Supporter on our Supporters list. It does not include a Founder slot.',
-                'highlights' => ['A specimen of Lunar Moon Dust for your space collection', 'Your name on our Supporters list'],
-                'price' => $prices['moon-dust-supporter'],
-                'ships' => true,
-                'listing' => 'supporters',
+            'member' => [
+                'name' => 'New Lunar Society Member',
+                'tagline' => 'Welcome to the Society',
+                'description' => 'Become a New Lunar Society Member. You receive a special welcome e-card by email with some special offers, and your name on our New Members list. No specimen or package is shipped, and it does not include a Founder slot.',
+                'highlights' => ['A special welcome e-card by email, with special offers', 'Your name on our New Members list'],
+                'price' => $prices['member'],
+                'ships' => false,
+                'listing' => 'members',
                 'sort' => 3,
             ],
-            'trade-associate' => [
-                'name' => 'Trade Associate',
-                'tagline' => 'For our Trade associates, through Barter Sales',
-                'description' => 'For our Trade associates. The package price is paid as a Barter payment through Barter Sales, outside PayPal, so only the fee is paid here. You receive the same vial gift that comes in the Founder package. It does not include a Founder slot.',
-                'highlights' => ['A vial of lunar meteorite dust', 'Its certificate of authenticity', 'The same vial gift as the Founder package'],
-                'price' => $prices['trade-associate'],
+            'moon-dust-sample' => [
+                'name' => 'Moon Dust Specimen',
+                'tagline' => 'The Founder specimen, without a name on the plaque',
+                'description' => 'Receive the same vial of lunar meteorite dust and certificate of authenticity that comes in the Founder gift package, shipped to you. Your name is not on the Founders Plaque.',
+                'highlights' => ['A vial of lunar meteorite dust', 'Its certificate of authenticity', 'Shipped to you or as a gift'],
+                'price' => $prices['moon-dust-sample'],
                 'ships' => true,
-                'barter' => true,
                 'sort' => 4,
             ],
         ];

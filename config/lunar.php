@@ -71,14 +71,19 @@ return [
 
     // Ways to support besides a Founder slot (dollars; 0 hides one). Run
     // `php artisan db:seed --class=ProductSeeder --force` after changing these.
+    // Only items that ship ($99 and up) carry the $15 fee.
     'offerings' => [
         'booster' => env('LUNAR_BOOSTER_PRICE', 25),
-        'follower' => env('LUNAR_FOLLOWER_PRICE', 49),
-        'moon-dust-supporter' => env('LUNAR_MOON_DUST_SUPPORTER_PRICE', 79),
-        'trade-associate' => env('LUNAR_TRADE_ASSOCIATE_PRICE', 99), // paid through Barter Sales
+        'supporter' => env('LUNAR_SUPPORTER_PRICE', 49),
+        'member' => env('LUNAR_MEMBER_PRICE', 79), // e-card welcome, nothing shipped
+        'moon-dust-sample' => env('LUNAR_MOON_DUST_PRICE', 99), // the specimen, name not on the plaque
     ],
 
-    // The Follower souvenir (the Space Pebble Collectible). Path under public/.
+    // Special offers listed in the New Lunar Society Member e-card. Empty: the e-card
+    // says offers will follow by email.
+    'member_offers' => [],
+
+    // Image for an offering page without its own photo. Path under public/.
     'souvenir_image' => env('LUNAR_PEBBLE_IMAGE'),
 
     // The Booster list goes up on the site from this date.

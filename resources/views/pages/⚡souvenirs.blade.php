@@ -59,7 +59,7 @@ new #[Layout('layouts::site')] #[Title('Appreciative Contributions')] class exte
                         @endif
 
                         <div class="mt-auto pt-6">
-                            <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" icon:trailing="arrow-right" class="w-full">{{ $product->ships ? 'Order now' : 'Become a Booster' }}</flux:button>
+                            <flux:button href="{{ route('souvenirs.show', $product) }}" variant="primary" icon:trailing="arrow-right" class="w-full">{{ $product->ships ? 'Order now' : 'Become a '.\Illuminate\Support\Str::after($product->name, 'New Lunar Society ') }}</flux:button>
                         </div>
                     </div>
                 </article>

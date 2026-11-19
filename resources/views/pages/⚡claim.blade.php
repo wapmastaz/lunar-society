@@ -514,8 +514,8 @@ new #[Layout('layouts::site')] #[Title('Registration and Enrollment')] class ext
             <a href="{{ route('souvenirs') }}" class="group mt-4 flex items-center gap-4 rounded-xl border border-gold/30 bg-gold/5 p-4 text-sm transition hover:border-gold/60">
                 <x-pebble-art class="size-14 shrink-0" />
                 <span class="min-w-0 flex-1 text-zinc-200">
-                    <span class="block font-medium text-white">Also available: Booster, Follower, Supporter and Trade Associate</span>
-                    Get on our lists, with a souvenir or Lunar Moon Dust for your collection. No Founder slot.
+                    <span class="block font-medium text-white">Also available: Booster, Supporter, New Lunar Society Member and the Moon Dust Specimen</span>
+                    Get on our lists, or receive the Moon Dust specimen without a name on the plaque. No Founder slot.
                 </span>
                 <flux:icon.arrow-right variant="micro" class="size-5 shrink-0 text-gold transition group-hover:translate-x-1" />
             </a>

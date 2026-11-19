@@ -17,11 +17,11 @@
         ->map(fn ($orders) => $orders->map->publicName()->all());
 @endphp
 
-<x-layouts::site title="Boosters, Followers and Supporters">
+<x-layouts::site title="Boosters, Supporters and Members">
     <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
         <header class="max-w-3xl">
             <p class="eyebrow animate-rise">With our thanks</p>
-            <h1 class="animate-rise mt-4 font-display text-5xl text-white sm:text-6xl" style="--reveal-delay: 100ms">Boosters, Followers and Supporters</h1>
+            <h1 class="animate-rise mt-4 font-display text-5xl text-white sm:text-6xl" style="--reveal-delay: 100ms">Boosters, Supporters and Members</h1>
             <p class="mt-4 text-lg text-zinc-300">
                 The friends who help the Lunar Society Network grow toward the Moon. Founders are listed on the
                 <a href="{{ route('founders') }}" class="text-gold underline underline-offset-2">Founders page</a>.
@@ -30,7 +30,7 @@
         </header>
 
         <div class="mt-12 grid gap-6 lg:grid-cols-3">
-            @foreach (['supporters' => 'Supporters', 'followers' => 'Followers', 'boosters' => 'Boosters'] as $list => $heading)
+            @foreach (['members' => 'New Members', 'supporters' => 'Supporters', 'boosters' => 'Boosters'] as $list => $heading)
                 <section aria-labelledby="list-{{ $list }}" class="panel p-7" data-reveal style="--reveal-delay: {{ $loop->index * 120 }}ms">
                     <h2 id="list-{{ $list }}" class="font-display text-3xl text-white">{{ $heading }}</h2>
 
